@@ -2982,31 +2982,38 @@ function setSparkCard(id, values, goodHigh, latestDate, dates){
 }
 
 function renderSparkCards(){
-  if(!aData.hrv.length) return;
-  const entries=[...aData.hrv].sort((a,b)=>a.date.localeCompare(b.date));
-  const last=n=>entries.slice(-n);
+  // Build entries from rawHealth
+  const hrvArr=(rawHealth['heart_rate_variability']||[]).map(e=>({date:e.date,hrv:parseFloat(e.qty)}));
+  const rhrArr=(rawHealth['resting_heart_rate']||[]).map(e=>({date:e.date,rhr:parseFloat(e.qty)}));
+  const slArr=(rawHealth['sleep_analysis']||[]).map(e=>({date:e.date,sleepH:parseFloat(e.totalSleep||e.qty||0)}));
+  const wArr=(rawHealth['weight_body_mass']||[]).map(e=>({date:e.date,weight:parseFloat(e.qty)}));
+  const bfArr=(rawHealth['body_fat_percentage']||[]).map(e=>({date:e.date,bodyFat:parseFloat(e.qty)}));
+  const bpArr=(rawHealth['blood_pressure']||[]);
 
-  // HRV — höher = besser
-  const hrvF=last(14).filter(e=>e.hrv);
+  if(!hrvArr.length&&!rhrArr.length&&!slArr.length) return;
+
+  const last=(arr,n)=>arr.slice(-n);
+
+  const hrvF=last(hrvArr,14).filter(e=>e.hrv);
   setSparkCard('hrv', hrvF.map(e=>e.hrv), true, hrvF.length?hrvF[hrvF.length-1].date:null, hrvF.map(e=>e.date));
 
-  const rhrF=last(14).filter(e=>e.rhr);
+  const rhrF=last(rhrArr,14).filter(e=>e.rhr);
   setSparkCard('rhr', rhrF.map(e=>e.rhr), false, rhrF.length?rhrF[rhrF.length-1].date:null, rhrF.map(e=>e.date));
 
   // BP
-  const bpEntries=last(10).filter(e=>e.bpSys&&e.bpDia);
+  const bpEntries=last(bpArr,10).filter(e=>e.systolic&&e.diastolic);
   if(bpEntries.length){
     const latest=bpEntries[bpEntries.length-1];
     const el=document.getElementById('sv-bp');
-    if(el){ el.childNodes[0].textContent=latest.bpSys+'/'+latest.bpDia; }
-    const col=valueColor('bp',latest.bpSys);
+    if(el){ el.childNodes[0].textContent=latest.systolic+'/'+latest.diastolic; }
+    const col=valueColor('bp',latest.systolic);
     if(el) el.style.color=col;
     const card=document.getElementById('sc-bp');
     if(card) card.style.borderColor=col+'55';
-    if(bpEntries.length>=2) drawSparkline('cv-bp',bpEntries.map(e=>e.bpSys),col,'bp',bpEntries.map(e=>e.date));
+    if(bpEntries.length>=2) drawSparkline('cv-bp',bpEntries.map(e=>e.systolic),col,'bp',bpEntries.map(e=>e.date));
     const tEl=document.getElementById('st-bp');
     if(tEl&&bpEntries.length>=2){
-      const t=sparkTrend(bpEntries.map(e=>e.bpSys),false);
+      const t=sparkTrend(bpEntries.map(e=>e.systolic),false);
       if(t) tEl.innerHTML=`<span style="font-size:11px;color:${t.col};font-family:var(--mono)">${t.arrow} ${t.pct}%</span>`;
       else tEl.innerHTML=`<span style="font-size:10px;color:var(--text3);font-family:var(--mono)">→ stabil</span>`;
     }
@@ -3014,13 +3021,13 @@ function renderSparkCards(){
     if(bpDateEl) bpDateEl.textContent=fmtDisp(latest.date);
   }
 
-  const sleepF=last(14).filter(e=>e.sleepH);
+  const sleepF=last(slArr,14).filter(e=>e.sleepH);
   setSparkCard('sleep', sleepF.map(e=>e.sleepH), true, sleepF.length?sleepF[sleepF.length-1].date:null, sleepF.map(e=>e.date));
 
-  const weightF=entries.filter(e=>e.weight);
+  const weightF=wArr.filter(e=>e.weight);
   setSparkCard('weight', weightF.map(e=>e.weight), false, weightF.length?weightF[weightF.length-1].date:null, weightF.map(e=>e.date));
 
-  const bfF=entries.filter(e=>e.bodyFat);
+  const bfF=bfArr.filter(e=>e.bodyFat);
   setSparkCard('bf', bfF.map(e=>e.bodyFat), false, bfF.length?bfF[bfF.length-1].date:null, bfF.map(e=>e.date));
 }
 
