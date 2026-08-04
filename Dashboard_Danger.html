@@ -1226,7 +1226,7 @@ async function syncDown(){
     changed=true;
   }
 
-  if(changed){renderHome();aRenderAll();pRenderAll();renderProfSections();renderProfile();}
+  if(changed){tPreRegisterAllKeys();tBuildSidebar(tPhase);tSelWeek(tWeek);renderHome();aRenderAll();pRenderAll();renderProfSections();renderProfile();}
   sbStatus(changed?'✓ Aktuell':'✓ Keine neuen Daten',true);
 }
 
