@@ -4127,7 +4127,7 @@ window.addEventListener('load',async function(){
   aRenderAll();
   pRenderAll();
   renderProfSections();
-  if(location.protocol==="https:"){ await syncUp(); await syncRawUp(); await syncDown(); }
+  if(location.protocol==="https:"){ await syncUp(); if(Object.keys(rawHealth).length>0) await syncRawUp(); await syncDown(); }
 });
 </script>
 
