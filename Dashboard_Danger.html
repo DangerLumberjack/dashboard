@@ -4127,7 +4127,7 @@ window.addEventListener('load',async function(){
   aRenderAll();
   pRenderAll();
   renderProfSections();
-  if(location.protocol==="https:") await syncDown();
+  if(location.protocol==="https:"){ await syncUp(); await syncRawUp(); await syncDown(); }
 });
 </script>
 
