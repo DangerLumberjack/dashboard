@@ -93,7 +93,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
 /* ── PANELS ─────────────────────────────────────────────────── */
 .panel{display:none;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0}
 .panel.active{display:flex;flex-direction:column}
-.panel-inner{max-width:680px;margin:0 auto;padding:16px 16px 32px}
+.panel-inner{max-width:680px;margin:0 auto;padding:16px 16px 32px;width:100%}
 
 /* ── CARDS ──────────────────────────────────────────────────── */
 .card{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:1rem;margin-bottom:10px}
@@ -204,12 +204,12 @@ h1 strong{font-weight:500;color:var(--brg2)}
 .ttab.on-p2{background:var(--p2bg);color:var(--p2);border-color:var(--p2b)}
 .ttab.on-p3{background:var(--p3bg);color:var(--p3);border-color:var(--p3b)}
 .ttab.on-reise{background:var(--delbg);color:var(--del);border-color:var(--delb)}
-.train-layout{display:flex;gap:0;flex:1;min-height:0;overflow:hidden}
-.train-sidebar{width:200px;flex-shrink:0;overflow-y:scroll;border-right:1px solid var(--border);padding:10px 8px;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+.train-layout{display:flex;gap:0;overflow:hidden}
+.train-sidebar{width:200px;flex-shrink:0;overflow-y:scroll;border-right:1px solid var(--border);padding:10px 8px;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;max-height:calc(100vh - 240px)}
 .train-sidebar::-webkit-scrollbar{width:3px}
 .train-sidebar::-webkit-scrollbar-track{background:transparent}
 .train-sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-.train-detail{flex:1;overflow-y:auto;padding:14px 16px;-webkit-overflow-scrolling:touch;min-width:0}
+.train-detail{flex:1;overflow-y:auto;padding:14px 16px;-webkit-overflow-scrolling:touch;min-width:0;overflow:hidden}
 
 /* Sidebar wochenliste */
 .sidebar-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:7px;padding-left:4px}
@@ -243,7 +243,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
 .vol-pct{font-family:var(--mono);font-size:9px;color:var(--text3);min-width:26px;text-align:right}
 
 /* Day blocks */
-.day-block{margin-bottom:7px;border:1px solid var(--border2);border-radius:8px;overflow:hidden;background:var(--bg2);transition:border-color .2s}
+.day-block{margin-bottom:7px;border:1px solid var(--border2);border-radius:8px;overflow:hidden;background:var(--bg2);transition:border-color .2s;width:100%}
 .day-block.day-done{border-color:var(--brgb)}
 .day-header{display:flex;align-items:center;gap:8px;padding:6px 11px;background:var(--bg3);border-bottom:1px solid var(--border);transition:background .2s;cursor:pointer;user-select:none}
 .day-block.day-done .day-header{background:var(--brgbg)}
@@ -1266,7 +1266,7 @@ function switchTab(t){
 // ── PROTEIN DATA
 // ══════════════════════════════════════════════════════════════
 let pData={};
-function pSave(){ try{ localStorage.setItem(KEY_PROTEIN,JSON.stringify(pData)); }catch(e){} syncUp(); }
+function pSave(){ try{ localStorage.setItem(KEY_PROTEIN,JSON.stringify(pData)); }catch(e){} if(location.protocol==="https:") syncUp(); }
 function pLoad(){ try{ const d=localStorage.getItem(KEY_PROTEIN); if(d) pData=JSON.parse(d); }catch(e){} }
 function pTodayTotal(){ const t=todayStr(); if(!pData[t]) return 0; return pData[t].reduce((s,e)=>s+e.g,0); }
 function pDayTotal(ds){ if(!pData[ds]) return 0; return pData[ds].reduce((s,e)=>s+e.g,0); }
@@ -1407,7 +1407,7 @@ function exportProtein(){
 // ── ALCOHOL / HEALTH DATA
 // ══════════════════════════════════════════════════════════════
 let aData={days:{},hrv:[]};
-function aSave(){ try{ localStorage.setItem(KEY_HEALTH,JSON.stringify(aData)); }catch(e){} syncUp(); }
+function aSave(){ try{ localStorage.setItem(KEY_HEALTH,JSON.stringify(aData)); }catch(e){} if(location.protocol==="https:") syncUp(); }
 function aLoad(){ try{ const d=localStorage.getItem(KEY_HEALTH); if(d) aData=JSON.parse(d); }catch(e){} }
 
 const GROUPS=[
@@ -1841,7 +1841,7 @@ function runEvaluation(){
     const planStart2=new Date(2026,5,1);
     const daysSince=Math.floor((now2-planStart2)/(1000*60*60*24));
     const weekNum=Math.min(Math.max(Math.floor(daysSince/7)+1,1),52);
-    const ph=weekNum<=12?'p1':weekNum<=36?'p2':'p3';
+    const ph=weekNum<=14?'p1':weekNum<=38?'p2':'p3';
     const isDeload=tIsDeload(weekNum,ph);
     const total=tAllKeys.size;
     const done2=[...tAllKeys].filter(k=>!!tProgress[k]).length;
@@ -2064,7 +2064,7 @@ let tAllKeys=new Set();
 let tSkipKeyReset=false;
 const PLAN_START=new Date(2026,5,1);
 
-function tSave(){ try{localStorage.setItem(KEY_TRAINING,JSON.stringify(tProgress));}catch(e){} syncUp(); }
+function tSave(){ try{localStorage.setItem(KEY_TRAINING,JSON.stringify(tProgress));}catch(e){} if(location.protocol==="https:") syncUp(); }
 function tLoad(){
   try{ const d=localStorage.getItem(KEY_TRAINING);
     if(d){ const p=JSON.parse(d); const v={};
@@ -2126,7 +2126,7 @@ function toggleDay(blockId,event){
 
 function tFmtDate(w,d){ const dt=new Date(PLAN_START); dt.setDate(dt.getDate()+(w-1)*7+d); return dt.getDate()+'.'+(dt.getMonth()+1)+'.'; }
 function tVolPct(w,p){ const c=(w-1)%4,cn=Math.floor((w-1)/4); if(c===3)return 50; return Math.min((p===1?70:p===2?75:80)+cn*5+c*5,100); }
-function tIsDeload(w,ph){ const wi=ph==='p1'?w:ph==='p2'?w-12:w-36; return wi%4===0; }
+function tIsDeload(w,ph){ const wi=ph==='p1'?w:ph==='p2'?w-14:w-38; return wi%4===0; }
 function K(w,d,s){return `w${w}_${d}_s${s}`;}
 
 function spl(cls,time,title,detail,apps,alt,comb,key){
@@ -2268,7 +2268,7 @@ function renderP1(w){
     dayB(w,4,'Fr','25 min · Mobility + Core — Matte',spl('s-m','Block A · 15 min','Mobility — Hüfte, Brust, Schulter','90/90 Hip Stretch, Couch Stretch, Thoracic Rotation · je 60 sek',[fp('→ Flexibility · Yoga for Athletes')],null,null,K(w,4,1))+orD()+spl('s-c','Block B · 10 min','Core — ruhig & kontrolliert','Dead Bug, Bird Dog, Pallof Press',[fp('→ Core Training')],null,'Ruhiger Abschluss vor Heimreise',K(w,4,2)))+
     dayB(w,5,'Sa','35–40 min · Vollkörper + Rudern Finish — Wiedereinstieg',spl('s-k','Block A · 20 min','Kraft Vollkörper','Compound-Kombis: Squat+Press, Hinge+Row · zurück am Torin',[fp('→ Functional Strength Full Body')],null,null,K(w,5,1))+orD()+spl('s-r','Block B · 15 min','Rudern — lockeres Technik-Finish','20 spm · HR 120–130 · locker · Wiedereinstieg nach Reise',[km('→ Landschaftsstrecke')],sk('→ freies Rudern'),'In Folge: 35 min',K(w,5,2)))+
     restB(w,6,'So','Pause')+`<div class="note note-g" style="margin-top:4px">Wiedereinstieg: direkt weitermachen — unter 5 Tage Pause, kein Rückschritt nötig.</div>`+gbNote();
-  if(isD)return `<div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT · Erholung</div>`+
+  if(isD)return `<div style="min-height:500px"><div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT · Erholung</div>`+
     dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Kraft Oberkörper leicht','Fitness+ Upper Body · 60% Intensität',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+
     restB(w,1,'Di','Pause · optional Gravelbike locker 30–60 min')+
     dayB(w,2,'Mi','15 min',spl('s-r','Einzel · 15 min','Rudern sehr locker','16–18 spm · HR unter 125 · sehr locker',[sk('→ freies Rudern')],null,null,K(w,2,1)))+
@@ -2288,8 +2288,8 @@ function renderP1(w){
 
 function renderP2(w){
   if(!tSkipKeyReset) tAllKeys=new Set([...tAllKeys].filter(k=>!k.startsWith('w'+w+'_')));
-  const wi=w-12,isD=wi%4===0,vol=tVolPct(wi,2);
-  if(isD)return `<div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT-Rudern</div>`+
+  const wi=w-14,isD=wi%4===0,vol=tVolPct(wi,2);
+  if(isD)return `<div style="min-height:500px"><div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT-Rudern</div>`+
     dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Push leicht','60% Intensität',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+restB(w,1,'Di','Pause · optional Gravelbike locker')+
     dayB(w,2,'Mi','20 min',spl('s-r','Einzel · 20 min','Rudern locker','17–18 spm · HR unter 128',[km('→ entspannte Landschaftsstrecke')],null,null,K(w,2,1)))+restB(w,3,'Do','Pause')+
     dayB(w,4,'Fr','20 min',spl('s-k','Einzel · 20 min','Legs leicht','Fitness+ Lower Body · 60%',[fp('→ Functional Strength Lower')],null,null,K(w,4,1)))+restB(w,5,'Sa','Pause · optional Gravelbike locker')+restB(w,6,'So','Pause · optional Yoga');
@@ -2305,8 +2305,8 @@ function renderP2(w){
 
 function renderP3(w){
   if(!tSkipKeyReset) tAllKeys=new Set([...tAllKeys].filter(k=>!k.startsWith('w'+w+'_')));
-  const wi=w-36,isD=wi%4===0,vol=tVolPct(wi,3);
-  if(isD)return `<div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT</div>`+
+  const wi=w-38,isD=wi%4===0,vol=tVolPct(wi,3);
+  if(isD)return `<div style="min-height:500px"><div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT</div>`+
     dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Upper leicht','Fitness+ Upper Body · 60%',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+restB(w,1,'Di','Pause · optional Gravelbike locker')+
     dayB(w,2,'Mi','20 min',spl('s-r','Einzel · 20 min','Rudern locker','16–18 spm · HR unter 128',[km('→ entspannte Strecke')],sk('→ freies Rudern'),null,K(w,2,1)))+restB(w,3,'Do','Pause')+
     dayB(w,4,'Fr','20 min',spl('s-k','Einzel · 20 min','Lower leicht','Fitness+ Lower Body · 60%',[fp('→ Functional Strength Lower')],null,null,K(w,4,1)))+restB(w,5,'Sa','Pause · optional Gravelbike locker')+restB(w,6,'So','Pause');
@@ -2344,7 +2344,7 @@ function tSelWeek(w){
   const el=document.getElementById('twk-'+w);
   if(el){el.classList.add('sel');el.scrollIntoView({block:'nearest'});}
   const d=tIsDeload(w,tPhase);
-  const wi=tPhase==='p1'?w:tPhase==='p2'?w-12:w-36;
+  const wi=tPhase==='p1'?w:tPhase==='p2'?w-14:w-38;
   const p=tPhase==='p1'?1:tPhase==='p2'?2:3;
   const cols={p1:['#c96c2a','var(--p1bg)','var(--p1b)'],p2:['#3a7a5a','var(--p2bg)','var(--p2b)'],p3:['#5a6a9a','var(--p3bg)','var(--p3b)']}[tPhase];
   const [c,bg,bc]=cols;
@@ -2367,7 +2367,7 @@ function switchPhase(p){
   const isR=p==='reise';
   document.getElementById('train-layout').style.display=isR?'none':'flex';
   document.getElementById('t-reise-panel').style.display=isR?'block':'none';
-  if(!isR){tBuildSidebar(p);tSelWeek({p1:1,p2:13,p3:37}[p]);}
+  if(!isR){tBuildSidebar(p);tSelWeek({p1:1,p2:15,p3:39}[p]);}
 }
 
 function tPreRegisterAllKeys(){
@@ -2472,7 +2472,7 @@ function switchToCurrentWeek(){
   const now=new Date();
   const planStart=new Date(2026,5,1);
   const weekNum=Math.min(Math.max(Math.floor((now-planStart)/(1000*60*60*24*7))+1,1),52);
-  const ph=weekNum<=12?'p1':weekNum<=36?'p2':'p3';
+  const ph=weekNum<=14?'p1':weekNum<=38?'p2':'p3';
   switchTab('training');
   switchPhase(ph);
   tSelWeek(weekNum);
@@ -2490,7 +2490,7 @@ function renderHomeTodayTraining(){
   const dayLabels=['Mo','Di','Mi','Do','Fr','Sa','So'];
 
   // Determine phase
-  const ph=weekNum<=12?'p1':weekNum<=36?'p2':'p3';
+  const ph=weekNum<=14?'p1':weekNum<=38?'p2':'p3';
   const isDeload=tIsDeload(weekNum,ph);
 
   // Render current week silently to get day data
@@ -2588,7 +2588,7 @@ const ROUTINE_ITEMS=[
 ];
 let routineData={}; // routineData[dateStr] = {couch:true, bridge:true, ...}
 
-function routineSave(){ try{localStorage.setItem(KEY_ROUTINE,JSON.stringify(routineData));}catch(e){} syncUp(); }
+function routineSave(){ try{localStorage.setItem(KEY_ROUTINE,JSON.stringify(routineData));}catch(e){} if(location.protocol==="https:") syncUp(); }
 function routineLoad(){ try{const d=localStorage.getItem(KEY_ROUTINE); if(d)routineData=JSON.parse(d);}catch(e){} }
 
 function routineToggle(itemId){
@@ -3019,7 +3019,7 @@ function renderSparkCards(){
 
 const KEY_PROFILE='marcus_profile_v1';
 let profileData={};
-function profileSave(){ try{localStorage.setItem(KEY_PROFILE,JSON.stringify(profileData));}catch(e){} syncUp(); }
+function profileSave(){ try{localStorage.setItem(KEY_PROFILE,JSON.stringify(profileData));}catch(e){} if(location.protocol==="https:") syncUp(); }
 function profileLoad(){
   try{const d=localStorage.getItem(KEY_PROFILE); if(d) profileData=JSON.parse(d);}catch(e){}
   // Pre-populate from lab result 22.06.2026 if no profile yet
@@ -3351,7 +3351,7 @@ const KEY_WORKOUTS='marcus_workouts_v1';
 const KEY_RAWHEALTH='marcus_rawhealth_v1';
 // rawHealth: { metricName: [{date, ...values}] } — alle importierten Rohdaten dauerhaft
 let rawHealth={};
-function rawSave(){ try{localStorage.setItem(KEY_RAWHEALTH,JSON.stringify(rawHealth));}catch(e){} syncRawUp(); }
+function rawSave(){ try{localStorage.setItem(KEY_RAWHEALTH,JSON.stringify(rawHealth));}catch(e){} if(location.protocol==="https:") syncRawUp(); }
 function rawLoad(){ try{const d=localStorage.getItem(KEY_RAWHEALTH); if(d) rawHealth=JSON.parse(d);}catch(e){} }
 function rawGet(metric, n=null){ const arr=rawHealth[metric]||[]; return n?arr.slice(-n):arr; }
 function rawLatest(metric){ const arr=rawHealth[metric]||[]; return arr.length?arr[arr.length-1]:null; }
@@ -3365,7 +3365,7 @@ function rawAvg(metric, days=7){
 }
 let workoutData=[]; // Array of processed workout objects, grows permanently
 
-function wSave(){ try{localStorage.setItem(KEY_WORKOUTS,JSON.stringify(workoutData));}catch(e){} syncUp(); }
+function wSave(){ try{localStorage.setItem(KEY_WORKOUTS,JSON.stringify(workoutData));}catch(e){} if(location.protocol==="https:") syncUp(); }
 function wLoad(){ try{const d=localStorage.getItem(KEY_WORKOUTS); if(d) workoutData=JSON.parse(d);}catch(e){} rawLoad(); }
 
 const ACTIVITY_LABELS={
@@ -3542,7 +3542,7 @@ function importCombined(input){
       aData.hrv.sort((a,b)=>a.date<b.date?1:-1);
       aSave(); syncProfileFromVitals();
       renderHome(); aRenderAll(); renderProfSections();
-      syncUp(); syncRawUp();
+      if(location.protocol==="https:"){ syncUp(); syncRawUp(); }
       alert(`✅ Workouts: ${wAdded} neu · ${wDupes} Duplikate\nGesundheit: ${hAdded} neue Tage · ${hMerged} ergänzt\nGesamt: ${workoutData.length} Workouts · ${aData.hrv.length} Gesundheitstage`);
     }catch(err){ alert('Fehler: '+err.message+'\n'+err.stack?.slice(0,200)); }
     input.value='';
@@ -3645,7 +3645,7 @@ function renderHeatmap(){
     const ds=dateStr(d);
     const isFuture=d>today;
     const weekNum=Math.floor(i/7)+1;
-    const ph=weekNum<=12?'p1':weekNum<=36?'p2':'p3';
+    const ph=weekNum<=14?'p1':weekNum<=38?'p2':'p3';
     const isDeload=tIsDeload(weekNum,ph);
     const count=dayMap[ds]||0;
     days.push({ds,isFuture,isDeload,count,d:new Date(d)});
@@ -4120,7 +4120,7 @@ window.addEventListener('load',function(){
   aRenderAll();
   pRenderAll();
   renderProfSections();
-  syncDown();
+  if(location.protocol==="https:") syncDown();
 });
 </script>
 
