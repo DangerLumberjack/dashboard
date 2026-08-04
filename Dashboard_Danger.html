@@ -1149,10 +1149,11 @@ async function syncUp(){
 
   // Workouts
   if(workoutData.length){
+    const seen=new Set();
     const wr=workoutData.filter(w=>w.date&&w.name).map(w=>({
       workout_id:String(w.start||w.date)+'|'+String(w.name).slice(0,40),
       date:w.date,name:w.name,type:w.type||'',duration:w.duration||0,kcal:w.kcal||0,data:w
-    }));
+    })).filter(r=>{ if(seen.has(r.workout_id)) return false; seen.add(r.workout_id); return true; });
     if(wr.length) ok=ok&&await sbUpsert('workouts','workout_id',wr);
   }
 
@@ -1165,9 +1166,15 @@ async function syncRawUp(){
     (entries||[]).forEach(e=>rows.push({metric,date:e.date,data:e}));
   });
   if(!rows.length) return;
-  // Batch 500
-  for(let i=0;i<rows.length;i+=500){
-    await sbUpsert('raw_health','',rows.slice(i,i+500));
+  // Deduplicate by metric+date
+  const seen=new Set();
+  const deduped=rows.filter(r=>{
+    const k=r.metric+'|'+r.date;
+    if(seen.has(k)) return false;
+    seen.add(k); return true;
+  });
+  for(let i=0;i<deduped.length;i+=500){
+    await sbUpsert('raw_health','metric,date',deduped.slice(i,i+500));
   }
 }
 
