@@ -4117,7 +4117,7 @@ function importAll(input){
 // ══════════════════════════════════════════════════════════════
 // ── INIT
 // ══════════════════════════════════════════════════════════════
-window.addEventListener('load',function(){
+window.addEventListener('load',async function(){
   pLoad(); aLoad(); tLoad(); routineLoad(); profileLoad(); wLoad();
   pRenderQuickButtons();
   document.getElementById('p-custom-g').addEventListener('keydown',function(e){ if(e.key==='Enter')pAddCustom(); });
@@ -4127,7 +4127,7 @@ window.addEventListener('load',function(){
   aRenderAll();
   pRenderAll();
   renderProfSections();
-  if(location.protocol==="https:") syncDown();
+  if(location.protocol==="https:") await syncDown();
 });
 </script>
 
