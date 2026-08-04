@@ -1086,7 +1086,8 @@ const SB_H={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'app
 
 async function sbGet(table){
   try{
-    const r=await fetch(SB_URL+'/rest/v1/'+table+'?limit=50000',{headers:SB_H});
+    const limit = table==='raw_health' ? 100000 : 50000;
+    const r=await fetch(SB_URL+'/rest/v1/'+table+'?limit='+limit,{headers:SB_H});
     if(!r.ok){ console.warn('sbGet',table,r.status); return []; }
     return await r.json();
   }catch(e){ console.warn('sbGet',table,e.message); return []; }
