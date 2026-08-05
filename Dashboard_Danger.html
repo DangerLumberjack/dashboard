@@ -488,7 +488,39 @@ h1 strong{font-weight:500;color:var(--brg2)}
 @media(max-width:600px){
   .train-sidebar{display:none}
   .vitals-pair{grid-template-columns:1fr}
+  .train-layout{flex-direction:column}
+  .train-detail{padding:10px 12px}
+  #mobile-week-bar{display:flex!important}
 }
+#mobile-week-bar{
+  display:none;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  gap:5px;
+  padding:6px 16px 8px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg);
+}
+#mobile-week-bar::-webkit-scrollbar{display:none}
+.mwk{
+  font-family:var(--mono);
+  font-size:10px;
+  padding:4px 10px;
+  border-radius:5px;
+  border:1px solid var(--border2);
+  color:var(--text2);
+  background:transparent;
+  white-space:nowrap;
+  flex-shrink:0;
+  cursor:pointer;
+  transition:all .15s;
+}
+.mwk.sel{background:var(--brgbg);color:var(--brg2);border-color:var(--brgb)}
+.mwk.op{background:var(--opbg);color:var(--op);border-color:var(--opb)}
+.mwk.cardio{background:var(--goodbg);color:var(--good);border-color:var(--goodb)}
+.mwk.urlaub{background:var(--afterbg);color:var(--after);border-color:var(--afterb)}
+.mwk.del{background:var(--delbg);color:var(--del);border-color:var(--delb)}
 </style>
 </head>
 <body>
@@ -799,7 +831,10 @@ h1 strong{font-weight:500;color:var(--brg2)}
     <div class="ttab"       id="ttab-p3"    onclick="switchPhase('p3')">Phase 3 · 37–52</div>
     <div class="ttab"       id="ttab-reise" onclick="switchPhase('reise')">✈ Reise</div>
   </div>
-  <div class="train-layout" id="train-layout">
+<!-- Mobile Wochenleiste -->
+<div id="mobile-week-bar"></div>
+<!-- train-layout -->
+<div class="train-layout" id="train-layout">
     <div class="train-sidebar"><div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:7px;letter-spacing:.1em;text-transform:uppercase">Wochen</div><div id="t-week-list"></div></div>
     <div class="train-detail" id="t-detail"><p class="placeholder">← Woche auswählen</p></div>
   </div>
@@ -2330,6 +2365,29 @@ function renderP3(w){
     restB(w,6,'So','Pause')+gbNote();
 }
 
+function buildMobileWeekBar(ph){
+  const bar=document.getElementById('mobile-week-bar');
+  if(!bar) return;
+  const r=tPhaseRanges[ph];
+  if(!r) return;
+  let html='';
+  for(let w=r.s;w<=r.e;w++){
+    const sw=SPECIAL_WEEKS[w];
+    const d=!sw&&tIsDeload(w,ph);
+    let cls='mwk';
+    if(w===tWeek) cls+=' sel';
+    else if(sw?.type==='op') cls+=' op';
+    else if(sw?.type==='cardio') cls+=' cardio';
+    else if(sw?.type==='urlaub') cls+=' urlaub';
+    else if(d) cls+=' del';
+    html+=`<div class="${cls}" onclick="tSelWeek(${w})">${sw?sw.label.split('-')[0]:'Wo.'+w}</div>`;
+  }
+  bar.innerHTML=html;
+  // Scroll to current week
+  const sel=bar.querySelector('.sel');
+  if(sel) sel.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
+}
+
 function tBuildSidebar(ph){
   const list=document.getElementById('t-week-list'); list.innerHTML='';
   const r=tPhaseRanges[ph];
@@ -2353,6 +2411,10 @@ function tSelWeek(w){
   document.querySelectorAll('.wk').forEach(e=>e.classList.remove('sel'));
   const el=document.getElementById('twk-'+w);
   if(el){el.classList.add('sel');el.scrollIntoView({block:'nearest'});}
+  // Mobile bar
+  document.querySelectorAll('.mwk').forEach(e=>e.classList.remove('sel'));
+  const mbar=document.getElementById('mobile-week-bar');
+  if(mbar){const mels=[...mbar.children];const msel=mels.find(e=>e.onclick?.toString().includes('('+w+')'));if(msel){msel.classList.add('sel');msel.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});}}
   const d=tIsDeload(w,tPhase);
   const wi=tPhase==='p1'?w:tPhase==='p2'?w-14:w-38;
   const p=tPhase==='p1'?1:tPhase==='p2'?2:3;
@@ -2377,7 +2439,7 @@ function switchPhase(p){
   const isR=p==='reise';
   document.getElementById('train-layout').style.display=isR?'none':'flex';
   document.getElementById('t-reise-panel').style.display=isR?'block':'none';
-  if(!isR){tBuildSidebar(p);tSelWeek({p1:1,p2:15,p3:39}[p]);}
+  if(!isR){tBuildSidebar(p);buildMobileWeekBar(p);tSelWeek({p1:1,p2:15,p3:39}[p]);}
 }
 
 function tPreRegisterAllKeys(){
