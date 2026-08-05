@@ -4138,6 +4138,7 @@ window.addEventListener('load',async function(){
   pRenderAll();
   renderProfSections();
   if(location.protocol==="https:"){ await syncUp(); if(Object.keys(rawHealth).length>0) await syncRawUp(); await syncDown(); }
+  if(location.protocol==="https:") setInterval(()=>syncDown(), 30000);
 });
 </script>
 
