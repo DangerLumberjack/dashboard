@@ -1121,6 +1121,22 @@ const SB_URL='https://iezzaitvpsdtaqpkyybe.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllenphaXR2cHNkdGFxcGt5eWJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5NTcyMzMsImV4cCI6MjA5OTUzMzIzM30.p0sDjhT-7cbvnZbsAGsDfpeS18WmmPVK1ra4ukrVQCU';
 const SB_H={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'};
 
+async function sbGetAll(table, batchSize=1000){
+  let all=[], offset=0;
+  while(true){
+    try{
+      const r=await fetch(SB_URL+'/rest/v1/'+table+'?limit='+batchSize+'&offset='+offset,{headers:SB_H});
+      if(!r.ok) break;
+      const batch=await r.json();
+      if(!batch.length) break;
+      all=all.concat(batch);
+      if(batch.length<batchSize) break;
+      offset+=batchSize;
+    }catch(e){ break; }
+  }
+  return all;
+}
+
 async function sbGet(table){
   try{
     const limit = table==='raw_health' ? 100000 : 50000;
@@ -1221,10 +1237,11 @@ async function syncDown(){
   sbStatus('⟳ Lade…',true);
   let changed=false;
 
-  const[pr,al,tr,ro,pf,wr,rh]=await Promise.all([
+  const[pr,al,tr,ro,pf,wr]=await Promise.all([
     sbGet('protein'),sbGet('alcohol'),sbGet('training'),
-    sbGet('routine'),sbGet('profile'),sbGet('workouts'),sbGet('raw_health')
+    sbGet('routine'),sbGet('profile'),sbGet('workouts')
   ]);
+  const rh=await sbGetAll('raw_health');
 
   if(pr.length){
     const d={};
