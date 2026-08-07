@@ -1157,6 +1157,7 @@ function sbStatus(msg, ok){
   el._t=setTimeout(()=>el.style.opacity='0',3000);
 }
 
+let _syncInterval=null;
 async function syncUp(){
   sbStatus('⟳ Sync…',true);
   let ok=true;
@@ -3485,6 +3486,7 @@ async function importCombined(input){
   const file=input.files[0]; if(!file) return;
   const reader=new FileReader();
   reader.onload=async function(e){
+    if(_syncInterval){clearInterval(_syncInterval);_syncInterval=null;}
     try{
       const parsed=JSON.parse(e.target.result);
       let wAdded=0,wDupes=0,hAdded=0,hMerged=0;
@@ -3622,6 +3624,7 @@ async function importCombined(input){
       aSave(); syncProfileFromVitals();
       renderHome(); aRenderAll(); renderProfSections();
       if(location.protocol==="https:"){ await syncUp(); await syncRawUp(); }
+      if(location.protocol==="https:") _syncInterval=setInterval(async()=>{ await syncDown(); renderSparkCards(); renderBioAge(); renderActivityPath(); }, 30000);
       alert(`✅ Workouts: ${wAdded} neu · ${wDupes} Duplikate\nGesundheit: ${hAdded} neue Tage · ${hMerged} ergänzt\nGesamt: ${workoutData.length} Workouts · ${aData.hrv.length} Gesundheitstage`);
     }catch(err){ alert('Fehler: '+err.message+'\n'+err.stack?.slice(0,200)); }
     input.value='';
@@ -4200,7 +4203,7 @@ window.addEventListener('load',async function(){
   pRenderAll();
   renderProfSections();
   if(location.protocol==="https:"){ await syncUp(); if(Object.keys(rawHealth).length>0) await syncRawUp(); await syncDown(); }
-  if(location.protocol==="https:") setInterval(async()=>{ await syncDown(); renderSparkCards(); renderBioAge(); renderActivityPath(); }, 30000);
+  if(location.protocol==="https:") _syncInterval=setInterval(async()=>{ await syncDown(); renderSparkCards(); renderBioAge(); renderActivityPath(); }, 30000);
 });
 </script>
 
