@@ -3481,10 +3481,10 @@ const WORKOUT_NAME_MAP={
   'Cardio Dance':'cardio',
 };
 
-function importCombined(input){
+async function importCombined(input){
   const file=input.files[0]; if(!file) return;
   const reader=new FileReader();
-  reader.onload=function(e){
+  reader.onload=async function(e){
     try{
       const parsed=JSON.parse(e.target.result);
       let wAdded=0,wDupes=0,hAdded=0,hMerged=0;
@@ -3621,7 +3621,7 @@ function importCombined(input){
       aData.hrv.sort((a,b)=>a.date<b.date?1:-1);
       aSave(); syncProfileFromVitals();
       renderHome(); aRenderAll(); renderProfSections();
-      if(location.protocol==="https:"){ syncUp(); syncRawUp(); }
+      if(location.protocol==="https:"){ await syncUp(); await syncRawUp(); }
       alert(`✅ Workouts: ${wAdded} neu · ${wDupes} Duplikate\nGesundheit: ${hAdded} neue Tage · ${hMerged} ergänzt\nGesamt: ${workoutData.length} Workouts · ${aData.hrv.length} Gesundheitstage`);
     }catch(err){ alert('Fehler: '+err.message+'\n'+err.stack?.slice(0,200)); }
     input.value='';
