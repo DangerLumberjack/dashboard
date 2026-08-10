@@ -966,6 +966,31 @@ h1 strong{font-weight:500;color:var(--brg2)}
   </div>
   <div id="a-calendar"></div>
 
+  <!-- ── ANALYSEN ─────────────────────────────────────── -->
+  <div class="section-title">Analysen</div>
+
+  <!-- Alkohol-HRV Korrelation -->
+  <div class="card" style="margin-bottom:10px;padding:12px 14px">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Alkohol · HRV Korrelation</div>
+    <div id="alc-hrv-stats" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"></div>
+    <canvas id="alc-hrv-canvas" style="width:100%;height:48px;display:block"></canvas>
+    <div style="font-size:10px;color:var(--text3);margin-top:6px;line-height:1.5" id="alc-hrv-text"></div>
+  </div>
+
+  <!-- Schlaf-Performance Korrelation -->
+  <div class="card" style="margin-bottom:10px;padding:12px 14px">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Schlaf · Trainingsleistung</div>
+    <div id="sleep-perf-stats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px"></div>
+    <div style="font-size:10px;color:var(--text3);margin-top:4px;line-height:1.5" id="sleep-perf-text"></div>
+  </div>
+
+  <!-- Körperkomposition Verlauf -->
+  <div class="card" style="margin-bottom:10px;padding:12px 14px">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Körperkomposition — Verlauf</div>
+    <canvas id="body-comp-canvas" style="width:100%;height:80px;display:block"></canvas>
+    <div id="body-comp-legend" style="display:flex;gap:12px;margin-top:6px;flex-wrap:wrap"></div>
+  </div>
+
   <!-- Körperprofil -->
   <div class="section-title">Körperprofil — Status Quo</div>
   <div class="card" style="padding:0;overflow:hidden;margin-bottom:4px">
@@ -1340,7 +1365,7 @@ function switchTab(t){
   if(t==='home') renderHome();
   if(t==='training') renderVolumeTrend();
   if(t==='protein') pRenderAll();
-  if(t==='health'){ aRenderAll(); renderProfSections(); renderProfile(); }
+  if(t==='health'){ aRenderAll(); renderProfSections(); renderProfile(); renderAnalysen(); }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -4187,6 +4212,198 @@ function renderVolumeTrend(){
     labelsEl.innerHTML=nonSpecial.map(d=>`<span style="font-family:var(--mono);font-size:8px;color:var(--text3)">${d.label}</span>`).join('');
   }
 }
+
+// ── ALKOHOL-HRV KORRELATION ───────────────────────────────────
+function renderAlcHrv(){
+  const statsEl=document.getElementById('alc-hrv-stats');
+  const textEl=document.getElementById('alc-hrv-text');
+  const canvas=document.getElementById('alc-hrv-canvas');
+  if(!statsEl) return;
+
+  const hrvArr=rawHealth['heart_rate_variability']||[];
+  if(hrvArr.length<5){ if(statsEl) statsEl.innerHTML='<div style="font-size:11px;color:var(--text3);font-style:italic;grid-column:1/-1">Noch zu wenig HRV-Daten.</div>'; return; }
+
+  // Match HRV to previous night's alcohol status
+  let alcDays=[], freeDays=[];
+  hrvArr.forEach(e=>{
+    const d=new Date(e.date+'T12:00:00');
+    d.setDate(d.getDate()-1);
+    const prevDate=dateStr(d);
+    const alcEntry=aData.days[prevDate];
+    const hrv=parseFloat(e.qty);
+    if(!hrv) return;
+    if(alcEntry&&alcEntry.status==='green') freeDays.push(hrv);
+    else if(alcEntry&&(alcEntry.status==='yellow'||alcEntry.status==='orange'||alcEntry.status==='red')) alcDays.push(hrv);
+  });
+
+  const avg=arr=>arr.length?Math.round(arr.reduce((a,b)=>a+b,0)/arr.length):null;
+  const freeAvg=avg(freeDays), alcAvg=avg(alcDays);
+  const diff=freeAvg&&alcAvg?freeAvg-alcAvg:null;
+
+  statsEl.innerHTML=`
+    <div style="background:var(--goodbg);border:1px solid var(--goodb);border-radius:8px;padding:8px 10px;text-align:center">
+      <div style="font-family:var(--mono);font-size:8px;color:var(--good);margin-bottom:3px">ALKOHOLFREI</div>
+      <div style="font-family:var(--serif);font-size:22px;color:var(--good)">${freeAvg||'–'}</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">Ø ms · ${freeDays.length} Nächte</div>
+    </div>
+    <div style="background:var(--redbg);border:1px solid var(--redb);border-radius:8px;padding:8px 10px;text-align:center">
+      <div style="font-family:var(--mono);font-size:8px;color:var(--red);margin-bottom:3px">NACH ALKOHOL</div>
+      <div style="font-family:var(--serif);font-size:22px;color:var(--red)">${alcAvg||'–'}</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">Ø ms · ${alcDays.length} Nächte</div>
+    </div>`;
+
+  if(textEl&&diff!==null){
+    textEl.textContent=diff>0
+      ?`Nach alkoholfreien Tagen ist deine HRV im Schnitt ${diff}ms höher — dein Körper erholt sich messbar besser ohne Alkohol.`
+      :`Noch kein klarer Unterschied sichtbar — mehr Daten sammeln.`;
+  }
+
+  // Scatter-like bar chart
+  if(canvas&&freeAvg&&alcAvg){
+    const dpr=window.devicePixelRatio||1;
+    const w=canvas.offsetWidth||300;
+    const h=48;
+    canvas.width=w*dpr; canvas.height=h*dpr;
+    canvas.style.width=w+'px'; canvas.style.height=h+'px';
+    const ctx=canvas.getContext('2d');
+    ctx.scale(dpr,dpr);
+    const all=[...freeDays,...alcDays];
+    const min=Math.min(...all)-10, max=Math.max(...all)+10, range=max-min||1;
+    const toX=v=>Math.round((v-min)/range*(w-40)+20);
+    // Free days dots
+    freeDays.forEach(v=>{
+      ctx.beginPath(); ctx.arc(toX(v),h*0.35,3,0,Math.PI*2);
+      ctx.fillStyle='rgba(58,104,72,0.5)'; ctx.fill();
+    });
+    // Alc days dots
+    alcDays.forEach(v=>{
+      ctx.beginPath(); ctx.arc(toX(v),h*0.65,3,0,Math.PI*2);
+      ctx.fillStyle='rgba(138,40,40,0.5)'; ctx.fill();
+    });
+    // Averages
+    [freeAvg,alcAvg].forEach((avg,i)=>{
+      const x=toX(avg), y=i===0?h*0.35:h*0.65;
+      ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2);
+      ctx.fillStyle=i===0?'var(--good)':'var(--red)'; ctx.fill();
+      ctx.fillStyle=i===0?'var(--good)':'var(--red)';
+      ctx.font=`${9*dpr}px DM Mono,monospace`; ctx.textAlign='center';
+      ctx.fillText(avg+'ms',x,i===0?y-8:y+14);
+    });
+  }
+}
+
+// ── SCHLAF-PERFORMANCE KORRELATION ────────────────────────────
+function renderSleepPerf(){
+  const statsEl=document.getElementById('sleep-perf-stats');
+  const textEl=document.getElementById('sleep-perf-text');
+  if(!statsEl) return;
+
+  const slArr=rawHealth['sleep_analysis']||[];
+  if(slArr.length<5){ statsEl.innerHTML='<div style="font-size:11px;color:var(--text3);font-style:italic;grid-column:1/-1">Noch zu wenig Schlafdaten.</div>'; return; }
+
+  // Categorize by sleep duration
+  const short=[], ok=[], good=[];
+  slArr.forEach(e=>{
+    const h=parseFloat(e.totalSleep||e.qty||0);
+    if(!h) return;
+    if(h<6) short.push(h);
+    else if(h<7.5) ok.push(h);
+    else good.push(h);
+  });
+
+  const avg=arr=>arr.length?Math.round(arr.reduce((a,b)=>a+b,0)/arr.length*10)/10:null;
+
+  const statCard=(label,arr,col,bg,border)=>`
+    <div style="background:${bg};border:1px solid ${border};border-radius:8px;padding:8px 10px;text-align:center">
+      <div style="font-family:var(--mono);font-size:8px;color:${col};margin-bottom:3px;text-transform:uppercase">${label}</div>
+      <div style="font-family:var(--serif);font-size:18px;color:${col}">${avg(arr)||'–'}h</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">${arr.length} Nächte</div>
+    </div>`;
+
+  statsEl.innerHTML=
+    statCard('<6h Schlaf',short,'var(--red)','var(--redbg)','var(--redb)')+
+    statCard('6–7.5h',ok,'var(--after)','var(--afterbg)','var(--afterb)')+
+    statCard('7.5h+',good,'var(--good)','var(--goodbg)','var(--goodb)');
+
+  if(textEl){
+    const totalNights=slArr.length;
+    const goodPct=Math.round(good.length/totalNights*100);
+    textEl.textContent=`${goodPct}% deiner Nächte (${good.length}/${totalNights}) waren optimal (7.5h+). ${short.length>0?short.length+' Nächte unter 6h — dort ist deine Erholung am geringsten.':'Keine Kurzschlaf-Nächte — sehr gut.'}`;
+  }
+}
+
+// ── KÖRPERKOMPOSITION VERLAUF ─────────────────────────────────
+function renderBodyComp(){
+  const canvas=document.getElementById('body-comp-canvas');
+  const legendEl=document.getElementById('body-comp-legend');
+  if(!canvas) return;
+
+  const bfArr=(rawHealth['body_fat_percentage']||[]).filter(e=>parseFloat(e.qty));
+  const wArr=(rawHealth['weight_body_mass']||[]).filter(e=>parseFloat(e.qty));
+  const lArr=(rawHealth['lean_body_mass']||[]).filter(e=>parseFloat(e.qty));
+
+  if(bfArr.length<2&&wArr.length<2){ canvas.style.display='none'; return; }
+  canvas.style.display='block';
+
+  const dpr=window.devicePixelRatio||1;
+  const w=canvas.offsetWidth||300;
+  const h=80;
+  canvas.width=w*dpr; canvas.height=h*dpr;
+  canvas.style.width=w+'px'; canvas.style.height=h+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  const pad=8;
+  const drawLine=(arr,valKey,col,yMin,yMax)=>{
+    if(arr.length<2) return;
+    const range=yMax-yMin||1;
+    const pts=arr.map((e,i)=>({
+      x:pad+(i/(arr.length-1))*(w-pad*2),
+      y:h-pad-((parseFloat(e.qty)-yMin)/range)*(h-pad*2)
+    }));
+    ctx.beginPath();
+    pts.forEach((p,i)=>{
+      if(i===0) ctx.moveTo(p.x,p.y);
+      else { const cp=(pts[i-1].x+p.x)/2; ctx.bezierCurveTo(cp,pts[i-1].y,cp,p.y,p.x,p.y); }
+    });
+    ctx.strokeStyle=col; ctx.lineWidth=2; ctx.lineJoin='round'; ctx.stroke();
+    // Last dot
+    const l=pts[pts.length-1];
+    ctx.beginPath(); ctx.arc(l.x,l.y,3,0,Math.PI*2); ctx.fillStyle=col; ctx.fill();
+  };
+
+  // KF %
+  if(bfArr.length>=2){
+    const vals=bfArr.map(e=>parseFloat(e.qty));
+    drawLine(bfArr,'qty','var(--brg2)',Math.min(...vals)-2,Math.max(...vals)+2);
+  }
+  // Gewicht
+  if(wArr.length>=2){
+    const vals=wArr.map(e=>parseFloat(e.qty));
+    drawLine(wArr,'qty','var(--after)',Math.min(...vals)-2,Math.max(...vals)+2);
+  }
+  // Muskelmasse
+  if(lArr.length>=2){
+    const vals=lArr.map(e=>parseFloat(e.qty));
+    drawLine(lArr,'qty','var(--good)',Math.min(...vals)-2,Math.max(...vals)+2);
+  }
+
+  // Legend
+  if(legendEl){
+    const items=[];
+    if(bfArr.length>=2){ const last=parseFloat(bfArr[bfArr.length-1].qty); items.push(`<span style="font-family:var(--mono);font-size:9px;color:var(--brg2)">● KF ${Math.round(last*10)/10}%</span>`); }
+    if(wArr.length>=2){ const last=parseFloat(wArr[wArr.length-1].qty); items.push(`<span style="font-family:var(--mono);font-size:9px;color:var(--after)">● Gewicht ${Math.round(last*10)/10}kg</span>`); }
+    if(lArr.length>=2){ const last=parseFloat(lArr[lArr.length-1].qty); items.push(`<span style="font-family:var(--mono);font-size:9px;color:var(--good)">● Muskelmasse ${Math.round(last*10)/10}kg</span>`); }
+    legendEl.innerHTML=items.join('');
+  }
+}
+
+function renderAnalysen(){
+  renderAlcHrv();
+  renderSleepPerf();
+  renderBodyComp();
+}
+
 
 function renderPRs(){
   const el=document.getElementById('pr-card'); if(!el) return;
