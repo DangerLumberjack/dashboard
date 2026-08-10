@@ -3625,7 +3625,15 @@ async function importCombined(input){
         const existing=new Set(rawHealth[mname].map(e=>e.date));
         (metric.data||[]).forEach(entry=>{
           const date=(entry.date||entry.start||'').slice(0,10);
-          if(!date||existing.has(date)) return;
+          if(!date) return;
+          if(existing.has(date)){
+            // For water: always update (accumulates during day)
+            if(mname==='dietary_water'){
+              const idx=rawHealth[mname].findIndex(e=>e.date===date);
+              if(idx>=0) rawHealth[mname][idx]={...entry, date};
+            }
+            return;
+          }
           rawHealth[mname].push({...entry, date});
         });
         rawHealth[mname].sort((a,b)=>a.date<b.date?-1:1);
