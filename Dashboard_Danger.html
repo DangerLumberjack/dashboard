@@ -685,6 +685,17 @@ h1 strong{font-weight:500;color:var(--brg2)}
         <div class="day-list-val" id="hc-cr-val">–</div>
       </div>
     </div>
+    <div class="day-list-item">
+      <div class="day-list-dot" style="background:var(--after)" id="hc-water-dot"></div>
+      <div class="day-list-body">
+        <div class="day-list-name">Wasser heute</div>
+        <div class="day-list-sub">Ziel: 2.5L</div>
+      </div>
+      <div class="day-list-right">
+        <div class="day-list-val" id="hc-water-val">–</div>
+        <div style="height:3px;width:60px;background:var(--bg3);border-radius:2px;margin-top:3px;overflow:hidden"><div id="hc-water-bar" style="height:100%;width:0%;background:var(--after);border-radius:2px;transition:width .3s"></div></div>
+      </div>
+    </div>
   </div>
 
   <!-- Heutiges Training -->
@@ -824,6 +835,12 @@ h1 strong{font-weight:500;color:var(--brg2)}
     <div class="train-progress-track"><div class="train-progress-fill" id="t-prog-fill"></div></div>
     <span style="font-family:var(--mono);font-size:11px;color:var(--accent3)" id="t-prog-pct">0%</span>
     <span style="font-family:var(--mono);font-size:10px;color:var(--text3)" id="t-prog-count">0/0</span>
+  </div>
+  <!-- Trainingsvolumen-Trend -->
+  <div id="vol-trend-wrap" style="margin-bottom:8px;display:none">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Volumen letzte 8 Wochen</div>
+    <canvas id="vol-trend-canvas" style="width:100%;height:36px;display:block"></canvas>
+    <div id="vol-trend-labels" style="display:flex;justify-content:space-between;margin-top:2px"></div>
   </div>
   <div class="train-tabs">
     <div class="ttab on-p1" id="ttab-p1"    onclick="switchPhase('p1')">Phase 1 · 1–12</div>
@@ -1321,6 +1338,7 @@ function switchTab(t){
     document.getElementById('tab-'+id).classList.toggle('active',id===t);
   });
   if(t==='home') renderHome();
+  if(t==='training') renderVolumeTrend();
   if(t==='protein') pRenderAll();
   if(t==='health'){ aRenderAll(); renderProfSections(); renderProfile(); }
 }
@@ -2524,7 +2542,28 @@ function renderHome(){
   const sSub=document.getElementById('hc-streak-sub');
   if(sSub) sSub.textContent=stats.streak===0?'Heute neu starten':stats.streak<7?'Dran bleiben!':stats.streak<30?'Stark — weiter so!':'Ausgezeichnet!';
 
-  // Cardio Recovery — Tages-Liste
+  // Wasser
+  const today=todayStr();
+  const waterArr=rawHealth['dietary_water']||[];
+  const waterToday=waterArr.find(e=>e.date&&e.date.slice(0,10)===today);
+  const waterEl=document.getElementById('hc-water-val');
+  const waterBar=document.getElementById('hc-water-bar');
+  const waterDot=document.getElementById('hc-water-dot');
+  if(waterEl){
+    if(waterToday){
+      const ml=Math.round(parseFloat(waterToday.qty||0));
+      const l=Math.round(ml/100)/10;
+      const pct=Math.min(Math.round(ml/2500*100),100);
+      const col=ml>=2500?'var(--good)':ml>=1500?'var(--after)':'var(--bad)';
+      waterEl.textContent=l+'L';
+      waterEl.style.color=col;
+      if(waterBar){waterBar.style.width=pct+'%';waterBar.style.background=col;}
+      if(waterDot) waterDot.style.background=col;
+    } else {
+      waterEl.textContent='–';
+      waterEl.style.color='var(--text3)';
+    }
+  }
   const crArr=rawHealth['cardio_recovery']||[];
   const crE=crArr.length?crArr[crArr.length-1]:null;
   const crEl=document.getElementById('hc-cr-val');
@@ -4060,6 +4099,85 @@ function renderRecentWorkouts(){
     </div>`;
   });
   el.innerHTML=html;
+}
+
+function renderVolumeTrend(){
+  const canvas=document.getElementById('vol-trend-canvas');
+  const wrap=document.getElementById('vol-trend-wrap');
+  const labelsEl=document.getElementById('vol-trend-labels');
+  if(!canvas||!wrap) return;
+
+  // Calculate completed splits per week for last 8 weeks
+  const now=new Date();
+  const planStart=new Date(2026,5,1);
+  const currentWeek=Math.floor((now-planStart)/(7*24*3600*1000))+1;
+  const startW=Math.max(1,currentWeek-7);
+
+  const weekData=[];
+  for(let w=startW;w<=currentWeek;w++){
+    if(SPECIAL_WEEKS[w]){weekData.push({w,count:0,label:'W'+w,special:true});continue;}
+    const wKeys=[...tAllKeys].filter(k=>k.startsWith('w'+w+'_'));
+    const done=wKeys.filter(k=>!!tProgress[k]).length;
+    weekData.push({w,count:done,total:wKeys.length,label:'W'+w,special:false});
+  }
+
+  const nonSpecial=weekData.filter(d=>!d.special);
+  if(nonSpecial.length<2){wrap.style.display='none';return;}
+  wrap.style.display='block';
+
+  const counts=nonSpecial.map(d=>d.count);
+  const max=Math.max(...counts)||1;
+  const dpr=window.devicePixelRatio||1;
+  const w=canvas.offsetWidth||300;
+  const h=36;
+  canvas.width=w*dpr; canvas.height=h*dpr;
+  canvas.style.width=w+'px'; canvas.style.height=h+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  const pad=4;
+  const pts=counts.map((c,i)=>({
+    x:pad+(i/(counts.length-1||1))*(w-pad*2),
+    y:h-pad-(c/max)*(h-pad*2)
+  }));
+
+  // Fill
+  const grad=ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,'rgba(61,90,128,0.15)');
+  grad.addColorStop(1,'rgba(61,90,128,0.0)');
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x,h);
+  pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.lineTo(pts[pts.length-1].x,h);
+  ctx.closePath();
+  ctx.fillStyle=grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  pts.forEach((p,i)=>{
+    if(i===0) ctx.moveTo(p.x,p.y);
+    else {
+      const cp1x=(pts[i-1].x+p.x)/2;
+      ctx.bezierCurveTo(cp1x,pts[i-1].y,cp1x,p.y,p.x,p.y);
+    }
+  });
+  ctx.strokeStyle='var(--brg2)';
+  ctx.lineWidth=2;
+  ctx.lineJoin='round';
+  ctx.stroke();
+
+  // Last dot
+  const last=pts[pts.length-1];
+  ctx.beginPath();
+  ctx.arc(last.x,last.y,3.5,0,Math.PI*2);
+  ctx.fillStyle='var(--brg2)';
+  ctx.fill();
+
+  // Labels
+  if(labelsEl){
+    labelsEl.innerHTML=nonSpecial.map(d=>`<span style="font-family:var(--mono);font-size:8px;color:var(--text3)">${d.label}</span>`).join('');
+  }
 }
 
 function renderPRs(){
