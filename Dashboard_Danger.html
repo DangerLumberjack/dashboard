@@ -331,57 +331,6 @@ h1 strong{font-weight:500;color:var(--brg2)}
 .stat-val{font-family:var(--serif);font-size:18px;font-weight:400;color:var(--text)}
 .stat-lbl{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em}
 
-/* Alkohol today */
-.today-card{background:var(--bg2);border:1.5px solid var(--border2);border-radius:12px;padding:1rem;margin-bottom:10px}
-.today-date{font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:6px}
-.today-status{font-size:14px;font-weight:500;margin-bottom:10px}
-.after-notice{background:var(--afterbg);border:1px solid var(--afterb);border-radius:8px;padding:.6rem .85rem;font-size:12px;color:var(--after);margin-bottom:10px}
-.btn-free{width:100%;padding:10px;border-radius:8px;border:1.5px solid var(--brgb);background:var(--brgbg);color:var(--brg2);font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;margin-bottom:8px}
-.btn-free:hover,.btn-free.active{background:var(--brg2);color:#fff;border-color:var(--brg2)}
-
-/* Drinks */
-.drink-section{border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:8px}
-.drink-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem .85rem;background:var(--bg3);cursor:pointer;user-select:none}
-.drink-header-title{font-size:13px;font-weight:500;color:var(--text)}
-.drink-header-sd{font-family:var(--mono);font-size:11px;color:var(--text3)}
-.drink-body{padding:.75rem .85rem;display:none}
-.drink-body.open{display:block}
-.drink-item{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border)}
-.drink-item:last-child{border-bottom:none}
-.drink-name{font-size:12px;color:var(--text2)}
-.drink-sd{font-family:var(--mono);font-size:10px;color:var(--text3);min-width:40px;text-align:right}
-.drink-counter{display:flex;align-items:center;gap:8px}
-.dcbtn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border2);background:var(--bg);color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:all .15s}
-.dcbtn:hover{background:var(--bg3)}
-.dcnum{font-family:var(--mono);font-size:13px;font-weight:500;min-width:18px;text-align:center;color:var(--text)}
-.sd-summary{background:var(--bg3);border-radius:8px;padding:.65rem .85rem;margin-top:8px;display:flex;align-items:center;justify-content:space-between}
-.sd-total{font-family:var(--mono);font-size:13px;font-weight:500}
-.sd-impact{font-size:11px;padding:2px 9px;border-radius:6px;font-weight:500}
-.imp-green{background:var(--brgbg);color:var(--brg2)}
-.imp-yellow{background:var(--yellowbg);color:var(--yellow)}
-.imp-orange{background:var(--orangebg);color:var(--orange)}
-.imp-red{background:var(--redbg);color:var(--red)}
-.btn-log{width:100%;padding:9px;border-radius:8px;border:none;font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer;margin-top:8px;transition:all .15s}
-.btn-log-green{background:var(--brg2);color:#fff}
-.btn-log-yellow{background:var(--yellow);color:#fff}
-.btn-log-orange{background:var(--orange);color:#fff}
-.btn-log-red{background:var(--red);color:#fff}
-
-/* Milestones */
-.milestone{display:flex;align-items:flex-start;gap:10px;padding:.65rem .85rem;border-radius:8px;border:1px solid var(--border2);background:var(--bg2);margin-bottom:6px}
-.milestone.reached{border-color:var(--brgb);background:var(--brgbg)}
-.milestone.next{border-color:var(--afterb);background:var(--afterbg)}
-.ms-icon{font-size:20px;flex-shrink:0;width:28px;text-align:center}
-.ms-body{flex:1}
-.ms-time{font-family:var(--mono);font-size:10px;font-weight:500;margin-bottom:1px}
-.milestone.reached .ms-time{color:var(--brg2)}
-.milestone.next .ms-time{color:var(--after)}
-.milestone:not(.reached):not(.next) .ms-time{color:var(--text3)}
-.ms-title{font-size:13px;font-weight:500;color:var(--text)}
-.ms-desc{font-size:11px;color:var(--text2);margin-top:1px}
-.ms-check{font-size:14px;color:var(--done);flex-shrink:0;opacity:0}
-.milestone.reached .ms-check{opacity:1}
-
 /* Kalender */
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
 .cal-day-label{font-family:var(--mono);font-size:9px;color:var(--text3);text-align:center;padding:2px 0}
@@ -665,26 +614,6 @@ h1 strong{font-weight:500;color:var(--brg2)}
         <div style="height:3px;width:60px;background:var(--bg3);border-radius:2px;margin-top:3px;overflow:hidden"><div id="hc-protein-bar" style="height:100%;width:0%;background:var(--brg2);border-radius:2px;transition:width .3s"></div></div>
       </div>
     </div>
-    <div class="day-list-item" onclick="switchTab('health')" style="cursor:pointer">
-      <div class="day-list-dot" style="background:var(--brg2)" id="hc-streak-dot"></div>
-      <div class="day-list-body">
-        <div class="day-list-name">Alkoholfrei</div>
-        <div class="day-list-sub" id="hc-streak-sub">Streak</div>
-      </div>
-      <div class="day-list-right">
-        <div class="day-list-val" id="hc-streak-val">0 Tage</div>
-      </div>
-    </div>
-    <div class="day-list-item" onclick="switchTab('health')" style="cursor:pointer">
-      <div class="day-list-dot" style="background:var(--text4)" id="hc-cr-dot"></div>
-      <div class="day-list-body">
-        <div class="day-list-name">Cardio Recovery</div>
-        <div class="day-list-sub" id="hc-cr-sub">nach Training</div>
-      </div>
-      <div class="day-list-right">
-        <div class="day-list-val" id="hc-cr-val">–</div>
-      </div>
-    </div>
     <div class="day-list-item">
       <div class="day-list-dot" style="background:var(--after)" id="hc-water-dot"></div>
       <div class="day-list-body">
@@ -807,7 +736,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
   <!-- Tagesauswertung -->
   <div class="section-title">Tagesauswertung</div>
   <div class="card">
-    <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Vollständige Einschätzung — Vitalwerte, Schlaf, Alkohol, Training, Körperprofil und Laborwerte.</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Vollständige Einschätzung — Vitalwerte, Schlaf, Training, Körperprofil und Laborwerte.</div>
     <button class="hrv-save" style="width:100%" onclick="runEvaluation()">📊 Jetzt auswerten</button>
     <div id="eval-result" style="margin-top:10px"></div>
   </div>
@@ -930,67 +859,6 @@ h1 strong{font-weight:500;color:var(--brg2)}
 <!-- ══════════════════════════════════════════════ GESUNDHEIT ══ -->
 <div class="panel" id="panel-health">
 <div class="panel-inner">
-  <div class="streak-hero" id="a-hero">
-    <div class="streak-num green" id="a-streak-num">0</div>
-    <div class="streak-label">Tage in Folge alkoholfrei</div>
-    <div class="streak-sub" id="a-streak-sub">Heute starten</div>
-    <div class="stats-row">
-      <div class="stat"><div class="stat-val" id="a-stat-free">0</div><div class="stat-lbl">Tage frei</div></div>
-      <div class="stat"><div class="stat-val" id="a-stat-pct">–</div><div class="stat-lbl">% frei</div></div>
-      <div class="stat"><div class="stat-val" id="a-stat-best">0</div><div class="stat-lbl">Bester Streak</div></div>
-    </div>
-  </div>
-
-  <div class="today-card">
-    <div class="today-date" id="a-today-date"></div>
-    <div id="a-after-notice" style="display:none" class="after-notice">⚠️ Gestern 3+ Drinks — dein Körper erholt sich noch. Kein Training auf Maximum heute.</div>
-    <div class="today-status" id="a-today-status">Noch nicht eingetragen</div>
-    <button class="btn-free" id="a-btn-free" onclick="aSetFree()">✓ Heute alkoholfrei</button>
-    <div id="a-drink-groups"></div>
-    <div class="sd-summary" id="a-sd-summary" style="display:none">
-      <span class="sd-total" id="a-sd-total">0 Standarddrinks</span>
-      <span class="sd-impact" id="a-sd-impact"></span>
-    </div>
-    <button class="btn-log btn-log-orange" id="a-btn-log" style="display:none" onclick="aLogDrinks()">Eintragen</button>
-  </div>
-
-  <div class="section-title">Körperliche Meilensteine</div>
-  <div id="a-milestones-list"></div>
-
-  <div class="section-title">Kalender</div>
-  <div class="cal-legend">
-    <span><div class="ldot" style="background:var(--goodbg);border:1px solid var(--goodb)"></div>Alkoholfrei</span>
-    <span><div class="ldot" style="background:var(--yellowbg);border:1px solid var(--yellowb)"></div>1 Drink</span>
-    <span><div class="ldot" style="background:var(--orangebg);border:1px solid var(--orangeb)"></div>2–3 Drinks</span>
-    <span><div class="ldot" style="background:var(--redbg);border:1px solid var(--redb)"></div>4+ Drinks</span>
-  </div>
-  <div id="a-calendar"></div>
-
-  <!-- ── ANALYSEN ─────────────────────────────────────── -->
-  <div class="section-title">Analysen</div>
-
-  <!-- Alkohol-HRV Korrelation -->
-  <div class="card" style="margin-bottom:10px;padding:12px 14px">
-    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Alkohol · HRV Korrelation</div>
-    <div id="alc-hrv-stats" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"></div>
-    <canvas id="alc-hrv-canvas" style="width:100%;height:48px;display:block"></canvas>
-    <div style="font-size:10px;color:var(--text3);margin-top:6px;line-height:1.5" id="alc-hrv-text"></div>
-  </div>
-
-  <!-- Schlaf-Performance Korrelation -->
-  <div class="card" style="margin-bottom:10px;padding:12px 14px">
-    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Schlaf · Trainingsleistung</div>
-    <div id="sleep-perf-stats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px"></div>
-    <div style="font-size:10px;color:var(--text3);margin-top:4px;line-height:1.5" id="sleep-perf-text"></div>
-  </div>
-
-  <!-- Körperkomposition Verlauf -->
-  <div class="card" style="margin-bottom:10px;padding:12px 14px">
-    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Körperkomposition — Verlauf</div>
-    <canvas id="body-comp-canvas" style="width:100%;height:80px;display:block"></canvas>
-    <div id="body-comp-legend" style="display:flex;gap:12px;margin-top:6px;flex-wrap:wrap"></div>
-  </div>
-
   <!-- Körperprofil -->
   <div class="section-title">Körperprofil — Status Quo</div>
   <div class="card" style="padding:0;overflow:hidden;margin-bottom:4px">
@@ -1143,7 +1011,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
   </div>
 </div>
 <div class="modal-overlay" id="modal-reset-health">
-  <div class="modal"><div class="modal-title">Gesundheitsdaten zurücksetzen?</div><div class="modal-desc">Alkohol-Einträge und Vitalwerte werden gelöscht.</div>
+  <div class="modal"><div class="modal-title">Gesundheitsdaten zurücksetzen?</div><div class="modal-desc">Vitalwerte werden gelöscht.</div>
     <div class="modal-btns"><button class="modal-cancel" onclick="hideModal('modal-reset-health')">Abbrechen</button><button class="modal-confirm" onclick="confirmResetHealth()">Ja</button></div>
   </div>
 </div>
@@ -1324,7 +1192,7 @@ async function syncDown(){
     changed=true;
   }
 
-  if(changed){tPreRegisterAllKeys();tBuildSidebar(tPhase);tSelWeek(tWeek);renderHome();aRenderAll();pRenderAll();renderProfSections();renderProfile();renderSparkCards();}
+  if(changed){tPreRegisterAllKeys();tBuildSidebar(tPhase);tSelWeek(tWeek);renderHome();pRenderAll();renderProfSections();renderProfile();renderSparkCards();}
   sbStatus(changed?'✓ Aktuell':'✓ Keine neuen Daten',true);
 }
 
@@ -1365,7 +1233,7 @@ function switchTab(t){
   if(t==='home') renderHome();
   if(t==='training') renderVolumeTrend();
   if(t==='protein') pRenderAll();
-  if(t==='health'){ aRenderAll(); renderProfSections(); renderProfile(); renderAnalysen(); }
+  if(t==='health'){ renderProfSections(); renderProfile(); renderAnalysen(); }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1533,131 +1401,13 @@ function aImpCls(s){ return{free:'imp-green',yellow:'imp-yellow',orange:'imp-ora
 function aGetStatus(ds){ const e=aData.days[ds]; if(!e)return null; return e.status; }
 function aStreakOk(s){ return s==='free'||s==='yellow'; }
 
-function aCalcStats(){
-  const today=todayStr(); const allDates=Object.keys(aData.days).sort();
-  let streak=0; const d=new Date(); const todayS=dateStr(d); const todaySt=aGetStatus(todayS);
-  if(todaySt===null){ d.setDate(d.getDate()-1); }
-  else if(aStreakOk(todaySt)){ streak++; d.setDate(d.getDate()-1); }
-  else { d.setDate(d.getDate()-1); }
-  if(todaySt===null||aStreakOk(todaySt)){
-    while(true){ const s=dateStr(d); const st=aGetStatus(s); if(st===null)break; if(aStreakOk(st)){streak++;d.setDate(d.getDate()-1);}else break; }
-  }
-  const freeDays=allDates.filter(ds=>aGetStatus(ds)==='free').length;
-  const totalLogged=allDates.filter(ds=>aGetStatus(ds)!=='after').length;
-  const pct=totalLogged>0?Math.round(freeDays/totalLogged*100):null;
-  let best=0,cur=0;
-  const sorted=allDates.filter(ds=>aGetStatus(ds)!=='after').sort();
-  for(let i=0;i<sorted.length;i++){
-    if(aStreakOk(aGetStatus(sorted[i]))){cur++;if(cur>best)best=cur;}else cur=0;
-  }
-  const todayStC=aGetStatus(today);
-  let color='green';
-  if(todayStC==='yellow')color='yellow';
-  else if(todayStC==='orange'||todayStC==='after')color='orange';
-  else if(todayStC==='red')color='red';
-  else if(todayStC===null&&streak===0&&totalLogged>0)color='red';
-  return{streak,freeDays,totalLogged,best,pct,color};
-}
 
-function aSetFree(){ try{
-  const t=todayStr();
-  if(aData.days[t]&&aData.days[t].status==='free'){ delete aData.days[t]; }
-  else { aData.days[t]={status:'free',sd:0,drinks:[]}; }
-  GROUPS.forEach(g=>g.items.forEach(i=>aSes[i.id]=0));
-  aSave(); aRenderAll();
-}catch(e){console.error(e);}}
 
-function aUpdateDrinkUI(){
-  const sd=aTotalSD(); const status=aStatus(sd);
-  const sumEl=document.getElementById('a-sd-summary');
-  const logEl=document.getElementById('a-btn-log');
-  if(sd===0){sumEl.style.display='none';logEl.style.display='none';return;}
-  sumEl.style.display='flex'; logEl.style.display='block';
-  document.getElementById('a-sd-total').textContent=sd+' Standarddrink'+(sd===1?'':'s');
-  const imp=document.getElementById('a-sd-impact');
-  imp.textContent=aLabel(status); imp.className='sd-impact '+aImpCls(status);
-  logEl.className='btn-log btn-log-'+aColor(status);
-  logEl.textContent='Als '+aLabel(status).split('—')[0].trim()+' eintragen';
-}
 
-function aChangeCount(itemId,delta){
-  aSes[itemId]=Math.max(0,(aSes[itemId]||0)+delta);
-  document.getElementById('a-dcnum-'+itemId).textContent=aSes[itemId];
-  document.getElementById('a-btn-free').classList.remove('active');
-  aUpdateDrinkUI();
-}
 
-function aLogDrinks(){ try{
-  const t=todayStr(); const sd=aTotalSD(); const status=aStatus(sd);
-  const newDrinks=[]; GROUPS.forEach(g=>g.items.forEach(i=>{if(aSes[i.id]>0)newDrinks.push({id:i.id,name:i.name,count:aSes[i.id],sd:i.sd});}));
-  // Merge with existing drinks for today — add to existing counts
-  const existing=aData.days[t]&&aData.days[t].drinks?aData.days[t].drinks:[];
-  const merged=[...existing];
-  newDrinks.forEach(nd=>{
-    const ex=merged.find(e=>e.id===nd.id);
-    if(ex){ ex.count+=nd.count; ex.sd=nd.sd; }
-    else merged.push({...nd});
-  });
-  // Recalculate total SD from merged drinks
-  const totalSd=Math.round(merged.reduce((s,d)=>s+d.count*d.sd,0)*10)/10;
-  const totalStatus=aStatus(totalSd);
-  aData.days[t]={status:totalStatus,sd:totalSd,drinks:merged};
-  if(totalSd>=3){ const nd=nextDay(t); if(!aData.days[nd]||aData.days[nd].status==='after') aData.days[nd]={status:'after',sd:0,drinks:[],afterFrom:t}; }
-  GROUPS.forEach(g=>g.items.forEach(i=>aSes[i.id]=0));
-  aSave(); aRenderAll();
-}catch(e){console.error(e);}}
 
-function aRenderToday(){
-  const t=todayStr(); const d=new Date();
-  const days=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
-  document.getElementById('a-today-date').textContent=days[d.getDay()]+', '+fmtDisp(t);
-  const entry=aData.days[t]; const status=entry?entry.status:null;
-  document.getElementById('a-btn-free').classList.toggle('active',status==='free');
-  const prev=prevDay(t); const prevEntry=aData.days[prev];
-  document.getElementById('a-after-notice').style.display=(prevEntry&&prevEntry.sd>=3)?'block':'none';
-  const st=document.getElementById('a-today-status');
-  if(!status){st.textContent='Noch nicht eingetragen';st.style.color='var(--text2)';}
-  else if(status==='free'){st.textContent='✓ Alkoholfrei heute';st.style.color='var(--good)';}
-  else if(status==='yellow'){st.textContent='🟡 '+entry.sd+' SD — leichte Wirkung, Streak läuft';st.style.color='var(--yellow)';}
-  else if(status==='orange'){st.textContent='🟠 '+entry.sd+' SD — Streak pausiert';st.style.color='var(--orange)';}
-  else if(status==='red'){st.textContent='🔴 '+entry.sd+' SD — Streak unterbrochen';st.style.color='var(--red)';}
-  else if(status==='after'){st.textContent='💤 Nachwirkung vom Vortag';st.style.color='var(--after)';}
-}
 
-function aRenderStreak(){
-  const s=aCalcStats();
-  const numEl=document.getElementById('a-streak-num');
-  const hero=document.getElementById('a-hero');
-  numEl.textContent=s.streak; numEl.className='streak-num '+s.color;
-  hero.className='streak-hero';
-  if(s.color==='green')hero.classList.add('green');
-  else if(s.color==='yellow')hero.classList.add('yellow');
-  else if(s.color==='orange')hero.classList.add('orange');
-  else if(s.color==='red')hero.classList.add('red-state');
-  document.getElementById('a-stat-free').textContent=s.freeDays;
-  document.getElementById('a-stat-pct').textContent=s.pct!==null?s.pct+'%':'–';
-  document.getElementById('a-stat-best').textContent=s.best;
-  const sub=document.getElementById('a-streak-sub');
-  if(s.streak===0&&s.freeDays===0)sub.textContent='Heute starten';
-  else if(s.streak===0)sub.textContent='Heute neu beginnen';
-  else if(s.streak<7)sub.textContent='Dran bleiben — dein Körper erholt sich';
-  else if(s.streak<14)sub.textContent='Eine Woche! HRV und Schlaf verbessern sich';
-  else if(s.streak<30)sub.textContent='Zwei Wochen — Leberwerte normalisieren sich';
-  else sub.textContent='Ein Monat — ausgezeichnet!';
-}
 
-function aRenderDrinkGroups(){
-  const el=document.getElementById('a-drink-groups');
-  let html='<div class="section-title" style="margin-top:10px">Getränke eintragen</div>';
-  GROUPS.forEach(g=>{
-    const gSD=g.items.reduce((s,i)=>s+aSes[i.id]*i.sd,0);
-    html+=`<div class="drink-section"><div class="drink-header" onclick="aToggleGroup('${g.id}')"><span class="drink-header-title">${g.label}</span><span class="drink-header-sd" id="a-gsd-${g.id}">${gSD>0?gSD+' SD':''}</span></div><div class="drink-body" id="a-gbody-${g.id}">`;
-    g.items.forEach(i=>{html+=`<div class="drink-item"><div><div class="drink-name">${i.name}</div><div class="drink-sd">${i.sd} SD · ${i.detail}</div></div><div class="drink-counter"><button class="dcbtn" onclick="aChangeCount('${i.id}',-1)">−</button><span class="dcnum" id="a-dcnum-${i.id}">${aSes[i.id]||0}</span><button class="dcbtn" onclick="aChangeCount('${i.id}',1)">+</button></div></div>`;});
-    html+='</div></div>';
-  });
-  el.innerHTML=html;
-}
-function aToggleGroup(id){document.getElementById('a-gbody-'+id).classList.toggle('open');}
 
 const MILESTONES=[
   {days:1,icon:'💧',title:'Tag 1',desc:'Leber startet Abbau. Blutzucker stabilisiert sich.'},
@@ -1675,16 +1425,6 @@ const MILESTONES=[
   {days:365,icon:'🥇',title:'1 Jahr',desc:'Herzkreislauf-Risiko halbiert.'},
 ];
 
-function aRenderMilestones(){
-  const s=aCalcStats(); const el=document.getElementById('a-milestones-list');
-  let html='',nextFound=false;
-  for(const m of MILESTONES){
-    const reached=s.streak>=m.days; const isNext=!reached&&!nextFound;
-    if(isNext)nextFound=true;
-    html+=`<div class="milestone${reached?' reached':isNext?' next':''}"><div class="ms-icon">${m.icon}</div><div class="ms-body"><div class="ms-time">${m.title}</div><div class="ms-desc">${m.desc}</div></div><div class="ms-check">✓</div></div>`;
-  }
-  el.innerHTML=html;
-}
 
 function aCalClass(ds,today){
   if(ds>today)return'future';
@@ -1695,35 +1435,8 @@ function aCalClass(ds,today){
   if(st==='after')return'after-day'; return'unset';
 }
 
-function aRenderCalendar(){
-  const el=document.getElementById('a-calendar');
-  const today=todayStr(); const now=new Date();
-  const start=new Date(2026,5,1);
-  let months=[]; let cur=new Date(start.getFullYear(),start.getMonth(),1);
-  while(cur<=now){months.push(new Date(cur));cur.setMonth(cur.getMonth()+1);}
-  let html='';
-  for(const d of months){
-    html+=`<div class="cal-month-label">${d.toLocaleDateString('de-DE',{month:'long',year:'numeric'})}</div>`;
-    html+='<div class="cal-grid">';
-    ['Mo','Di','Mi','Do','Fr','Sa','So'].forEach(l=>{html+=`<div class="cal-day-label">${l}</div>`;});
-    const first=new Date(d.getFullYear(),d.getMonth(),1);
-    let dow=(first.getDay()+6)%7;
-    for(let i=0;i<dow;i++)html+='<div class="cal-day empty"></div>';
-    const dim=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
-    for(let day=1;day<=dim;day++){
-      const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-      const cls=aCalClass(ds,today); const tm=ds===today?'today-m':'';
-      const click=ds<=today?`onclick="aCalTap('${ds}')"` :'';
-      const e=aData.days[ds]; const label=e&&e.sd>0?e.sd:day;
-      html+=`<div class="cal-day ${cls} ${tm}" ${click}>${label}</div>`;
-    }
-    html+='</div>';
-  }
-  el.innerHTML=html;
-}
 
 let _editDay=null;
-function aCalTap(ds){ if(ds===todayStr())return; _editDay=ds; openDayModal(ds); }
 function openDayModal(ds){
   const e=aData.days[ds];
   const d=new Date(ds+'T12:00:00');
@@ -1761,14 +1474,14 @@ function dmSave(){
     if(sd>=3&&(!aData.days[nd]||aData.days[nd].status==='after')) aData.days[nd]={status:'after',sd:0,drinks:[],afterFrom:_editDay};
   }
   GROUPS.forEach(g=>g.items.forEach(i=>aSes[i.id]=0));
-  aSave(); closeDayModal(); aRenderAll();
+  aSave(); closeDayModal();
 }
 function dmDelete(){
   if(!_editDay)return;
   delete aData.days[_editDay];
   const nd=nextDay(_editDay);
   if(aData.days[nd]&&aData.days[nd].afterFrom===_editDay)delete aData.days[nd];
-  aSave(); closeDayModal(); aRenderAll();
+  aSave(); closeDayModal();
 }
 function closeDayModal(){ hideModal('modal-day'); _editDay=null; }
 
@@ -1789,7 +1502,6 @@ function syncProfileFromVitals(){
   if(changed){ profileSave(); }
 }
 
-function aRenderAll(){ aRenderToday(); aRenderStreak(); aRenderDrinkGroups(); aUpdateDrinkUI(); aRenderMilestones(); aRenderCalendar(); }
 
 // ── AUSWERTUNG (Pace-Style Einschätzung, kostenlos) ──────────────────────
 function evalTrend(vals){
@@ -2148,7 +1860,7 @@ function showResetHealth(){ showModal('modal-reset-health'); }
 function confirmResetHealth(){
   aData={days:{},hrv:[]}; GROUPS.forEach(g=>g.items.forEach(i=>aSes[i.id]=0));
   try{localStorage.removeItem(KEY_HEALTH);}catch(e){}
-  hideModal('modal-reset-health'); aRenderAll();
+  hideModal('modal-reset-health');
 }
 function exportHealth(){ dlJSON(aData,'gesundheit_tracker.json'); }
 
@@ -3711,7 +3423,7 @@ async function importCombined(input){
       });
       aData.hrv.sort((a,b)=>a.date<b.date?1:-1);
       aSave(); syncProfileFromVitals();
-      renderHome(); aRenderAll(); renderProfSections();
+      renderHome(); renderProfSections();
       if(location.protocol==="https:"){ await syncUp(); await syncRawUp(); }
       if(location.protocol==="https:") _syncInterval=setInterval(async()=>{ await syncDown(); renderSparkCards(); renderBioAge(); renderActivityPath(); }, 30000);
       alert(`✅ Workouts: ${wAdded} neu · ${wDupes} Duplikate\nGesundheit: ${hAdded} neue Tage · ${hMerged} ergänzt\nGesamt: ${workoutData.length} Workouts · ${aData.hrv.length} Gesundheitstage`);
@@ -3767,7 +3479,7 @@ function importHealthData(input){
         else { aData.hrv.push({date,...vals,freeDays,drinkDays}); added++; }
       });
       aData.hrv.sort((a,b)=>a.date<b.date?1:-1);
-      aSave(); syncProfileFromVitals(); renderHome(); aRenderAll();
+      aSave(); syncProfileFromVitals(); renderHome();
       alert(`✅ ${added} neue Tage · ${mergedCount} ergänzt · ${aData.hrv.length} gesamt`);
     }catch(err){ alert('Fehler: '+err.message); }
     input.value='';
@@ -4213,85 +3925,6 @@ function renderVolumeTrend(){
   }
 }
 
-// ── ALKOHOL-HRV KORRELATION ───────────────────────────────────
-function renderAlcHrv(){
-  const statsEl=document.getElementById('alc-hrv-stats');
-  const textEl=document.getElementById('alc-hrv-text');
-  const canvas=document.getElementById('alc-hrv-canvas');
-  if(!statsEl) return;
-
-  const hrvArr=rawHealth['heart_rate_variability']||[];
-  if(hrvArr.length<5){ if(statsEl) statsEl.innerHTML='<div style="font-size:11px;color:var(--text3);font-style:italic;grid-column:1/-1">Noch zu wenig HRV-Daten.</div>'; return; }
-
-  // Match HRV to previous night's alcohol status
-  let alcDays=[], freeDays=[];
-  hrvArr.forEach(e=>{
-    const d=new Date(e.date+'T12:00:00');
-    d.setDate(d.getDate()-1);
-    const prevDate=dateStr(d);
-    const alcEntry=aData.days[prevDate];
-    const hrv=parseFloat(e.qty);
-    if(!hrv) return;
-    if(alcEntry&&alcEntry.status==='green') freeDays.push(hrv);
-    else if(alcEntry&&(alcEntry.status==='yellow'||alcEntry.status==='orange'||alcEntry.status==='red')) alcDays.push(hrv);
-  });
-
-  const avg=arr=>arr.length?Math.round(arr.reduce((a,b)=>a+b,0)/arr.length):null;
-  const freeAvg=avg(freeDays), alcAvg=avg(alcDays);
-  const diff=freeAvg&&alcAvg?freeAvg-alcAvg:null;
-
-  statsEl.innerHTML=`
-    <div style="background:var(--goodbg);border:1px solid var(--goodb);border-radius:8px;padding:8px 10px;text-align:center">
-      <div style="font-family:var(--mono);font-size:8px;color:var(--good);margin-bottom:3px">ALKOHOLFREI</div>
-      <div style="font-family:var(--serif);font-size:22px;color:var(--good)">${freeAvg||'–'}</div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">Ø ms · ${freeDays.length} Nächte</div>
-    </div>
-    <div style="background:var(--redbg);border:1px solid var(--redb);border-radius:8px;padding:8px 10px;text-align:center">
-      <div style="font-family:var(--mono);font-size:8px;color:var(--red);margin-bottom:3px">NACH ALKOHOL</div>
-      <div style="font-family:var(--serif);font-size:22px;color:var(--red)">${alcAvg||'–'}</div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">Ø ms · ${alcDays.length} Nächte</div>
-    </div>`;
-
-  if(textEl&&diff!==null){
-    textEl.textContent=diff>0
-      ?`Nach alkoholfreien Tagen ist deine HRV im Schnitt ${diff}ms höher — dein Körper erholt sich messbar besser ohne Alkohol.`
-      :`Noch kein klarer Unterschied sichtbar — mehr Daten sammeln.`;
-  }
-
-  // Scatter-like bar chart
-  if(canvas&&freeAvg&&alcAvg){
-    const dpr=window.devicePixelRatio||1;
-    const w=canvas.offsetWidth||300;
-    const h=48;
-    canvas.width=w*dpr; canvas.height=h*dpr;
-    canvas.style.width=w+'px'; canvas.style.height=h+'px';
-    const ctx=canvas.getContext('2d');
-    ctx.scale(dpr,dpr);
-    const all=[...freeDays,...alcDays];
-    const min=Math.min(...all)-10, max=Math.max(...all)+10, range=max-min||1;
-    const toX=v=>Math.round((v-min)/range*(w-40)+20);
-    // Free days dots
-    freeDays.forEach(v=>{
-      ctx.beginPath(); ctx.arc(toX(v),h*0.35,3,0,Math.PI*2);
-      ctx.fillStyle='rgba(58,104,72,0.5)'; ctx.fill();
-    });
-    // Alc days dots
-    alcDays.forEach(v=>{
-      ctx.beginPath(); ctx.arc(toX(v),h*0.65,3,0,Math.PI*2);
-      ctx.fillStyle='rgba(138,40,40,0.5)'; ctx.fill();
-    });
-    // Averages
-    [freeAvg,alcAvg].forEach((avg,i)=>{
-      const x=toX(avg), y=i===0?h*0.35:h*0.65;
-      ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2);
-      ctx.fillStyle=i===0?'var(--good)':'var(--red)'; ctx.fill();
-      ctx.fillStyle=i===0?'var(--good)':'var(--red)';
-      ctx.font=`${9*dpr}px DM Mono,monospace`; ctx.textAlign='center';
-      ctx.fillText(avg+'ms',x,i===0?y-8:y+14);
-    });
-  }
-}
-
 // ── SCHLAF-PERFORMANCE KORRELATION ────────────────────────────
 function renderSleepPerf(){
   const statsEl=document.getElementById('sleep-perf-stats');
@@ -4399,7 +4032,6 @@ function renderBodyComp(){
 }
 
 function renderAnalysen(){
-  renderAlcHrv();
   renderSleepPerf();
   renderBodyComp();
 }
@@ -4541,7 +4173,7 @@ function importAll(input){
       }
       if(parsed.workouts){ workoutData=parsed.workouts; wSave(); }
       tPreRegisterAllKeys(); tBuildSidebar(tPhase); tSelWeek(tWeek);
-      renderHome(); aRenderAll(); pRenderAll();
+      renderHome(); pRenderAll();
       alert('Geladen!');
     }catch(err){ alert('Fehler: '+err.message); }
     input.value='';
@@ -4559,7 +4191,6 @@ window.addEventListener('load',async function(){
   tPreRegisterAllKeys();
   switchPhase('p1');
   renderHome();
-  aRenderAll();
   pRenderAll();
   renderProfSections();
   if(location.protocol==="https:"){ await syncUp(); if(Object.keys(rawHealth).length>0) await syncRawUp(); await syncDown(); }
