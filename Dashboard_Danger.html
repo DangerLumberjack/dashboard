@@ -3977,66 +3977,51 @@ function renderSleepPerf(){
 function renderBodyComp(){
   const canvas=document.getElementById('body-comp-canvas');
   const legendEl=document.getElementById('body-comp-legend');
-  if(!canvas) return;
+  if(!legendEl) return;
+  if(canvas) canvas.style.display='none';
 
   const bfArr=(rawHealth['body_fat_percentage']||[]).filter(e=>parseFloat(e.qty));
   const wArr=(rawHealth['weight_body_mass']||[]).filter(e=>parseFloat(e.qty));
   const lArr=(rawHealth['lean_body_mass']||[]).filter(e=>parseFloat(e.qty));
 
-  if(bfArr.length<2&&wArr.length<2){ canvas.style.display='none'; return; }
-  canvas.style.display='block';
+  if(!bfArr.length&&!wArr.length){ legendEl.innerHTML='<div style="font-size:11px;color:var(--text3);font-style:italic">Noch keine Körperdaten importiert.</div>'; return; }
 
-  const dpr=window.devicePixelRatio||1;
-  const w=canvas.offsetWidth||300;
-  const h=80;
-  canvas.width=w*dpr; canvas.height=h*dpr;
-  canvas.style.width=w+'px'; canvas.style.height=h+'px';
-  const ctx=canvas.getContext('2d');
-  ctx.scale(dpr,dpr);
-
-  const pad=8;
-  const drawLine=(arr,valKey,col,yMin,yMax)=>{
-    if(arr.length<2) return;
-    const range=yMax-yMin||1;
-    const pts=arr.map((e,i)=>({
-      x:pad+(i/(arr.length-1))*(w-pad*2),
-      y:h-pad-((parseFloat(e.qty)-yMin)/range)*(h-pad*2)
-    }));
-    ctx.beginPath();
-    pts.forEach((p,i)=>{
-      if(i===0) ctx.moveTo(p.x,p.y);
-      else { const cp=(pts[i-1].x+p.x)/2; ctx.bezierCurveTo(cp,pts[i-1].y,cp,p.y,p.x,p.y); }
-    });
-    ctx.strokeStyle=col; ctx.lineWidth=2; ctx.lineJoin='round'; ctx.stroke();
-    // Last dot
-    const l=pts[pts.length-1];
-    ctx.beginPath(); ctx.arc(l.x,l.y,3,0,Math.PI*2); ctx.fillStyle=col; ctx.fill();
+  const trend=(arr,n=4)=>{
+    const last=arr.slice(-n);
+    if(last.length<2) return '';
+    const diff=parseFloat(last[last.length-1].qty)-parseFloat(last[0].qty);
+    const pct=Math.round(Math.abs(diff)/parseFloat(last[0].qty)*100*10)/10;
+    return diff>0?`↑ +${Math.round(diff*10)/10}`:`↓ ${Math.round(diff*10)/10}`;
   };
 
-  // KF %
-  if(bfArr.length>=2){
-    const vals=bfArr.map(e=>parseFloat(e.qty));
-    drawLine(bfArr,'qty','var(--brg2)',Math.min(...vals)-2,Math.max(...vals)+2);
-  }
-  // Gewicht
-  if(wArr.length>=2){
-    const vals=wArr.map(e=>parseFloat(e.qty));
-    drawLine(wArr,'qty','var(--after)',Math.min(...vals)-2,Math.max(...vals)+2);
-  }
-  // Muskelmasse
-  if(lArr.length>=2){
-    const vals=lArr.map(e=>parseFloat(e.qty));
-    drawLine(lArr,'qty','var(--good)',Math.min(...vals)-2,Math.max(...vals)+2);
-  }
+  const trendCol=(arr,goodDir='down')=>{
+    const last=arr.slice(-4);
+    if(last.length<2) return 'var(--text3)';
+    const diff=parseFloat(last[last.length-1].qty)-parseFloat(last[0].qty);
+    if(diff===0) return 'var(--text3)';
+    return (goodDir==='down'?diff<0:diff>0)?'var(--good)':'var(--bad)';
+  };
 
-  // Legend
-  if(legendEl){
-    const items=[];
-    if(bfArr.length>=2){ const last=parseFloat(bfArr[bfArr.length-1].qty); items.push(`<span style="font-family:var(--mono);font-size:9px;color:var(--brg2)">● KF ${Math.round(last*10)/10}%</span>`); }
-    if(wArr.length>=2){ const last=parseFloat(wArr[wArr.length-1].qty); items.push(`<span style="font-family:var(--mono);font-size:9px;color:var(--after)">● Gewicht ${Math.round(last*10)/10}kg</span>`); }
-    if(lArr.length>=2){ const last=parseFloat(lArr[lArr.length-1].qty); items.push(`<span style="font-family:var(--mono);font-size:9px;color:var(--good)">● Muskelmasse ${Math.round(last*10)/10}kg</span>`); }
-    legendEl.innerHTML=items.join('');
-  }
+  const row=(label,arr,unit,goodDir,emoji)=>{
+    if(!arr.length) return '';
+    const last4=arr.slice(-4);
+    const latest=parseFloat(arr[arr.length-1].qty);
+    const t=trend(arr);
+    const col=trendCol(arr,goodDir);
+    const vals=last4.map(e=>`<span style="font-family:var(--mono);font-size:10px;color:var(--text2)">${Math.round(parseFloat(e.qty)*10)/10}</span>`).join('<span style="color:var(--border3);margin:0 3px">→</span>');
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div style="font-size:11px;color:var(--text2);min-width:90px">${emoji} ${label}</div>
+      <div style="flex:1;display:flex;align-items:center;gap:4px;flex-wrap:wrap">${vals}</div>
+      <div style="font-family:var(--mono);font-size:10px;color:${col};white-space:nowrap">${t} ${unit}</div>
+    </div>`;
+  };
+
+  legendEl.style.flexDirection='column';
+  legendEl.style.gap='0';
+  legendEl.innerHTML=
+    row('Gewicht',wArr,'kg','down','⚖️')+
+    row('Körperfett',bfArr,'%','down','🔥')+
+    row('Muskelmasse',lArr,'kg','up','💪');
 }
 
 function renderAnalysen(){
