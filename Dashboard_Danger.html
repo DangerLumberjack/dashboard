@@ -3575,6 +3575,10 @@ function togglePRs(){
   if(ch) ch.style.transform=open?'':'rotate(180deg)';
 }
 
+
+// Stub — Alkohol-Tracker entfernt
+function aCalcStats(){ return {streak:0,freeDays:0,totalLogged:0,best:0,pct:null,color:'green'}; }
+
 // ── ACTIVITY PATH (Gentler Streak style) ────────────────────
 function renderActivityPath(){
   const canvas=document.getElementById('ap-canvas');
