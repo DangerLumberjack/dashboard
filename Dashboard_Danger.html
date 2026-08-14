@@ -849,6 +849,23 @@ h1 strong{font-weight:500;color:var(--brg2)}
 <!-- ══════════════════════════════════════════════ GESUNDHEIT ══ -->
 <div class="panel" id="panel-health">
 <div class="panel-inner">
+  <!-- Analysen -->
+  <div class="section-title">Analysen</div>
+
+  <!-- Schlaf-Performance -->
+  <div class="card" style="margin-bottom:10px;padding:12px 14px">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Schlaf · Nächte nach Dauer</div>
+    <div id="sleep-perf-stats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px"></div>
+    <div style="font-size:10px;color:var(--text3);line-height:1.5" id="sleep-perf-text"></div>
+  </div>
+
+  <!-- Körperkomposition -->
+  <div class="card" style="margin-bottom:10px;padding:12px 14px">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Körperkomposition — Verlauf</div>
+    <canvas id="body-comp-canvas" style="display:none"></canvas>
+    <div id="body-comp-legend" style="display:flex;flex-direction:column;gap:0"></div>
+  </div>
+
   <!-- Körperprofil -->
   <div class="section-title">Körperprofil — Status Quo</div>
   <div class="card" style="padding:0;overflow:hidden;margin-bottom:4px">
