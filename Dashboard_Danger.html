@@ -607,7 +607,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
       <div class="day-list-dot" style="background:var(--brg2)"></div>
       <div class="day-list-body">
         <div class="day-list-name">Eiweiß heute</div>
-        <div class="day-list-sub">Ziel: 115–145g</div>
+        <div class="day-list-sub" id="hc-protein-sub">Ziel: –</div>
       </div>
       <div class="day-list-right">
         <div class="day-list-val" id="hc-protein-val">0g</div>
@@ -798,7 +798,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
     <div class="hero-sub" id="p-hero-sub">Noch 115g bis zum Minimalziel</div>
     <div class="progress-wrap">
       <div class="progress-track"><div class="progress-fill" id="p-prog-fill" style="width:0%"></div></div>
-      <span class="progress-target">115–145g</span>
+      <span class="progress-target" id="p-target-label">–</span>
     </div>
   </div>
 
@@ -1233,6 +1233,14 @@ let pData={};
 function pSave(){ try{ localStorage.setItem(KEY_PROTEIN,JSON.stringify(pData)); }catch(e){} if(location.protocol==="https:") syncUp(); }
 function pLoad(){ try{ const d=localStorage.getItem(KEY_PROTEIN); if(d) pData=JSON.parse(d); }catch(e){} }
 function pTodayTotal(){ const t=todayStr(); if(!pData[t]) return 0; return pData[t].reduce((s,e)=>s+e.g,0); }
+
+function pGetTargets(){
+  // Dynamic protein targets: 1.8–2.2g per kg bodyweight
+  const wArr=rawHealth['weight_body_mass']||[];
+  const lastW=wArr.length?parseFloat(wArr[wArr.length-1].qty):0;
+  const kg=lastW>0?lastW:75; // fallback 75kg
+  return {min:Math.round(kg*1.8), max:Math.round(kg*2.2), kg:Math.round(kg*10)/10};
+}
 function pDayTotal(ds){ if(!pData[ds]) return 0; return pData[ds].reduce((s,e)=>s+e.g,0); }
 
 const QUICK=[
@@ -1279,16 +1287,21 @@ function pRemoveEntry(id){
 }
 function pRenderHero(){
   const total=pTodayTotal();
-  const pct=Math.min(Math.round(total/145*100),100);
+  const {min:pMin,max:pMax,kg:pKg}=pGetTargets();
+  const pct=Math.min(Math.round(total/pMax*100),100);
   const hero=document.getElementById('p-hero');
   const num=document.getElementById('p-hero-num');
   const sub=document.getElementById('p-hero-sub');
   const fill=document.getElementById('p-prog-fill');
+  // Update labels
+  const tLabel=document.getElementById('p-target-label'); if(tLabel) tLabel.textContent=pMin+'–'+pMax+'g';
+  const hLabel=document.getElementById('p-header-target'); if(hLabel) hLabel.textContent=pMin+'–'+pMax+'g';
+  const hcSub=document.getElementById('hc-protein-sub'); if(hcSub) hcSub.textContent='Ziel: '+pMin+'–'+pMax+'g';
   num.textContent=total; fill.style.width=pct+'%';
-  if(total>=145){num.className='hero-num over';hero.className='hero over';fill.className='progress-fill green';sub.textContent='Tagesziel erreicht!';}
-  else if(total>=115){num.className='hero-num on-track';hero.className='hero on-track';fill.className='progress-fill green';sub.textContent='Im Zielbereich — '+(145-total)+'g unter Maximum';}
-  else if(total>=80){num.className='hero-num on-track';hero.className='hero';fill.className='progress-fill';sub.textContent='Auf Kurs — noch '+(115-total)+'g bis zum Minimalziel';}
-  else{num.className='hero-num low';hero.className='hero';fill.className='progress-fill';sub.textContent=total===0?'Heute starten — Ziel: 115–145g':'Noch '+(115-total)+'g bis zum Minimalziel';}
+  if(total>=pMax){num.className='hero-num over';hero.className='hero over';fill.className='progress-fill green';sub.textContent='Tagesziel erreicht!';}
+  else if(total>=pMin){num.className='hero-num on-track';hero.className='hero on-track';fill.className='progress-fill green';sub.textContent='Im Zielbereich — '+(pMax-total)+'g unter Maximum';}
+  else if(total>=Math.round(pMin*0.7)){num.className='hero-num on-track';hero.className='hero';fill.className='progress-fill';sub.textContent='Auf Kurs — noch '+(pMin-total)+'g bis zum Minimalziel';}
+  else{num.className='hero-num low';hero.className='hero';fill.className='progress-fill';sub.textContent=total===0?`Heute starten — Ziel: ${pMin}–${pMax}g (${pKg}kg × 1.8–2.2)`:`Noch ${pMin-total}g bis zum Minimalziel`;}
 }
 function pRenderLog(){
   const t=todayStr();
@@ -1307,9 +1320,10 @@ function pRenderWeek(){
     const d=new Date(now); d.setDate(d.getDate()-dow+i);
     const ds=dateStr(d); const total=pDayTotal(ds);
     const isFuture=ds>today; const isToday=ds===today;
-    const pct=Math.min(Math.round(total/145*100),100);
-    let gCls='low'; if(total>=145) gCls='over'; else if(total>=115) gCls='on-track';
-    html+=`<div class="wday${isToday?' today':''}"><div class="wday-label">${labels[i]}</div><div class="wday-g ${isFuture?'low':gCls}">${isFuture?'–':total>0?total+'g':'–'}</div><div class="wday-bar"><div class="wday-fill" style="width:${isFuture?0:pct}%;background:${total>=115?'var(--good)':'var(--accent)'}"></div></div></div>`;
+    const {min:wMin,max:wMax}=pGetTargets();
+    const pct=Math.min(Math.round(total/wMax*100),100);
+    let gCls='low'; if(total>=wMax) gCls='over'; else if(total>=wMin) gCls='on-track';
+    html+=`<div class="wday${isToday?' today':''}"><div class="wday-label">${labels[i]}</div><div class="wday-g ${isFuture?'low':gCls}">${isFuture?'–':total>0?total+'g':'–'}</div><div class="wday-bar"><div class="wday-fill" style="width:${isFuture?0:pct}%;background:${total>=wMin?'var(--good)':'var(--accent)'}"></div></div></div>`;
   }
   el.innerHTML=html;
 }
