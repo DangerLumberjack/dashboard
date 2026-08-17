@@ -1261,18 +1261,18 @@ function pGetTargets(){
 function pDayTotal(ds){ if(!pData[ds]) return 0; return pData[ds].reduce((s,e)=>s+e.g,0); }
 
 const QUICK=[
-  {name:'Shake',cat:'Nach Training',g:30},
-  {name:'Toast + Schinken + Käse',cat:'Frühstück',g:34},
-  {name:'Haferflocken + Ja Griech. Joghurt',cat:'Frühstück',g:20},
-  {name:'Wochenend-Frühstück',cat:'Frühstück',g:35},
+  {name:'Shake (Sportness 90 + 300ml Milch)',cat:'Nach Training',g:38},
+  {name:'Toast-Frühstück (4 Scheiben)',cat:'Frühstück',g:27},
+  {name:'Haferflocken 50g (~5 EL)',cat:'Frühstück',g:7},
+  {name:'Wochenend-Frühstück',cat:'Frühstück',g:34},
   {name:'Sportness Riegel',cat:'Mittags / Snack',g:22},
-  {name:'2 hartgekochte Eier',cat:'Snack',g:13},
+  {name:'1 hartgekochtes Ei',cat:'Snack',g:6},
   {name:'Skyr 100g',cat:'Snack',g:11},
-  {name:'Hüttenkäse 100g',cat:'Snack',g:11},
-  {name:'Hüttenkäse 50g',cat:'Snack',g:6},
   {name:'Magerquark 100g',cat:'Snack',g:12},
-  {name:'Ja Griech. Joghurt 100g',cat:'Snack / Frühstück',g:6},
-  {name:'Handvoll Mandeln 25g',cat:'Snack',g:6},
+  {name:'Joghurt 1.5% 100g (REWE)',cat:'Snack / Frühstück',g:6},
+  {name:'Handvoll Nussmischung',cat:'Snack',g:6},
+  {name:'Glas Milch 1.5% 250ml',cat:'Snack / Frühstück',g:9},
+  {name:'Thunfisch ½ Dose 75g',cat:'Snack / Mittags',g:19},
 ];
 
 function pRenderQuickButtons(){
