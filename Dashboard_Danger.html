@@ -2378,7 +2378,27 @@ function wGetGoal(){
     }
   }
 
-  // Today's training
+  // Alkohol gestern
+  const alcDayArr=rawHealth['alcohol_consumption']||[];
+  const yest=new Date(); yest.setDate(yest.getDate()-1);
+  const yestStr=yest.toISOString().slice(0,10);
+  const alcYest=alcDayArr.find(e=>e.date===yestStr);
+  const alcEl=document.getElementById('hc-alc-val');
+  const alcDot=document.getElementById('hc-alc-dot');
+  const alcSub=document.getElementById('hc-alc-sub');
+  if(alcEl){
+    if(alcYest){
+      const qty=parseFloat(alcYest.qty||0);
+      const col=qty===0?'var(--good)':qty<=1?'var(--mid)':'var(--bad)';
+      alcEl.textContent=qty+' SD';
+      alcEl.style.color=col;
+      if(alcDot) alcDot.style.background=col;
+      if(alcSub) alcSub.textContent=qty===0?'Alkoholfrei ✓':qty<=1?'Leicht':'Stark';
+    } else {
+      alcEl.textContent='–';
+      if(alcSub) alcSub.textContent='keine Daten';
+    }
+  }
   renderHomeTodayTraining();
   renderRoutine();
   renderProfile();
