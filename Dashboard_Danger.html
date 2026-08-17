@@ -628,7 +628,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
       <div class="day-list-dot" style="background:var(--after)" id="hc-water-dot"></div>
       <div class="day-list-body">
         <div class="day-list-name">Wasser heute</div>
-        <div class="day-list-sub">Ziel: 2.5L</div>
+        <div class="day-list-sub" id="hc-water-sub">Ziel: –</div>
       </div>
       <div class="day-list-right">
         <div class="day-list-val" id="hc-water-val">–</div>
@@ -2307,6 +2307,22 @@ function renderHome(){
   const sSub=document.getElementById('hc-streak-sub');
   if(sSub) sSub.textContent=stats.streak===0?'Heute neu starten':stats.streak<7?'Dran bleiben!':stats.streak<30?'Stark — weiter so!':'Ausgezeichnet!';
 
+  
+function wGetGoal(){
+  // 3.5L Trainingstag, 3.0L Ruhetag — abgeleitet aus Trainingsplan
+  const dow=(new Date().getDay()+6)%7; // 0=Mo
+  const w=tWeek, ph=tPhase;
+  if(SPECIAL_WEEKS[w]) return 3000;
+  const isD=tIsDeload(w,ph);
+  if(isD) return 3000;
+  // P1: Mo(0),Di(1),Do(3),Fr(4),Sa(5) = Training
+  // P2: Mo(0),Di(1),Mi(2),Fr(4),Sa(5) = Training
+  // P3: Mo(0),Di(1),Mi(2),Do(3),Fr(4),Sa(5) = Training
+  const trainDays={p1:[0,1,3,4,5],p2:[0,1,2,4,5],p3:[0,1,2,3,4,5]};
+  const days=trainDays[ph]||[0,1,3,4,5];
+  return days.includes(dow)?3500:3000;
+}
+
   // Wasser
   const today=todayStr();
   const waterArr=rawHealth['dietary_water']||[];
@@ -2318,12 +2334,15 @@ function renderHome(){
     if(waterToday){
       const ml=Math.round(parseFloat(waterToday.qty||0));
       const l=Math.round(ml/100)/10;
-      const pct=Math.min(Math.round(ml/2500*100),100);
-      const col=ml>=2500?'var(--good)':ml>=1500?'var(--after)':'var(--bad)';
+      const goal=wGetGoal();
+      const pct=Math.min(Math.round(ml/goal*100),100);
+      const col=ml>=goal?'var(--good)':ml>=goal*0.6?'var(--after)':'var(--bad)';
+      const goalL=Math.round(goal/100)/10;
       waterEl.textContent=l+'L';
       waterEl.style.color=col;
       if(waterBar){waterBar.style.width=pct+'%';waterBar.style.background=col;}
       if(waterDot) waterDot.style.background=col;
+      const wSub=document.getElementById('hc-water-sub'); if(wSub) wSub.textContent='Ziel: '+goalL+'L '+(goal===3500?'(Trainingstag)':'(Ruhetag)');
     } else {
       waterEl.textContent='–';
       waterEl.style.color='var(--text3)';
