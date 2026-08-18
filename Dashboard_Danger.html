@@ -1100,6 +1100,44 @@ async function sbUpsert(table, keyCol, rows){
   }catch(e){ console.warn('sbUpsert',table,e.message); return false; }
 }
 
+function calcExertionScore(){
+  // Berechnet Exertion 0-100 aus: aktive Kalorien, Herzrate, Trainingsplan
+  const today=todayStr();
+  
+  // Aktive Kalorien heute
+  const aeArr=rawHealth['active_energy']||[];
+  const aeToday=aeArr.find(e=>e.date===today);
+  const kcal=aeToday?parseFloat(aeToday.qty||0):0;
+  
+  // Durchschnittliche Herzrate heute
+  const hrArr=rawHealth['heart_rate']||[];
+  const hrToday=hrArr.filter(e=>e.date===today);
+  const avgHR=hrToday.length?hrToday.reduce((s,e)=>s+parseFloat(e.qty||0),0)/hrToday.length:0;
+  
+  // Ruhepuls für Kontext
+  const rhrArr=rawHealth['resting_heart_rate']||[];
+  const rhr=rhrArr.length?parseFloat(rhrArr[rhrArr.length-1].qty||60):60;
+  
+  // Persönlicher Baseline (30-Tage Ø aktive Kalorien)
+  const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-30);
+  const recent=aeArr.filter(e=>new Date(e.date)>=cutoff&&e.date!==today);
+  const baseKcal=recent.length?recent.reduce((s,e)=>s+parseFloat(e.qty||0),0)/recent.length:500;
+  
+  // Score aus Kalorien relativ zu Baseline + HR-Faktor
+  const kcalScore=Math.min((kcal/Math.max(baseKcal,1))*60,80);
+  const hrFactor=avgHR>0?Math.min((avgHR-rhr)/Math.max(rhr,1)*40,20):0;
+  
+  return Math.min(Math.round(kcalScore+hrFactor),100);
+}
+
+function exertionLabel(score){
+  if(score<=15) return {label:'Ruhetag',col:'var(--good)'};
+  if(score<=35) return {label:'Leicht',col:'var(--good)'};
+  if(score<=60) return {label:'Moderat',col:'var(--mid)'};
+  if(score<=80) return {label:'Hoch',col:'var(--orange,#c96c2a)'};
+  return {label:'Maximal',col:'var(--bad)'};
+}
+
 function sbStatus(msg, ok){
   let el=document.getElementById('sb-status');
   if(!el){
@@ -2329,43 +2367,6 @@ function renderHome(){
 
   
 
-function calcExertionScore(){
-  // Berechnet Exertion 0-100 aus: aktive Kalorien, Herzrate, Trainingsplan
-  const today=todayStr();
-  
-  // Aktive Kalorien heute
-  const aeArr=rawHealth['active_energy']||[];
-  const aeToday=aeArr.find(e=>e.date===today);
-  const kcal=aeToday?parseFloat(aeToday.qty||0):0;
-  
-  // Durchschnittliche Herzrate heute
-  const hrArr=rawHealth['heart_rate']||[];
-  const hrToday=hrArr.filter(e=>e.date===today);
-  const avgHR=hrToday.length?hrToday.reduce((s,e)=>s+parseFloat(e.qty||0),0)/hrToday.length:0;
-  
-  // Ruhepuls für Kontext
-  const rhrArr=rawHealth['resting_heart_rate']||[];
-  const rhr=rhrArr.length?parseFloat(rhrArr[rhrArr.length-1].qty||60):60;
-  
-  // Persönlicher Baseline (30-Tage Ø aktive Kalorien)
-  const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-30);
-  const recent=aeArr.filter(e=>new Date(e.date)>=cutoff&&e.date!==today);
-  const baseKcal=recent.length?recent.reduce((s,e)=>s+parseFloat(e.qty||0),0)/recent.length:500;
-  
-  // Score aus Kalorien relativ zu Baseline + HR-Faktor
-  const kcalScore=Math.min((kcal/Math.max(baseKcal,1))*60,80);
-  const hrFactor=avgHR>0?Math.min((avgHR-rhr)/Math.max(rhr,1)*40,20):0;
-  
-  return Math.min(Math.round(kcalScore+hrFactor),100);
-}
-
-function exertionLabel(score){
-  if(score<=15) return {label:'Ruhetag',col:'var(--good)'};
-  if(score<=35) return {label:'Leicht',col:'var(--good)'};
-  if(score<=60) return {label:'Moderat',col:'var(--mid)'};
-  if(score<=80) return {label:'Hoch',col:'var(--orange,#c96c2a)'};
-  return {label:'Maximal',col:'var(--bad)'};
-}
 
 function wGetGoal(){
   // 3.5L Trainingstag, 3.0L Ruhetag — abgeleitet aus Trainingsplan
