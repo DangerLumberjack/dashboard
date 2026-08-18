@@ -4236,71 +4236,52 @@ function renderBodyComp(){
 }
 
 function renderVO2max(){
-  const el=document.getElementById('vo2-content');
+  var el=document.getElementById('vo2-content');
   if(!el) return;
-  const arr=(rawHealth['vo2_max']||[]).filter(e=>parseFloat(e.qty)>0);
-  if(!arr.length){ el.innerHTML='<div style="font-size:11px;color:var(--text3);font-style:italic">Noch keine VO₂max-Daten — wird nach Outdoor-Läufen gemessen.</div>'; return; }
-
-  const latest=parseFloat(arr[arr.length-1].qty);
-  const latestDate=arr[arr.length-1].date;
-
-  // Color based on age 43, male
-  const col=latest>=46?'var(--good)':latest>=41?'var(--brg2)':latest>=35?'var(--mid)':'var(--bad)';
-  const label=latest>=46?'Ausgezeichnet':latest>=41?'Gut':latest>=35?'Durchschnittlich':'Unterdurchschnittlich';
-
-  // Trend
-  const first=parseFloat(arr[0].qty);
-  const diff=Math.round((latest-first)*10)/10;
-  const trendStr=diff>=0?'+'+diff:String(diff);
-  const trendCol=diff>=0?'var(--good)':'var(--bad)';
-
-  // Mini sparkline
-  let sparkHtml='';
+  var arr=(rawHealth['vo2_max']||[]).filter(function(e){return parseFloat(e.qty)>0;});
+  if(!arr.length){ el.innerHTML='<div style="font-size:11px;color:var(--text3);font-style:italic">Noch keine VO2max-Daten.</div>'; return; }
+  var latest=parseFloat(arr[arr.length-1].qty);
+  var latestDate=arr[arr.length-1].date;
+  var first=parseFloat(arr[0].qty);
+  var diff=Math.round((latest-first)*10)/10;
+  var col=latest>=46?'var(--good)':latest>=41?'var(--brg2)':latest>=35?'var(--mid)':'var(--bad)';
+  var label=latest>=46?'Ausgezeichnet':latest>=41?'Gut':latest>=35?'Durchschnittlich':'Unterdurchschnittlich';
+  var trendStr=diff>=0?'+'+diff:''+diff;
+  var trendCol=diff>=0?'var(--good)':'var(--bad)';
+  var html='<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px">';
+  html+='<span style="font-family:var(--serif);font-size:28px;color:'+col+'">'+latest+'</span>';
+  html+='<span style="font-family:var(--mono);font-size:10px;color:var(--text3)"> ml/kg/min</span>';
+  html+='<span style="font-family:var(--mono);font-size:10px;color:'+col+';margin-left:6px">'+label+'</span>';
+  html+='<span style="font-family:var(--mono);font-size:10px;color:'+trendCol+';margin-left:auto">'+trendStr+' seit Start</span>';
+  html+='</div>';
+  html+='<div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:6px">Stand: '+fmtDisp(latestDate)+' - '+arr.length+' Messungen</div>';
   if(arr.length>=2){
-    const vals=arr.map(e=>parseFloat(e.qty));
-    const min=Math.min(...vals)-2, max=Math.max(...vals)+2, range=max-min||1;
-    const w=200, h=40, pad=4;
-    const pts=vals.map((v,i)=>({
-      x:pad+(i/(vals.length-1||1))*(w-pad*2),
-      y:h-pad-((v-min)/range)*(h-pad*2)
-    }));
-    let d=`M ${pts[0].x} ${pts[0].y}`;
-    for(let i=1;i<pts.length;i++){
-      const cp=(pts[i-1].x+pts[i].x)/2;
-      d+=` C ${cp} ${pts[i-1].y} ${cp} ${pts[i].y} ${pts[i].x} ${pts[i].y}`;
+    var vals=arr.map(function(e){return parseFloat(e.qty);});
+    var minV=Math.min.apply(null,vals)-1;
+    var maxV=Math.max.apply(null,vals)+1;
+    var range=maxV-minV||1;
+    html+='<div style="display:flex;align-items:flex-end;gap:3px;height:40px;margin:8px 0">';
+    for(var j=0;j<vals.length;j++){
+      var v=vals[j];
+      var bh=Math.round(((v-minV)/range)*36)+4;
+      var bc=v>=46?'var(--good)':v>=41?'var(--brg2)':v>=35?'var(--mid)':'var(--bad)';
+      html+='<div style="flex:1;background:'+bc+';border-radius:2px 2px 0 0;height:'+bh+'px;opacity:0.8"></div>';
     }
-    const last=pts[pts.length-1];
-    sparkHtml=`<svg width="100%" height="40" viewBox="0 0 ${w} ${h}" style="display:block;margin:10px 0" preserveAspectRatio="none">
-      <path d="${d}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>
-      <circle cx="${last.x}" cy="${last.y}" r="3" fill="${col}"/>
-    </svg>`;
+    html+='</div>';
   }
-
-  // Reference zones
-  const zones=[
-    {label:'Ausgezeichnet',min:46,col:'var(--good)'},
-    {label:'Gut',min:41,col:'var(--brg2)'},
-    {label:'Durchschnittlich',min:35,col:'var(--mid)'},
-    {label:'Unterdurchschnittlich',min:0,col:'var(--bad)'},
-  ];
-  const zoneHtml=zones.map(z=>{
-    const active=latest>=z.min&&(z.min===46?true:latest<zones[zones.indexOf(z)-1]?.min||99);
-    return `<div style="display:flex;align-items:center;gap:6px;padding:3px 0">
-      <div style="width:8px;height:8px;border-radius:50%;background:${z.col};flex-shrink:0"></div>
-      <div style="font-size:10px;color:${active?z.col:'var(--text3)'};font-weight:${active?500:400}">${z.label}${z.min>0?' ('+z.min+'+ ml/kg/min)':''}</div>
-    </div>`;
-  }).join('');
-
-  el.innerHTML=`
-    <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px">
-      <span style="font-family:var(--serif);font-size:28px;font-weight:400;color:${col}">${latest}</span>
-      <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">ml/kg/min</span>
-      <span style="font-family:var(--mono);font-size:10px;color:${col};margin-left:4px">${label}</span>
-      <span style="font-family:var(--mono);font-size:10px;color:${trendCol};margin-left:auto">${trendStr} seit Start</span>
-    </div>
-    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:4px">Stand: ${fmtDisp(latestDate)} · ${arr.length} Messungen</div>
-    ${sparkHtml}
-    <div style="margin-top:6px">${zoneHtml}</div>`;
+  var zones=[{l:'46+ Ausgezeichnet',c:'var(--good)',v:46},{l:'41-45 Gut',c:'var(--brg2)',v:41},{l:'35-40 Durchschnittlich',c:'var(--mid)',v:35},{l:'unter 35',c:'var(--bad)',v:0}];
+  html+='<div style="margin-top:8px;display:flex;flex-direction:column;gap:3px">';
+  for(var k=0;k<zones.length;k++){
+    var z=zones[k];
+    var nextV=k>0?zones[k-1].v:999;
+    var active=latest>=z.v&&latest<nextV;
+    html+='<div style="display:flex;align-items:center;gap:6px">';
+    html+='<div style="width:8px;height:8px;border-radius:50%;background:'+z.c+'"></div>';
+    html+='<span style="font-size:10px;color:'+(active?z.c:'var(--text3)')+';font-weight:'+(active?'500':'400')+'">'+z.l+'</span>';
+    html+='</div>';
+  }
+  html+='</div>';
+  el.innerHTML=html;
 }
 
 
