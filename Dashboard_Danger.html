@@ -1933,8 +1933,7 @@ function runEvaluation(){
 
     let html=`<div class="note ${toneColor}" style="font-weight:500;margin-bottom:10px">${toneLabel}</div>`;
     sections.forEach(s=>{
-      html+=`<div style="margin-bottom:10px">
-        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">${s.title}</div>`;
+      html+=`<div style="margin-bottom:10px"> <div style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">${s.title}</div>`;
       s.lines.forEach(l=>{ html+=`<div style="font-size:12px;color:var(--text2);line-height:1.6;padding:4px 0;border-bottom:1px solid var(--border)">${l}</div>`; });
       html+='</div>';
     });
@@ -2077,22 +2076,7 @@ function gbNote(){return `<div class="note note-g" style="margin-top:4px">Gravel
 function renderOPWeek(w){
   const dates=['29.06.–05.07.','06.07.–12.07.'];
   const idx=w-5;
-  return `<div class="note" style="background:var(--opbg);border-left:3px solid var(--op);color:var(--op);padding:10px 12px;border-radius:6px;margin-bottom:10px">
-    <div style="font-weight:500;margin-bottom:4px">🏥 OP-Pause · ${dates[idx]||''}</div>
-    <div style="font-size:11px;opacity:.85">HNO-Operation mit Vollnarkose. Kein Training, kein Stressreiz. Körper erholt und heilt.<br>
-    Eiweiß weiter halten (100–115g reicht). Korrekturroutine pausieren.<br>
-    HRV-Einbruch in dieser Zeit ist normal — wird in Auswertungen als OP-bedingt markiert.</div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <div style="background:var(--opbg);border:1px solid var(--opb);border-radius:8px;padding:10px 12px">
-      <div style="font-family:var(--mono);font-size:9px;color:var(--op);text-transform:uppercase;margin-bottom:4px">Fokus diese Woche</div>
-      <div style="font-size:11px;color:var(--text2);line-height:1.6">✓ Schlafen & erholen<br>✓ Wasser & Protein<br>✓ Spazieren wenn möglich<br>✗ Kein Sport</div>
-    </div>
-    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px">
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;margin-bottom:4px">Auswertungs-Kontext</div>
-      <div style="font-size:11px;color:var(--text2);line-height:1.6">HRV ↓ erwartet<br>RHR ↑ erwartet<br>Schlaf gestört<br>→ nicht als Regression werten</div>
-    </div>
-  </div>`;
+  return `<div class="note" style="background:var(--opbg);border-left:3px solid var(--op);color:var(--op);padding:10px 12px;border-radius:6px;margin-bottom:10px"> <div style="font-weight:500;margin-bottom:4px">🏥 OP-Pause · ${dates[idx]||''}</div> <div style="font-size:11px;opacity:.85">HNO-Operation mit Vollnarkose. Kein Training, kein Stressreiz. Körper erholt und heilt.<br> Eiweiß weiter halten (100–115g reicht). Korrekturroutine pausieren.<br> HRV-Einbruch in dieser Zeit ist normal — wird in Auswertungen als OP-bedingt markiert.</div> </div> <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"> <div style="background:var(--opbg);border:1px solid var(--opb);border-radius:8px;padding:10px 12px"> <div style="font-family:var(--mono);font-size:9px;color:var(--op);text-transform:uppercase;margin-bottom:4px">Fokus diese Woche</div> <div style="font-size:11px;color:var(--text2);line-height:1.6">✓ Schlafen & erholen<br>✓ Wasser & Protein<br>✓ Spazieren wenn möglich<br>✗ Kein Sport</div> </div> <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px"> <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;margin-bottom:4px">Auswertungs-Kontext</div> <div style="font-size:11px;color:var(--text2);line-height:1.6">HRV ↓ erwartet<br>RHR ↑ erwartet<br>Schlaf gestört<br>→ nicht als Regression werten</div> </div> </div>`;
 }
 
 function renderCardioWeek(w){
@@ -2120,9 +2104,7 @@ function renderUrlaubWeek(w){
   // W8=18.07, W9=25.07, W10=01.08 (bis 02.08)
   const weekTitles={8:'18.–24. Juli',9:'25.–31. Juli',10:'28.07.–03. Aug'};
   const isLast=w===10;
-  return `<div class="note" style="background:var(--afterbg);border-left:3px solid var(--after);color:var(--after);padding:10px 12px;border-radius:6px;margin-bottom:10px">
-    🌲 Ferienplan · Waldurlaub · ${weekTitles[w]||''} · Bodyweight + Joggen + Fitness+
-  </div>`+
+  return `<div class="note" style="background:var(--afterbg);border-left:3px solid var(--after);color:var(--after);padding:10px 12px;border-radius:6px;margin-bottom:10px"> 🌲 Ferienplan · Waldurlaub · ${weekTitles[w]||''} · Bodyweight + Joggen + Fitness+ </div>`+
   vb(65,'#5a6a9a')+
   dayB(w,0,'Mo','30–35 min · Kraft Oberkörper Bodyweight + Core',
     spl('s-k','Block A · 20 min','Kraft Oberkörper — kein Equipment','Push-Ups 4×12–15, Pike Push-Up 3×10, Dips an Stuhl/Bank 3×12, Decline Push-Up 3×10',[fp('→ No Equipment Upper Body')],null,null,K(w,0,1))+
@@ -2153,9 +2135,7 @@ function renderUrlaubWeek(w){
     dayB(w,5,'Sa','30 min · Joggen oder Familien-Aktivität',
       spl('s-c','Einzel · 30 min','Joggen locker oder Wandern','Locker · HR unter 145 · auch als Wanderung mit Familie zählt',[fp('→ Outdoor Running')],null,null,K(w,5,1)))+
     restB(w,6,'So','Pause · Familientag'))+
-  `<div class="note" style="background:var(--afterbg);border-left:3px solid var(--after);color:var(--after);padding:8px 10px;border-radius:0 5px 5px 0;font-size:11px;margin-top:8px">
-    Apps im Urlaub: Fitness+ läuft offline · Nike Training Club (kostenlos, kein Equipment) · Technogym als Alternative · kein Rudergerät nötig.
-  </div>`;
+  `<div class="note" style="background:var(--afterbg);border-left:3px solid var(--after);color:var(--after);padding:8px 10px;border-radius:0 5px 5px 0;font-size:11px;margin-top:8px"> Apps im Urlaub: Fitness+ läuft offline · Nike Training Club (kostenlos, kein Equipment) · Technogym als Alternative · kein Rudergerät nötig. </div>`;
 }
 
 function renderP1(w){
@@ -2561,17 +2541,11 @@ function renderHomeTodayTraining(){
   const phaseBgs={p1:'var(--p1bg)',p2:'var(--p2bg)',p3:'var(--p3bg)'};
   const phaseBds={p1:'var(--p1b)',p2:'var(--p2b)',p3:'var(--p3b)'};
 
-  let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-    <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">Woche ${weekNum} · ${dayLabels[dow]}</span>
-    <span style="font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;background:${isDeload?'var(--delbg)':phaseBgs[ph]};color:${isDeload?'var(--del)':phaseCols[ph]};border:1px solid ${isDeload?'var(--delb)':phaseBds[ph]}">${phaseLabel}</span>
-  </div>`;
+  let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"> <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">Woche ${weekNum} · ${dayLabels[dow]}</span> <span style="font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;background:${isDeload?'var(--delbg)':phaseBgs[ph]};color:${isDeload?'var(--del)':phaseCols[ph]};border:1px solid ${isDeload?'var(--delb)':phaseBds[ph]}">${phaseLabel}</span> </div>`;
 
   if(isRest||!todayTitle){
     if(weekAllDone){
-      html+=`<div style="background:var(--goodbg);border:1px solid var(--goodb);border-radius:6px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between">
-        <div><div style="font-size:12px;font-weight:500;color:var(--good)">Woche ${weekNum} abgeschlossen</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Alle Einheiten erledigt ✓</div></div>
-        <span style="font-family:var(--mono);font-size:9px;color:var(--good);background:var(--goodbg);padding:2px 7px;border-radius:4px;border:1px solid var(--goodb)">✓ Erledigt</span>
-      </div>`;
+      html+=`<div style="background:var(--goodbg);border:1px solid var(--goodb);border-radius:6px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between"> <div><div style="font-size:12px;font-weight:500;color:var(--good)">Woche ${weekNum} abgeschlossen</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Alle Einheiten erledigt ✓</div></div> <span style="font-family:var(--mono);font-size:9px;color:var(--good);background:var(--goodbg);padding:2px 7px;border-radius:4px;border:1px solid var(--goodb)">✓ Erledigt</span> </div>`;
     } else {
       html+=`<div style="font-size:12px;color:var(--text3);font-style:italic;padding:4px 0">${todayTitle||'Pause'} — kein Training geplant</div>`;
     }
@@ -2581,10 +2555,7 @@ function renderHomeTodayTraining(){
     const titleCol=allDone?'var(--good)':'var(--text)';
     const badge=allDone?'<span style="font-family:var(--mono);font-size:9px;color:var(--good);background:var(--goodbg);padding:2px 7px;border-radius:4px;border:1px solid var(--goodb)">✓ Erledigt</span>':
                 someDone?'<span style="font-family:var(--mono);font-size:9px;color:var(--yellow);background:var(--yellowbg);padding:2px 7px;border-radius:4px;border:1px solid var(--yellowb)">In Arbeit</span>':'';
-    html+=`<div style="background:${bg};border-radius:6px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;${border?'border:'+border:''}">
-      <div><div style="font-size:12px;font-weight:500;color:${titleCol}">${todayTitle}</div><div style="font-size:11px;color:var(--text3);margin-top:2px">${todayTime}</div></div>
-      <div style="display:flex;align-items:center;gap:6px">${badge}<div style="font-family:var(--mono);font-size:10px;color:var(--text3)">→</div></div>
-    </div>`;
+    html+=`<div style="background:${bg};border-radius:6px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;${border?'border:'+border:''}"> <div><div style="font-size:12px;font-weight:500;color:${titleCol}">${todayTitle}</div><div style="font-size:11px;color:var(--text3);margin-top:2px">${todayTime}</div></div> <div style="display:flex;align-items:center;gap:6px">${badge}<div style="font-family:var(--mono);font-size:10px;color:var(--text3)">→</div></div> </div>`;
   }
   el.innerHTML=html;
 }
@@ -2656,20 +2627,11 @@ function renderRoutineOverview(){
     else { bg='var(--bg2)'; color='var(--text3)'; border='var(--border2)'; }
     const outline=isToday?'outline:2px solid var(--accent);outline-offset:1px;':'';
     const title=isFuture?'':`${doneCount}/5 erledigt`;
-    html+=`<div onclick="${isFuture?'':'loadRoutineFromOverview(\''+ds+'\')'}" 
-      style="aspect-ratio:1;border-radius:5px;background:${bg};border:1px solid ${border};display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:${isFuture?'default':'pointer'};${outline}transition:opacity .15s"
-      title="${title}">
-      <div style="font-family:var(--mono);font-size:9px;color:${color};font-weight:500">${dayNum}</div>
-      ${!isFuture&&doneCount>0?`<div style="font-family:var(--mono);font-size:7px;color:${color};opacity:.8">${doneCount}/5</div>`:''}
-    </div>`;
+    html+=`<div onclick="${isFuture?'':'loadRoutineFromOverview(\''+ds+'\')'}" style="aspect-ratio:1;border-radius:5px;background:${bg};border:1px solid ${border};display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:${isFuture?'default':'pointer'};${outline}transition:opacity .15s" title="${title}"> <div style="font-family:var(--mono);font-size:9px;color:${color};font-weight:500">${dayNum}</div> ${!isFuture&&doneCount>0?`<div style="font-family:var(--mono);font-size:7px;color:${color};opacity:.8">${doneCount}/5</div>`:''} </div>`;
   });
   html+='</div>';
   // Legend
-  html+=`<div style="display:flex;gap:10px;margin-top:6px;flex-wrap:wrap">
-    <span style="font-family:var(--mono);font-size:8px;color:var(--text3);display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:var(--goodbg);border:1px solid var(--goodb);display:inline-block"></span>Komplett</span>
-    <span style="font-family:var(--mono);font-size:8px;color:var(--text3);display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:var(--afterbg);border:1px solid var(--afterb);display:inline-block"></span>Teilweise</span>
-    <span style="font-family:var(--mono);font-size:8px;color:var(--text3);display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:var(--bg2);border:1px solid var(--border2);display:inline-block"></span>Offen</span>
-  </div>`;
+  html+=`<div style="display:flex;gap:10px;margin-top:6px;flex-wrap:wrap"> <span style="font-family:var(--mono);font-size:8px;color:var(--text3);display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:var(--goodbg);border:1px solid var(--goodb);display:inline-block"></span>Komplett</span> <span style="font-family:var(--mono);font-size:8px;color:var(--text3);display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:var(--afterbg);border:1px solid var(--afterb);display:inline-block"></span>Teilweise</span> <span style="font-family:var(--mono);font-size:8px;color:var(--text3);display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:var(--bg2);border:1px solid var(--border2);display:inline-block"></span>Offen</span> </div>`;
   el.innerHTML=html;
 }
 
@@ -2696,16 +2658,10 @@ function renderPastRoutine(ds){
   const d=new Date(ds+'T12:00:00');
   const days=['So','Mo','Di','Mi','Do','Fr','Sa'];
   const label=days[d.getDay()]+', '+d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear();
-  el.innerHTML=`
-    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:6px">${label} · ${doneCount}/5 erledigt</div>
-    ${ROUTINE_ITEMS.map(i=>{
-      const done=!!entry[i.id];
-      return `<div class="routine-item${done?' done':''}">
+  el.innerHTML=` <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:6px">${label} · ${doneCount}/5 erledigt</div> ${ROUTINE_ITEMS.map(i=>{ const done=!!entry[i.id]; return `<div class="routine-item${done?' done':''}">
         <div class="routine-cb${done?' checked':''}" onclick="routinePastToggle('${i.id}','${ds}')"></div>
         <div class="routine-body"><div class="routine-name">${i.name}</div></div>
-      </div>`;
-    }).join('')}
-  `;
+      </div>`; }).join('')} `;
 }
 
 function routineStreak(){
@@ -2738,10 +2694,7 @@ function renderRoutine(){
   const doneCount=ROUTINE_ITEMS.filter(i=>entry[i.id]).length;
   el.innerHTML=ROUTINE_ITEMS.map(i=>{
     const done=!!entry[i.id];
-    return `<div class="routine-item${done?' done':''}">
-      <div class="routine-cb${done?' checked':''}" onclick="routineToggle('${i.id}')"></div>
-      <div class="routine-body"><div class="routine-name">${i.name}</div><div class="routine-detail">${i.detail}</div></div>
-    </div>`;
+    return `<div class="routine-item${done?' done':''}"> <div class="routine-cb${done?' checked':''}" onclick="routineToggle('${i.id}')"></div> <div class="routine-body"><div class="routine-name">${i.name}</div><div class="routine-detail">${i.detail}</div></div> </div>`;
   }).join('');
   // Badge
   const badge=document.getElementById('routine-done-badge');
@@ -3129,11 +3082,7 @@ function profRow(label, val, unit, date, badgeCls, badgeTxt){
   if(val===null||val===undefined) return '';
   const badge=badgeTxt?`<span class="prof-badge ${badgeCls}">${badgeTxt}</span>`:'';
   const dateStr=date?`<span class="prof-row-date">${fmtDisp(date)}</span>`:'';
-  return `<div class="prof-row">
-    <span class="prof-row-label">${label}</span>
-    <span class="prof-row-val">${val}${unit?' <span style="font-size:9px;color:var(--text3)">'+unit+'</span>':''}${badge}</span>
-    ${dateStr}
-  </div>`;
+  return `<div class="prof-row"> <span class="prof-row-label">${label}</span> <span class="prof-row-val">${val}${unit?' <span style="font-size:9px;color:var(--text3)">'+unit+'</span>':''}${badge}</span> ${dateStr} </div>`;
 }
 
 function latestVal(metric, key){
@@ -3333,13 +3282,7 @@ function renderProfile(){
       const arrow=up?'↑':'↓';
       trendHtml=`<span style="font-family:var(--mono);font-size:9px;color:${trendCol};margin-left:4px">${arrow}${Math.abs(trend.delta)}</span>`;
     }
-    html+=`<div style="background:var(--bg3);border-radius:6px;padding:6px 8px;display:flex;align-items:center;gap:6px">
-      <div style="width:7px;height:7px;border-radius:50%;background:${col};flex-shrink:0"></div>
-      <div style="flex:1;min-width:0">
-        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em">${f.label}</div>
-        <div style="font-size:13px;font-weight:500;color:var(--text)">${entry.val}<span style="font-size:10px;color:var(--text3)"> ${f.unit}</span>${trendHtml}</div>
-      </div>
-    </div>`;
+    html+=`<div style="background:var(--bg3);border-radius:6px;padding:6px 8px;display:flex;align-items:center;gap:6px"> <div style="width:7px;height:7px;border-radius:50%;background:${col};flex-shrink:0"></div> <div style="flex:1;min-width:0"> <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em">${f.label}</div> <div style="font-size:13px;font-weight:500;color:var(--text)">${entry.val}<span style="font-size:10px;color:var(--text3)"> ${f.unit}</span>${trendHtml}</div> </div> </div>`;
   });
   html+='</div>';
   if(profileData._date) html+=`<div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:6px;text-align:right">Stand: ${fmtDisp(profileData._date)}</div>`;
@@ -3347,12 +3290,9 @@ function renderProfile(){
   // History
   const hist=profileData._history||[];
   if(hist.length>1){
-    html+=`<div style="margin-top:12px">
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Verlauf</div>`;
+    html+=`<div style="margin-top:12px"> <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Verlauf</div>`;
     hist.slice(1).forEach(h=>{
-      html+=`<div style="border-top:1px solid var(--border);padding:8px 0">
-        <div style="font-family:var(--mono);font-size:10px;color:var(--accent3);margin-bottom:4px">${fmtDisp(h._date)}</div>
-        <div style="display:flex;flex-wrap:wrap;gap:4px">`;
+      html+=`<div style="border-top:1px solid var(--border);padding:8px 0"> <div style="font-family:var(--mono);font-size:10px;color:var(--accent3);margin-bottom:4px">${fmtDisp(h._date)}</div> <div style="display:flex;flex-wrap:wrap;gap:4px">`;
       PROFILE_FIELDS.forEach(f=>{
         if(!h[f.id]) return;
         // Compare with current
@@ -3999,14 +3939,7 @@ function renderRecentWorkouts(){
     const kcal=w.kcal?Math.round(w.kcal)+'kcal':'';
     const date=w.date?fmtDisp(w.date):'';
     const border=i<recent.length-1?'border-bottom:1px solid var(--border)':'';
-    html+=`<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;${border}">
-      <span style="font-size:18px;flex-shrink:0">${icon}</span>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:1px">${[dur,kcal].filter(Boolean).join(' · ')}</div>
-      </div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--text3);flex-shrink:0">${date}</div>
-    </div>`;
+    html+=`<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;${border}"> <span style="font-size:18px;flex-shrink:0">${icon}</span> <div style="flex:1;min-width:0"> <div style="font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</div> <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:1px">${[dur,kcal].filter(Boolean).join(' · ')}</div> </div> <div style="font-family:var(--mono);font-size:10px;color:var(--text3);flex-shrink:0">${date}</div> </div>`;
   });
   el.innerHTML=html;
 }
@@ -4125,17 +4058,7 @@ function renderAlcHrv(){
   const freeAvg=avg(freeDays), alcAvg=avg(alcDays);
   const diff=freeAvg&&alcAvg?freeAvg-alcAvg:null;
 
-  statsEl.innerHTML=`
-    <div style="background:var(--goodbg);border:1px solid var(--goodb);border-radius:8px;padding:8px 10px;text-align:center">
-      <div style="font-family:var(--mono);font-size:8px;color:var(--good);margin-bottom:3px">ALKOHOLFREI</div>
-      <div style="font-family:var(--serif);font-size:22px;color:var(--good)">${freeAvg||'–'}</div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">Ø ms · ${freeDays.length} Nächte</div>
-    </div>
-    <div style="background:var(--badbg);border:1px solid var(--badb);border-radius:8px;padding:8px 10px;text-align:center">
-      <div style="font-family:var(--mono);font-size:8px;color:var(--bad);margin-bottom:3px">NACH ALKOHOL</div>
-      <div style="font-family:var(--serif);font-size:22px;color:var(--bad)">${alcAvg||'–'}</div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">Ø ms · ${alcDays.length} Nächte</div>
-    </div>`;
+  statsEl.innerHTML=` <div style="background:var(--goodbg);border:1px solid var(--goodb);border-radius:8px;padding:8px 10px;text-align:center"> <div style="font-family:var(--mono);font-size:8px;color:var(--good);margin-bottom:3px">ALKOHOLFREI</div> <div style="font-family:var(--serif);font-size:22px;color:var(--good)">${freeAvg||'–'}</div> <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">Ø ms · ${freeDays.length} Nächte</div> </div> <div style="background:var(--badbg);border:1px solid var(--badb);border-radius:8px;padding:8px 10px;text-align:center"> <div style="font-family:var(--mono);font-size:8px;color:var(--bad);margin-bottom:3px">NACH ALKOHOL</div> <div style="font-family:var(--serif);font-size:22px;color:var(--bad)">${alcAvg||'–'}</div> <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">Ø ms · ${alcDays.length} Nächte</div> </div>`;
 
   if(textEl){
     if(diff===null) textEl.textContent='Noch zu wenig Alkohol-Daten für einen Vergleich.';
@@ -4165,12 +4088,7 @@ function renderSleepPerf(){
 
   const avg=arr=>arr.length?Math.round(arr.reduce((a,b)=>a+b,0)/arr.length*10)/10:null;
 
-  const statCard=(label,arr,col,bg,border)=>`
-    <div style="background:${bg};border:1px solid ${border};border-radius:8px;padding:8px 10px;text-align:center">
-      <div style="font-family:var(--mono);font-size:8px;color:${col};margin-bottom:3px;text-transform:uppercase">${label}</div>
-      <div style="font-family:var(--serif);font-size:18px;color:${col}">${avg(arr)||'–'}h</div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">${arr.length} Nächte</div>
-    </div>`;
+  const statCard=(label,arr,col,bg,border)=>` <div style="background:${bg};border:1px solid ${border};border-radius:8px;padding:8px 10px;text-align:center"> <div style="font-family:var(--mono);font-size:8px;color:${col};margin-bottom:3px;text-transform:uppercase">${label}</div> <div style="font-family:var(--serif);font-size:18px;color:${col}">${avg(arr)||'–'}h</div> <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">${arr.length} Nächte</div> </div>`;
 
   statsEl.innerHTML=
     statCard('<6h Schlaf',short,'var(--red)','var(--redbg)','var(--redb)')+
@@ -4220,11 +4138,7 @@ function renderBodyComp(){
     const t=trend(arr);
     const col=trendCol(arr,goodDir);
     const vals=last4.map(e=>`<span style="font-family:var(--mono);font-size:10px;color:var(--text2)">${Math.round(parseFloat(e.qty)*10)/10}</span>`).join('<span style="color:var(--border3);margin:0 3px">→</span>');
-    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
-      <div style="font-size:11px;color:var(--text2);min-width:90px">${emoji} ${label}</div>
-      <div style="flex:1;display:flex;align-items:center;gap:4px;flex-wrap:wrap">${vals}</div>
-      <div style="font-family:var(--mono);font-size:10px;color:${col};white-space:nowrap">${t} ${unit}</div>
-    </div>`;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"> <div style="font-size:11px;color:var(--text2);min-width:90px">${emoji} ${label}</div> <div style="flex:1;display:flex;align-items:center;gap:4px;flex-wrap:wrap">${vals}</div> <div style="font-family:var(--mono);font-size:10px;color:${col};white-space:nowrap">${t} ${unit}</div> </div>`;
   };
 
   legendEl.style.flexDirection='column';
@@ -4364,11 +4278,7 @@ function renderWeeklyReview(){
     return ROUTINE_ITEMS.every(i=>e[i.id]);
   }).length;
   let html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';
-  const stat=(label,val,unit,sub)=>`<div style="background:var(--bg3);border-radius:6px;padding:6px 8px">
-    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase">${label}</div>
-    <div style="font-size:14px;font-weight:500;color:var(--text)">${val}<span style="font-size:10px;color:var(--text3)"> ${unit}</span></div>
-    ${sub?`<div style="font-family:var(--mono);font-size:9px;color:var(--text3)">${sub}</div>`:''}
-  </div>`;
+  const stat=(label,val,unit,sub)=>`<div style="background:var(--bg3);border-radius:6px;padding:6px 8px"> <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase">${label}</div> <div style="font-size:14px;font-weight:500;color:var(--text)">${val}<span style="font-size:10px;color:var(--text3)"> ${unit}</span></div> ${sub?`<div style="font-family:var(--mono);font-size:9px;color:var(--text3)">${sub}</div>`:''} </div>`;
   html+=stat('Trainings',weekWorkouts.length,'Sessions',totalMin+' min · '+totalKcal+' kcal');
   html+=stat('Eiweiß Ø',avgProtein||'–','g/Tag',proteinDays.length+' Tage eingetragen');
   html+=stat('Schlaf Ø',avgSleep||'–','h',sleepEntries.length+' Nächte');
@@ -4376,10 +4286,7 @@ function renderWeeklyReview(){
   html+=stat('Routine',routineDays,'/ 7 Tage komplett','');
   if(weekWorkouts.length){
     const types=[...new Set(weekWorkouts.map(w=>ACTIVITY_LABELS[w.type]||w.type))];
-    html+=`<div style="background:var(--bg3);border-radius:6px;padding:6px 8px;grid-column:1/-1">
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;margin-bottom:3px">Aktivitäten</div>
-      <div style="font-size:11px;color:var(--text2)">${types.join(' · ')}</div>
-    </div>`;
+    html+=`<div style="background:var(--bg3);border-radius:6px;padding:6px 8px;grid-column:1/-1"> <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;margin-bottom:3px">Aktivitäten</div> <div style="font-size:11px;color:var(--text2)">${types.join(' · ')}</div> </div>`;
   }
   html+='</div>';
   el.innerHTML=html;
