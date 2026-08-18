@@ -4293,47 +4293,44 @@ function renderVO2max(){
 
 
 function renderPRs(){
-  const el=document.getElementById('pr-card'); if(!el) return;
+  var el=document.getElementById('pr-card'); if(!el) return;
   if(!workoutData.length){ el.innerHTML='<div style="font-size:11px;color:var(--text3);font-style:italic">Noch keine Workout-Daten importiert.</div>'; return; }
-  // Per type: best duration, best kcal, best hrMax
-  const types=[...new Set(workoutData.map(w=>w.type))];
-  let html='';
-  types.forEach(type=>{
-    const sessions=workoutData.filter(w=>w.type===type);
-    const bestDur=sessions.reduce((best,w)=>w.durationMin>best.durationMin?w:best,sessions[0]);
-    const bestKcal=sessions.filter(w=>w.kcal).reduce((best,w)=>!best||w.kcal>best.kcal?w:best,null);
-    const bestHR=sessions.filter(w=>w.hrMax).reduce((best,w)=>!best||w.hrMax>best.hrMax?w:best,null);
-    const label=ACTIVITY_LABELS[type]||type;
-    const col=ACTIVITY_COLORS[type]||'var(--text)';
-    html+=`<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)">
-      <div style="font-family:var(--mono);font-size:10px;font-weight:500;color:${col};margin-bottom:5px">${label} · ${sessions.length} Sessions</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">`;
-    html+=`<div style="background:var(--bg3);border-radius:6px;padding:5px 7px">
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">LÄNGSTE</div>
-      <div style="font-size:13px;font-weight:500;color:var(--text)">${bestDur.durationMin}<span style="font-size:10px;color:var(--text3)"> min</span></div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">${fmtDisp(bestDur.date)}</div>
-    </div>`;
-    if(bestKcal) html+=`<div style="background:var(--bg3);border-radius:6px;padding:5px 7px">
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">MEISTE KCAL</div>
-      <div style="font-size:13px;font-weight:500;color:var(--text)">${bestKcal.kcal}<span style="font-size:10px;color:var(--text3)"> kcal</span></div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">${fmtDisp(bestKcal.date)}</div>
-    </div>`;
-    if(bestHR) html+=`<div style="background:var(--bg3);border-radius:6px;padding:5px 7px">
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">MAX HR</div>
-      <div style="font-size:13px;font-weight:500;color:var(--text)">${bestHR.hrMax}<span style="font-size:10px;color:var(--text3)"> bpm</span></div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">${fmtDisp(bestHR.date)}</div>
-    </div>`;
+  var types=[...new Set(workoutData.map(function(w){return w.type;}))];
+  var html='';
+  types.forEach(function(type){
+    var sessions=workoutData.filter(function(w){return w.type===type;});
+    var bestDur=sessions.reduce(function(best,w){return w.durationMin>best.durationMin?w:best;},sessions[0]);
+    var bestKcal=sessions.filter(function(w){return w.kcal;}).reduce(function(best,w){return !best||w.kcal>best.kcal?w:best;},null);
+    var bestHR=sessions.filter(function(w){return w.hrMax;}).reduce(function(best,w){return !best||w.hrMax>best.hrMax?w:best;},null);
+    var label=ACTIVITY_LABELS[type]||type;
+    var col=ACTIVITY_COLORS[type]||'var(--text)';
+    html+='<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)">';
+    html+='<div style="font-family:var(--mono);font-size:10px;font-weight:500;color:'+col+';margin-bottom:5px">'+label+' - '+sessions.length+' Sessions</div>';
+    html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
+    html+='<div style="background:var(--bg3);border-radius:6px;padding:5px 7px">';
+    html+='<div style="font-family:var(--mono);font-size:9px;color:var(--text3)">LAENGSTE</div>';
+    html+='<div style="font-size:13px;font-weight:500;color:var(--text)">'+bestDur.durationMin+'<span style="font-size:10px;color:var(--text3)">min</span></div>';
+    html+='<div style="font-family:var(--mono);font-size:9px;color:var(--text3)">'+fmtDisp(bestDur.date)+'</div>';
+    html+='</div>';
+    if(bestKcal){
+      html+='<div style="background:var(--bg3);border-radius:6px;padding:5px 7px">';
+      html+='<div style="font-family:var(--mono);font-size:9px;color:var(--text3)">MEISTE KCAL</div>';
+      html+='<div style="font-size:13px;font-weight:500;color:var(--text)">'+bestKcal.kcal+'<span style="font-size:10px;color:var(--text3)">kcal</span></div>';
+      html+='<div style="font-family:var(--mono);font-size:9px;color:var(--text3)">'+fmtDisp(bestKcal.date)+'</div>';
+      html+='</div>';
+    }
+    if(bestHR){
+      html+='<div style="background:var(--bg3);border-radius:6px;padding:5px 7px">';
+      html+='<div style="font-family:var(--mono);font-size:9px;color:var(--text3)">MAX HF</div>';
+      html+='<div style="font-size:13px;font-weight:500;color:var(--text)">'+bestHR.hrMax+'<span style="font-size:10px;color:var(--text3)">bpm</span></div>';
+      html+='<div style="font-family:var(--mono);font-size:9px;color:var(--text3)">'+fmtDisp(bestHR.date)+'</div>';
+      html+='</div>';
+    }
     html+='</div></div>';
   });
-  el.innerHTML=html||'<div style="font-size:11px;color:var(--text3)">Keine Daten.</div>';
-  const badge=document.getElementById('pr-badge');
-  if(badge && workoutData.length){
-    const types=[...new Set(workoutData.map(w=>w.type))];
-    badge.textContent=types.length+' Aktivitäten';
-  }
+  el.innerHTML=html||'<div style="font-size:11px;color:var(--text3);font-style:italic">Noch keine Daten.</div>';
 }
 
-// ── WOCHENRÜCKBLICK ───────────────────────────────────────────
 function renderWeeklyReview(){
   const titleEl=document.getElementById('weekly-review-title');
   const el=document.getElementById('weekly-review-card'); if(!el) return;
