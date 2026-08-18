@@ -555,7 +555,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
           </div>
         </div>
       </div>
-      <div id="sd-hrv" style="font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:6px"></div>
+      <div id="sd-hrv" style="font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:6px" id="sd-hrv"></div>
     </div>
     <div class="vital-card">
       <div class="vital-label">Körper & Schlaf</div>
@@ -612,6 +612,16 @@ h1 strong{font-weight:500;color:var(--brg2)}
       <div class="day-list-right">
         <div class="day-list-val" id="hc-protein-val">0g</div>
         <div style="height:3px;width:60px;background:var(--bg3);border-radius:2px;margin-top:3px;overflow:hidden"><div id="hc-protein-bar" style="height:100%;width:0%;background:var(--brg2);border-radius:2px;transition:width .3s"></div></div>
+      </div>
+    </div>
+    <div class="day-list-item">
+      <div class="day-list-dot" style="background:var(--text4)" id="hc-ex-dot"></div>
+      <div class="day-list-body">
+        <div class="day-list-name">Exertion heute</div>
+        <div class="day-list-sub" id="hc-ex-sub">Tagesbelastung</div>
+      </div>
+      <div class="day-list-right">
+        <div class="day-list-val" id="hc-ex-val">–</div>
       </div>
     </div>
     <div class="day-list-item">
@@ -2318,6 +2328,45 @@ function renderHome(){
   if(sSub) sSub.textContent=stats.streak===0?'Heute neu starten':stats.streak<7?'Dran bleiben!':stats.streak<30?'Stark — weiter so!':'Ausgezeichnet!';
 
   
+
+function calcExertionScore(){
+  // Berechnet Exertion 0-100 aus: aktive Kalorien, Herzrate, Trainingsplan
+  const today=todayStr();
+  
+  // Aktive Kalorien heute
+  const aeArr=rawHealth['active_energy']||[];
+  const aeToday=aeArr.find(e=>e.date===today);
+  const kcal=aeToday?parseFloat(aeToday.qty||0):0;
+  
+  // Durchschnittliche Herzrate heute
+  const hrArr=rawHealth['heart_rate']||[];
+  const hrToday=hrArr.filter(e=>e.date===today);
+  const avgHR=hrToday.length?hrToday.reduce((s,e)=>s+parseFloat(e.qty||0),0)/hrToday.length:0;
+  
+  // Ruhepuls für Kontext
+  const rhrArr=rawHealth['resting_heart_rate']||[];
+  const rhr=rhrArr.length?parseFloat(rhrArr[rhrArr.length-1].qty||60):60;
+  
+  // Persönlicher Baseline (30-Tage Ø aktive Kalorien)
+  const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-30);
+  const recent=aeArr.filter(e=>new Date(e.date)>=cutoff&&e.date!==today);
+  const baseKcal=recent.length?recent.reduce((s,e)=>s+parseFloat(e.qty||0),0)/recent.length:500;
+  
+  // Score aus Kalorien relativ zu Baseline + HR-Faktor
+  const kcalScore=Math.min((kcal/Math.max(baseKcal,1))*60,80);
+  const hrFactor=avgHR>0?Math.min((avgHR-rhr)/Math.max(rhr,1)*40,20):0;
+  
+  return Math.min(Math.round(kcalScore+hrFactor),100);
+}
+
+function exertionLabel(score){
+  if(score<=15) return {label:'Ruhetag',col:'var(--good)'};
+  if(score<=35) return {label:'Leicht',col:'var(--good)'};
+  if(score<=60) return {label:'Moderat',col:'var(--mid)'};
+  if(score<=80) return {label:'Hoch',col:'var(--orange,#c96c2a)'};
+  return {label:'Maximal',col:'var(--bad)'};
+}
+
 function wGetGoal(){
   // 3.5L Trainingstag, 3.0L Ruhetag — abgeleitet aus Trainingsplan
   const dow=(new Date().getDay()+6)%7; // 0=Mo
@@ -2933,6 +2982,21 @@ function renderSparkCards(){
 
   const hrvF=last(hrvArr,14).filter(e=>e.hrv);
   setSparkCard('hrv', hrvF.map(e=>e.hrv), true, hrvF.length?hrvF[hrvF.length-1].date:null, hrvF.map(e=>e.date));
+  // HRV Baseline (30-Tage Ø) und Abweichung
+  const hrvAll=(rawHealth['heart_rate_variability']||[]).filter(e=>parseFloat(e.qty));
+  if(hrvAll.length>=7){
+    const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-30);
+    const baseArr=hrvAll.filter(e=>new Date(e.date)>=cutoff);
+    const baseline=baseArr.length?Math.round(baseArr.reduce((s,e)=>s+parseFloat(e.qty),0)/baseArr.length):null;
+    const latest=parseFloat(hrvAll[hrvAll.length-1].qty);
+    if(baseline){
+      const diff=Math.round(latest-baseline);
+      const diffStr=diff>=0?'+'+diff+'ms':diff+'ms';
+      const diffCol=diff>=0?'var(--good)':'var(--bad)';
+      const sdHrv=document.getElementById('sd-hrv');
+      if(sdHrv) sdHrv.innerHTML=`Baseline ${baseline}ms <span style="color:${diffCol}">${diffStr}</span>`;
+    }
+  }
 
   const rhrF=last(rhrArr,14).filter(e=>e.rhr);
   setSparkCard('rhr', rhrF.map(e=>e.rhr), false, rhrF.length?rhrF[rhrF.length-1].date:null, rhrF.map(e=>e.date));
