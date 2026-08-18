@@ -2408,6 +2408,17 @@ function wGetGoal(){
       waterEl.style.color='var(--text3)';
     }
   }
+
+  // Exertion Score
+  const exScore=calcExertionScore();
+  const exInfo=exertionLabel(exScore);
+  const exEl=document.getElementById('hc-ex-val');
+  const exDot=document.getElementById('hc-ex-dot');
+  const exSub=document.getElementById('hc-ex-sub');
+  if(exEl){ exEl.textContent=exScore; exEl.style.color=exInfo.col; }
+  if(exDot) exDot.style.background=exInfo.col;
+  if(exSub) exSub.textContent=exInfo.label;
+
   const crArr=rawHealth['cardio_recovery']||[];
   const crE=crArr.length?crArr[crArr.length-1]:null;
   const crEl=document.getElementById('hc-cr-val');
