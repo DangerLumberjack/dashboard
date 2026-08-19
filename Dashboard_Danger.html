@@ -555,7 +555,9 @@ h1 strong{font-weight:500;color:var(--brg2)}
           </div>
         </div>
       </div>
-      <div id="sd-hrv" style="font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:6px" id="sd-hrv"></div>
+      <div id="sd-hrv" style="font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:6px"></div>
+      <!-- HRV + RHR Zonen -->
+      <div id="hrv-zones" style="margin-top:8px;display:flex;flex-direction:column;gap:3px"></div>
     </div>
     <div class="vital-card">
       <div class="vital-label">Körper & Schlaf</div>
@@ -2965,7 +2967,21 @@ function renderSparkCards(){
       const diffStr=diff>=0?'+'+diff+'ms':diff+'ms';
       const diffCol=diff>=0?'var(--good)':'var(--bad)';
       const sdHrv=document.getElementById('sd-hrv');
-      if(sdHrv) sdHrv.innerHTML=`Baseline ${baseline}ms <span style="color:${diffCol}">${diffStr}</span>`;
+      if(sdHrv) sdHrv.innerHTML='Baseline '+baseline+'ms <span style="color:'+diffCol+'">'+diffStr+'</span>';
+      const zonesEl=document.getElementById('hrv-zones');
+      if(zonesEl){
+        const hrvNow=parseFloat(hrvAll[hrvAll.length-1].qty);
+        const rhrNow=parseFloat((rawHealth['resting_heart_rate']||[]).slice(-1)[0]?.qty||0);
+        const hrvZones=[{l:'70+ ms',min:70,col:'var(--good)'},{l:'50-70 ms',min:50,col:'var(--brg2)'},{l:'30-50 ms',min:30,col:'var(--mid)'},{l:'<30 ms',min:0,col:'var(--bad)'}];
+        const rhrZones=[{l:'<50 bpm',max:50,col:'var(--good)'},{l:'50-60 bpm',max:60,col:'var(--brg2)'},{l:'60-70 bpm',max:70,col:'var(--mid)'},{l:'>70 bpm',max:999,col:'var(--bad)'}];
+        var html='<div style="display:flex;gap:8px">';
+        html+='<div style="flex:1"><div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-bottom:3px">HRV</div>';
+        for(var hi=0;hi<hrvZones.length;hi++){var z=hrvZones[hi];var active=hrvNow>=z.min&&(hi===0?true:hrvNow<hrvZones[hi-1].min);html+='<div style="display:flex;align-items:center;gap:4px;padding:1px 0"><div style="width:6px;height:6px;border-radius:50%;background:'+z.col+';flex-shrink:0;opacity:'+(active?1:0.3)+'"></div><span style="font-size:9px;color:'+(active?z.col:'var(--text4)')+';font-weight:'+(active?500:400)+'">'+z.l+'</span></div>';}
+        html+='</div><div style="flex:1"><div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-bottom:3px">RHR</div>';
+        for(var ri=0;ri<rhrZones.length;ri++){var rz=rhrZones[ri];var ract=rhrNow>0&&rhrNow<rz.max&&(ri===0?true:rhrNow>=(rhrZones[ri-1].max));html+='<div style="display:flex;align-items:center;gap:4px;padding:1px 0"><div style="width:6px;height:6px;border-radius:50%;background:'+rz.col+';flex-shrink:0;opacity:'+(ract?1:0.3)+'"></div><span style="font-size:9px;color:'+(ract?rz.col:'var(--text4)')+';font-weight:'+(ract?500:400)+'">'+rz.l+'</span></div>';}
+        html+='</div></div>';
+        zonesEl.innerHTML=html;
+      }
     }
   }
 
