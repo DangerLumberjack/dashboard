@@ -560,34 +560,39 @@ h1 strong{font-weight:500;color:var(--brg2)}
     </div>
     <div class="vital-card">
       <div class="vital-label">Körper & Schlaf</div>
-      <div class="vital-row">
-        <div>
+      <div style="display:flex;gap:8px;align-items:flex-start;margin-top:4px">
+        <!-- Links: Schlafzonen -->
+        <div style="flex:1">
           <div style="font-family:var(--mono);font-size:8px;color:var(--text4)">Schlaf</div>
           <div class="vital-row" style="margin-top:1px">
             <span class="vital-val" id="sv-sleep" style="font-size:22px">–</span>
             <span class="vital-unit">h</span>
           </div>
+          <div id="sd-sleep" style="font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:4px"></div>
+          <div id="sleep-zones" style="margin-top:4px"></div>
         </div>
-        <div class="vital-sep">·</div>
-        <div>
-          <div style="font-family:var(--mono);font-size:8px;color:var(--text4)">KF</div>
-          <div class="vital-row" style="margin-top:1px">
-            <span class="vital-val" id="sv-bf" style="font-size:22px">–</span>
-            <span class="vital-unit">%</span>
+        <!-- Rechts: KF, Gewicht, BMI, Muskelmasse -->
+        <div style="flex:1">
+          <div style="display:flex;gap:6px;align-items:baseline;margin-bottom:4px">
+            <div>
+              <div style="font-family:var(--mono);font-size:8px;color:var(--text4)">KF</div>
+              <div class="vital-row" style="margin-top:1px">
+                <span class="vital-val" id="sv-bf" style="font-size:18px">–</span>
+                <span class="vital-unit">%</span>
+              </div>
+            </div>
+            <div class="vital-sep">·</div>
+            <div>
+              <div style="font-family:var(--mono);font-size:8px;color:var(--text4)">Gew.</div>
+              <div class="vital-row" style="margin-top:1px">
+                <span class="vital-val" id="sv-weight" style="font-size:18px">–</span>
+                <span class="vital-unit">kg</span>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="vital-sep">·</div>
-        <div>
-          <div style="font-family:var(--mono);font-size:8px;color:var(--text4)">Gew.</div>
-          <div class="vital-row" style="margin-top:1px">
-            <span class="vital-val" id="sv-weight" style="font-size:18px">–</span>
-            <span class="vital-unit">kg</span>
-          </div>
+          <div id="body-extra"></div>
         </div>
       </div>
-      <div id="sd-sleep" style="font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:6px"></div>
-      <div id="sleep-zones" style="margin-top:6px"></div>
-      <div id="body-extra" style="margin-top:4px"></div>
     </div>
   </div>
 
@@ -3046,7 +3051,7 @@ function renderSparkCards(){
     }
     if(lmArr.length){
       var lm=Math.round(parseFloat(lmArr[lmArr.length-1].qty)*10)/10;
-      beh+='<div style="display:flex;align-items:center;gap:4px;padding:1px 0"><span style="font-family:var(--mono);font-size:8px;color:var(--text3);min-width:28px">Muск</span><span style="font-size:9px;font-weight:500;color:var(--good)">'+lm+'kg</span></div>';
+      beh+='<div style="display:flex;align-items:center;gap:4px;padding:1px 0"><span style="font-family:var(--mono);font-size:8px;color:var(--text3);min-width:28px">Musk.</span><span style="font-size:9px;font-weight:500;color:var(--good)">'+lm+'kg</span></div>';
     }
     bodyExtraEl.innerHTML=beh||'<span style="font-size:9px;color:var(--text4)">–</span>';
   }
