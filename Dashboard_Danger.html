@@ -1759,7 +1759,7 @@ function runEvaluation(){
     const planStart2=new Date(2026,5,1);
     const daysSince=Math.floor((now2-planStart2)/(1000*60*60*24));
     const weekNum=Math.min(Math.max(Math.floor(daysSince/7)+1,1),52);
-    const ph=weekNum<=14?'p1':weekNum<=38?'p2':'p3';
+    const ph=weekNum<=12?'p1':weekNum<=36?'p2':'p3';
     const isDeload=tIsDeload(weekNum,ph);
     const total=tAllKeys.size;
     const done2=[...tAllKeys].filter(k=>!!tProgress[k]).length;
@@ -1968,7 +1968,7 @@ function exportHealth(){ dlJSON(aData,'gesundheit_tracker.json'); }
 // ══════════════════════════════════════════════════════════════
 let tProgress={};
 let tPhase='p1',tWeek=1;
-const tPhaseRanges={p1:{s:1,e:14},p2:{s:15,e:38},p3:{s:39,e:52}};
+const tPhaseRanges={p1:{s:1,e:12},p2:{s:13,e:36},p3:{s:37,e:52}};
 // Special week types (overrides normal rendering)
 const SPECIAL_WEEKS={
   5:{type:'op',label:'OP-Pause'},
@@ -2043,7 +2043,7 @@ function toggleDay(blockId,event){
 
 function tFmtDate(w,d){ const dt=new Date(PLAN_START); dt.setDate(dt.getDate()+(w-1)*7+d); return dt.getDate()+'.'+(dt.getMonth()+1)+'.'; }
 function tVolPct(w,p){ const c=(w-1)%4,cn=Math.floor((w-1)/4); if(c===3)return 50; return Math.min((p===1?70:p===2?75:80)+cn*5+c*5,100); }
-function tIsDeload(w,ph){ const wi=ph==='p1'?w:ph==='p2'?w-14:w-38; return wi%4===0; }
+function tIsDeload(w,ph){ const wi=ph==='p1'?w:ph==='p2'?w-12:w-36; return wi%4===0; }
 function K(w,d,s){return `w${w}_${d}_s${s}`;}
 
 function spl(cls,time,title,detail,apps,alt,comb,key){
@@ -2186,7 +2186,7 @@ function renderP1(w){
 
 function renderP2(w){
   if(!tSkipKeyReset) tAllKeys=new Set([...tAllKeys].filter(k=>!k.startsWith('w'+w+'_')));
-  const wi=w-14,isD=wi%4===0,vol=tVolPct(wi,2);
+  const wi=w-12,isD=wi%4===0,vol=tVolPct(wi,2);
   if(isD)return `<div style="min-height:500px"><div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT-Rudern</div>`+
     dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Push leicht','60% Intensität',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+restB(w,1,'Di','Pause · optional Gravelbike locker')+
     dayB(w,2,'Mi','20 min',spl('s-r','Einzel · 20 min','Rudern locker','17–18 spm · HR unter 128',[km('→ entspannte Landschaftsstrecke')],null,null,K(w,2,1)))+restB(w,3,'Do','Pause')+
@@ -2203,7 +2203,7 @@ function renderP2(w){
 
 function renderP3(w){
   if(!tSkipKeyReset) tAllKeys=new Set([...tAllKeys].filter(k=>!k.startsWith('w'+w+'_')));
-  const wi=w-38,isD=wi%4===0,vol=tVolPct(wi,3);
+  const wi=w-36,isD=wi%4===0,vol=tVolPct(wi,3);
   if(isD)return `<div style="min-height:500px"><div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT</div>`+
     dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Upper leicht','Fitness+ Upper Body · 60%',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+restB(w,1,'Di','Pause · optional Gravelbike locker')+
     dayB(w,2,'Mi','20 min',spl('s-r','Einzel · 20 min','Rudern locker','16–18 spm · HR unter 128',[km('→ entspannte Strecke')],sk('→ freies Rudern'),null,K(w,2,1)))+restB(w,3,'Do','Pause')+
@@ -2269,7 +2269,7 @@ function tSelWeek(w){
   const mbar=document.getElementById('mobile-week-bar');
   if(mbar){const mels=[...mbar.children];const msel=mels.find(e=>e.onclick?.toString().includes('('+w+')'));if(msel){msel.classList.add('sel');msel.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});}}
   const d=tIsDeload(w,tPhase);
-  const wi=tPhase==='p1'?w:tPhase==='p2'?w-14:w-38;
+  const wi=tPhase==='p1'?w:tPhase==='p2'?w-12:w-36;
   const p=tPhase==='p1'?1:tPhase==='p2'?2:3;
   const cols={p1:['#c96c2a','var(--p1bg)','var(--p1b)'],p2:['#3a7a5a','var(--p2bg)','var(--p2b)'],p3:['#5a6a9a','var(--p3bg)','var(--p3b)']}[tPhase];
   const [c,bg,bc]=cols;
@@ -2292,7 +2292,7 @@ function switchPhase(p){
   const isR=p==='reise';
   document.getElementById('train-layout').style.display=isR?'none':'flex';
   document.getElementById('t-reise-panel').style.display=isR?'block':'none';
-  if(!isR){tBuildSidebar(p);buildMobileWeekBar(p);tSelWeek({p1:1,p2:15,p3:39}[p]);}
+  if(!isR){tBuildSidebar(p);buildMobileWeekBar(p);tSelWeek({p1:1,p2:13,p3:37}[p]);}
 }
 
 function tPreRegisterAllKeys(){
@@ -2472,7 +2472,7 @@ function switchToCurrentWeek(){
   const now=new Date();
   const planStart=new Date(2026,5,1);
   const weekNum=Math.min(Math.max(Math.floor((now-planStart)/(1000*60*60*24*7))+1,1),52);
-  const ph=weekNum<=14?'p1':weekNum<=38?'p2':'p3';
+  const ph=weekNum<=12?'p1':weekNum<=36?'p2':'p3';
   switchTab('training');
   switchPhase(ph);
   tSelWeek(weekNum);
@@ -2490,7 +2490,7 @@ function renderHomeTodayTraining(){
   const dayLabels=['Mo','Di','Mi','Do','Fr','Sa','So'];
 
   // Determine phase
-  const ph=weekNum<=14?'p1':weekNum<=38?'p2':'p3';
+  const ph=weekNum<=12?'p1':weekNum<=36?'p2':'p3';
   const isDeload=tIsDeload(weekNum,ph);
 
   // Render current week silently to get day data
@@ -3683,7 +3683,7 @@ function renderHeatmap(){
     const ds=dateStr(d);
     const isFuture=d>today;
     const weekNum=Math.floor(i/7)+1;
-    const ph=weekNum<=14?'p1':weekNum<=38?'p2':'p3';
+    const ph=weekNum<=12?'p1':weekNum<=36?'p2':'p3';
     const isDeload=tIsDeload(weekNum,ph);
     const count=dayMap[ds]||0;
     days.push({ds,isFuture,isDeload,count,d:new Date(d)});
