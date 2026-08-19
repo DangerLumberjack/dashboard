@@ -587,8 +587,17 @@ h1 strong{font-weight:500;color:var(--brg2)}
         </div>
       </div>
       <div id="sd-sleep" style="font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:6px"></div>
-    </div>
-  </div>
+      <!-- Schlaf-Zonen + BMI/Muskelmasse -->
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <div style="flex:1">
+          <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-bottom:3px">Schlaf</div>
+          <div id="sleep-zones"></div>
+        </div>
+        <div style="flex:1">
+          <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-bottom:3px">Körper</div>
+          <div id="body-extra"></div>
+        </div>
+      </div>
 
   <!-- Hidden spark canvases (für Berechnung, nicht angezeigt) -->
   <div style="display:none">
@@ -3017,6 +3026,38 @@ function renderSparkCards(){
 
   const bfF=bfArr.filter(e=>e.bodyFat);
   setSparkCard('bf', bfF.map(e=>e.bodyFat), false, bfF.length?bfF[bfF.length-1].date:null, bfF.map(e=>e.date));
+
+  // Schlaf-Zonen
+  var sleepZonesEl=document.getElementById('sleep-zones');
+  if(sleepZonesEl&&sleepF.length){
+    var sleepNow=parseFloat(sleepF[sleepF.length-1].sleepH);
+    var szones=[{l:'7.5h+',min:7.5,col:'var(--good)'},{l:'6-7.5h',min:6,col:'var(--brg2)'},{l:'5-6h',min:5,col:'var(--mid)'},{l:'<5h',min:0,col:'var(--bad)'}];
+    var sh='';
+    for(var si=0;si<szones.length;si++){
+      var sz=szones[si];
+      var sa=sleepNow>=sz.min&&(si===0?true:sleepNow<szones[si-1].min);
+      sh+='<div style="display:flex;align-items:center;gap:4px;padding:1px 0"><div style="width:6px;height:6px;border-radius:50%;background:'+sz.col+';flex-shrink:0;opacity:'+(sa?1:0.3)+'"></div><span style="font-size:9px;color:'+(sa?sz.col:'var(--text4)')+';font-weight:'+(sa?500:400)+'">'+sz.l+'</span></div>';
+    }
+    sleepZonesEl.innerHTML=sh;
+  }
+
+  // BMI + Muskelmasse
+  var bodyExtraEl=document.getElementById('body-extra');
+  if(bodyExtraEl){
+    var bmiArr=(rawHealth['body_mass_index']||[]).filter(function(e){return parseFloat(e.qty)>0;});
+    var lmArr=(rawHealth['lean_body_mass']||[]).filter(function(e){return parseFloat(e.qty)>0;});
+    var beh='';
+    if(bmiArr.length){
+      var bmi=Math.round(parseFloat(bmiArr[bmiArr.length-1].qty)*10)/10;
+      var bmiCol=bmi<23?'var(--good)':bmi<27?'var(--brg2)':'var(--bad)';
+      beh+='<div style="display:flex;align-items:center;gap:4px;padding:1px 0"><span style="font-family:var(--mono);font-size:8px;color:var(--text3);min-width:28px">BMI</span><span style="font-size:9px;font-weight:500;color:'+bmiCol+'">'+bmi+'</span></div>';
+    }
+    if(lmArr.length){
+      var lm=Math.round(parseFloat(lmArr[lmArr.length-1].qty)*10)/10;
+      beh+='<div style="display:flex;align-items:center;gap:4px;padding:1px 0"><span style="font-family:var(--mono);font-size:8px;color:var(--text3);min-width:28px">Muск</span><span style="font-size:9px;font-weight:500;color:var(--good)">'+lm+'kg</span></div>';
+    }
+    bodyExtraEl.innerHTML=beh||'<span style="font-size:9px;color:var(--text4)">–</span>';
+  }
 }
 
 
