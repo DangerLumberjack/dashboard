@@ -279,6 +279,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
 .ab-sk{background:var(--p1bg);color:var(--p1);border-color:var(--p1b)}
 .ab-km{background:var(--p2bg);color:var(--p2);border-color:var(--p2b)}
 .ab-gb{background:#eef4e8;color:#3a6828;border-color:#a8cc88}
+.ab-exr{background:#0d1f2d;color:#4ab8f0;border-color:#2a6898}
 .app-why{font-size:10px;color:var(--text3)}
 .app-alt{font-size:10px;color:var(--text3);margin-top:2px;display:flex;align-items:center;gap:4px}
 .spl-cb{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;margin-left:auto}
@@ -2184,37 +2185,90 @@ function renderP1(w){
     restB(w,6,'So','Pause')+gbNote();
 }
 
+function EX(n){return{c:'exr',n:'EXR',w:'→ '+n};}
+
+const EXR_ROWING={
+  13:{di:['Quick Row 2','8 km','Aerobic Base'],hi:['Cardiac Arrest 1','19 min','HIIT'],sa:['Endurance Rally 1','35 min','Ausdauer']},
+  14:{di:['Quick Row 3','10 km','Aerobic Base'],hi:['HIIT 1','7 km','HIIT'],sa:['Endurance Rally 2','50 min','Ausdauer']},
+  15:{di:['Aerobic Power 1','25 min','Aerobic'],hi:['HIIT Pyramid 1','23 min','HIIT'],sa:['Take it easy','6,5 km','Locker']},
+  16:{di:['Regeneration Training 1','30 min','Regeneration'],hi:['Interval Ignition','15 min','Locker'],sa:['Quick Recovery','3,2 km','Regeneration']},
+  17:{di:['Aerobic Capacity 1','8 km','Aerobic'],hi:['Cardiac Arrest 2','32 min','HIIT'],sa:['Start Easy Finish Hard','44 min','Ausdauer']},
+  18:{di:['Comfortably Uncomfortable','43 min','FTP'],hi:['HIIT 2','22 min','HIIT'],sa:['The Slow Burn','42 min','Ausdauer']},
+  19:{di:['Above and Below 1','32 min','FTP'],hi:['Anaerobic Power 1','35 min','Anaerob'],sa:['Hardship Then Rest','54 min','Ausdauer']},
+  20:{di:['Take it easy 2','26 min','Locker'],hi:['HIIT and Hold On','16 min','Locker'],sa:['Take it easy 3','5 km','Regeneration']},
+  21:{di:['FTP Preparation 1','40 min','FTP'],hi:['Five Alive: Long','35 min','HIIT'],sa:['The Reckoning','54 min','Ausdauer']},
+  22:{di:['Good and Hard','44 min','FTP'],hi:['HIIT Booster','45 min','HIIT'],sa:['The Slow Burn 2','47 min','Ausdauer']},
+  23:{di:['Above and Below 2','11 km','FTP'],hi:['Faster Than Yesterday','50 min','HIIT'],sa:['The Slow Burn 3','46 min','Ausdauer']},
+  24:{di:['Cadence Drill 1','28 min','Technik'],hi:['Five Alive: Short','22 min','Locker'],sa:['The Sweet Nothing','46 min','Locker']},
+  25:{di:['Resilient Racer 1','40 min','FTP'],hi:['Engine Room','36 min','HIIT'],sa:['The Ziggurat','52 min','Ausdauer']},
+  26:{di:['Resilient Racer 2','40 min','FTP'],hi:['Hold the Line','50 min','HIIT'],sa:['The Trick Question','42 min','Ausdauer']},
+  27:{di:['Tempo Check','56 min','FTP'],hi:['Turn up the HIIT — short','4 km','HIIT'],sa:['Sustainable Surge','39 min','Ausdauer']},
+  28:{di:['Cadence Drill 2','26 min','Technik'],hi:['Six Small Fires','32 min','Locker'],sa:['Time Flies','31 min','Locker']},
+  29:{di:['Resilient Racer 3','45 min','FTP'],hi:['Turn up the HIIT','7 km','⚡⚡⚡'],sa:['VO2max Preparation 1','8 km','VO2max']},
+  30:{di:['Resilient Racer 4','45 min','FTP'],hi:['Twenty Rounds','47 min','⚡⚡⚡'],sa:['VO2max Preparation 2','9,5 km','VO2max']},
+  31:{di:['No Easy Way Through','46 min','FTP'],hi:['Pyramids of Giza','55 min','HIIT'],sa:['Time Flies Eventually','1h 6min','Ausdauer']},
+  32:{di:['Cadence Drill 4','30 min','Technik'],hi:['DEFCON One','26 min','Locker'],sa:['The Countdown','52 min','Locker']},
+  33:{di:['The Necessary Evil','32 min','⚡⚡⚡'],hi:['V for Effort','6,3 km','⚡⚡⚡'],sa:['The Toothbrush 2','43 min','⚡⚡⚡']},
+  34:{di:['Sustainable Surge','39 min','FTP'],hi:['Top Effort','59 min','🔴 MAX'],sa:['VO2 Max Mayhem','1h 10min','⚡⚡⚡']},
+  35:{di:['The Reckoning','54 min','⚡⚡⚡'],hi:['Turn up the HIIT hardcore','10 km','🔴 MAX'],sa:['The Toothbrush 3','1h 1min','🔴 MAX']},
+  36:{di:['Tactical Maneuver','30 min','Locker'],hi:['The Slap-bang','30 min','⚡⚡⚡'],sa:['VO2max Preparation 1','8 km','VO2max']},
+  37:{di:['The Ziggurat','52 min','⚡⚡⚡'],hido:['The Toothbrush','24 min','⚡⚡⚡'],sa:['VO2max Preparation 2','9,5 km','⚡⚡⚡']},
+  38:{di:['Comfortably Uncomfortable','43 min','FTP'],hido:['Cardiac Arrest 3','23 min','HIIT'],sa:['The Slow Burn 3','46 min','⚡⚡⚡']},
+  39:{di:['Resilient Racer 3','45 min','FTP'],hido:['The Toothbrush 2','43 min','⚡⚡⚡'],sa:['VO2 Max Mayhem','1h 10min','⚡⚡⚡']},
+  40:{di:['The In-Between','37 min','Locker'],hido:['Brush & Burn','49 min','FTP'],sa:['Silent Watch','40 min','Locker']},
+  41:{di:['No Easy Way Through','46 min','FTP'],hido:['HIIT Pyramid 2','14 km','HIIT'],sa:['Time Flies Eventually','1h 6min','Ausdauer']},
+  42:{di:['The Necessary Evil','32 min','⚡⚡⚡'],hido:['Turn up the HIIT','7 km','⚡⚡⚡'],sa:['VO2 Max Mayhem','1h 10min','VO2max']},
+  43:{di:['Sustainable Surge','39 min','FTP'],hido:['Hold the Line','50 min','HIIT'],sa:['The Toothbrush 3','1h 1min','🔴 MAX']},
+  44:{di:['Cadence Drill 5','40 min','Technik'],hido:['The Trick Question','42 min','⚡⚡⚡'],sa:['Time Flies Eventually','1h 6min','Ausdauer']},
+  45:{di:['Resilient Racer 4','45 min','FTP'],hido:['Turn up the HIIT hardcore','10 km','🔴 MAX'],sa:['VO2max Preparation 2','9,5 km','VO2max']},
+  46:{di:['Full Throttle','38 min','⚡⚡⚡'],hido:['Pyramids of Giza','55 min','HIIT'],sa:['VO2 Max Mayhem','1h 10min','⚡⚡⚡']},
+  47:{di:['Tempo Check','56 min','FTP'],hido:['V for Effort','6,3 km','⚡⚡⚡'],sa:['The Toothbrush 3','1h 1min','🔴 MAX']},
+  48:{di:['Cadence drill 6','30 min','Technik'],hido:['The Slap-bang','30 min','⚡⚡⚡'],sa:['VO2max Preparation 1','8 km','VO2max']},
+  49:{di:['The Reckoning','54 min','⚡⚡⚡'],hido:['Twenty Rounds','47 min','⚡⚡⚡'],sa:['VO2 Max Mayhem','1h 10min','VO2max']},
+  50:{di:['The Necessary Evil','32 min','⚡⚡⚡'],hido:['Turn up the HIIT hardcore','10 km','🔴 MAX'],sa:['Top Effort','59 min','🔴 MAX']},
+  51:{di:['The Protocol','35 min','🔴 MAX'],hido:['V for Effort','6,3 km','⚡⚡⚡'],sa:['The Toothbrush 3','1h 1min','🔴 MAX']},
+  52:{di:['Stir the Tanks','25 min','⚡⚡⚡'],hido:['The Slap-bang','30 min','⚡⚡⚡'],sa:['VO2max Preparation 1','8 km','VO2max']}
+};
+
 function renderP2(w){
   if(!tSkipKeyReset) tAllKeys=new Set([...tAllKeys].filter(k=>!k.startsWith('w'+w+'_')));
   const wi=w-12,isD=wi%4===0,vol=tVolPct(wi,2);
+  const er=EXR_ROWING[w]||{};
+  const eD=er.di||['Rudern Aerobic','25 min',''];
+  const eH=er.hi||['HIIT-Rudern','20 min',''];
+  const eS=er.sa||['Rudern Distanz','25 min',''];
   if(isD)return `<div style="min-height:500px"><div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT-Rudern</div>`+
     dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Push leicht','60% Intensität',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+restB(w,1,'Di','Pause · optional Gravelbike locker')+
-    dayB(w,2,'Mi','20 min',spl('s-r','Einzel · 20 min','Rudern locker','17–18 spm · HR unter 128',[km('→ entspannte Landschaftsstrecke')],null,null,K(w,2,1)))+restB(w,3,'Do','Pause')+
+    dayB(w,2,'Mi','20 min',spl('s-r','Einzel · 20 min','Rudern locker — EXR: '+eD[0],eD[1]+' · '+eD[2],[EX(eD[0])],null,null,K(w,2,1)))+restB(w,3,'Do','Pause')+
     dayB(w,4,'Fr','20 min',spl('s-k','Einzel · 20 min','Legs leicht','Fitness+ Lower Body · 60%',[fp('→ Functional Strength Lower')],null,null,K(w,4,1)))+restB(w,5,'Sa','Pause · optional Gravelbike locker')+restB(w,6,'So','Pause · optional Yoga');
   return vb(vol,'#3a7a5a')+
     dayB(w,0,'Mo','35–40 min · Push + Core',spl('s-k','Block A · 20 min','Push — Brust & Schulter','Fitness+ Push — Brust & Schulter',[fp('→ Functional Strength Upper (Push)')],null,null,K(w,0,1))+orD()+spl('s-c','Block B · 15 min','Core — Anterior Chain','Hollow Body, Ab Wheel',[fp('→ Core Training')],null,'In Folge: 35 min',K(w,0,2)))+
-    dayB(w,1,'Di','40 min · Pull-Rudern + Core',spl('s-r','Block A · 25 min','Rudern — Pull-Hypertrophie','20–22 spm · HR 140–162 · Z3–Z4',[sk('→ Ausdauerprogramm')],fp('→ Rowing Endurance'),null,K(w,1,1))+orD()+spl('s-c','Block B · 15 min','Core — Posterior Chain','Fitness+ Core Training',[fp('→ Core Training')],null,'In Folge: 40 min',K(w,1,2)))+
+    dayB(w,1,'Di','40 min · Pull-Rudern EXR + Core',spl('s-r','Block A · 25 min','EXR: '+eD[0],eD[1]+' · '+eD[2]+' · Pull-Hypertrophie',[EX(eD[0])],fp('→ Rowing Endurance'),null,K(w,1,1))+orD()+spl('s-c','Block B · 15 min','Core — Posterior Chain','Fitness+ Core Training',[fp('→ Core Training')],null,'In Folge: 40 min',K(w,1,2)))+
     dayB(w,2,'Mi','30–35 min · Legs + Cooldown',spl('s-k','Block A · 20 min','Legs — Quad-dominiert','Fitness+ Legs — Quad-dominiert',[fp('→ Functional Strength Lower Body')],null,null,K(w,2,1))+orD()+spl('s-m','Block B · 10 min','Cooldown — Hüfte & Oberschenkel','Hüftöffner, Oberschenkel',[fp('→ Cooldown')],null,'In Folge: 30 min',K(w,2,2)))+
     restB(w,3,'Do','Pause · optional Gravelbike 30–60 min')+
-    dayB(w,4,'Fr','35–40 min · Push 2 + HIIT-Rudern',spl('s-k','Block A · 20 min','Push 2 — Schulter & Trizeps','Fitness+ Schulter & Trizeps',[fp('→ Functional Strength Upper')],null,null,K(w,4,1))+orD()+spl('s-h','Block B · 20 min','HIIT-Rudern — 5×3 min Power','2 min Aufwärmen · 5× (3 min @26–28 spm / HR 160–170 / 90 sek locker) · Cool-down',[fp('→ Rowing HIIT')],sk('→ Intervall-Programm'),'In Folge: 40 min',K(w,4,2)))+
-    dayB(w,5,'Sa','40 min · Rudern Distanz + Core',spl('s-r','Block A · 25 min','Rudern — Distanz-Progression','20–22 spm · HR 145–158 · Rhythmus konstant',[km('→ Streckenrennen')],sk('→ Ausdauer-Plan'),null,K(w,5,1))+orD()+spl('s-c','Block B · 15 min','Core — Stabilität komplex','Copenhagen Plank, Rotation',[fp('→ Core Training')],null,'In Folge: 40 min',K(w,5,2)))+
+    dayB(w,4,'Fr','35–40 min · Push 2 + HIIT-Rudern EXR',spl('s-k','Block A · 20 min','Push 2 — Schulter & Trizeps','Fitness+ Schulter & Trizeps',[fp('→ Functional Strength Upper')],null,null,K(w,4,1))+orD()+spl('s-h','Block B · 20 min','EXR: '+eH[0],eH[1]+' · '+eH[2],[EX(eH[0])],sk('→ Intervall-Programm'),'In Folge: 40 min',K(w,4,2)))+
+    dayB(w,5,'Sa','40 min · Rudern EXR Distanz + Core',spl('s-r','Block A · 25 min','EXR: '+eS[0],eS[1]+' · '+eS[2],[EX(eS[0])],sk('→ Ausdauer-Plan'),null,K(w,5,1))+orD()+spl('s-c','Block B · 15 min','Core — Stabilität komplex','Copenhagen Plank, Rotation',[fp('→ Core Training')],null,'In Folge: 40 min',K(w,5,2)))+
     restB(w,6,'So','Pause')+gbNote();
 }
 
 function renderP3(w){
   if(!tSkipKeyReset) tAllKeys=new Set([...tAllKeys].filter(k=>!k.startsWith('w'+w+'_')));
   const wi=w-36,isD=wi%4===0,vol=tVolPct(wi,3);
+  const er=EXR_ROWING[w]||{};
+  const e3D=er.di||['Rudern Pyramide','25 min',''];
+  const e3Do=er.hido||['HIIT-Rudern','20 min',''];
+  const e3S=er.sa||['Rudern Ausdauer','30 min',''];
   if(isD)return `<div style="min-height:500px"><div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT</div>`+
     dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Upper leicht','Fitness+ Upper Body · 60%',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+restB(w,1,'Di','Pause · optional Gravelbike locker')+
-    dayB(w,2,'Mi','20 min',spl('s-r','Einzel · 20 min','Rudern locker','16–18 spm · HR unter 128',[km('→ entspannte Strecke')],sk('→ freies Rudern'),null,K(w,2,1)))+restB(w,3,'Do','Pause')+
+    dayB(w,2,'Mi','20 min',spl('s-r','Einzel · 20 min','Rudern locker — EXR: '+e3D[0],e3D[1]+' · '+e3D[2],[EX(e3D[0])],sk('→ freies Rudern'),null,K(w,2,1)))+restB(w,3,'Do','Pause')+
     dayB(w,4,'Fr','20 min',spl('s-k','Einzel · 20 min','Lower leicht','Fitness+ Lower Body · 60%',[fp('→ Functional Strength Lower')],null,null,K(w,4,1)))+restB(w,5,'Sa','Pause · optional Gravelbike locker')+restB(w,6,'So','Pause');
   return vb(vol,'#5a6a9a')+
     dayB(w,0,'Mo','40 min · Upper A + Core (schwer)',spl('s-k','Block A · 25 min','Upper A — schwer, Compound','4 Sätze à 6–8 WH · höchste Last',[fp('→ Functional Strength Upper')],null,null,K(w,0,1))+orD()+spl('s-c','Block B · 15 min','Core — belastet','Weighted Plank, Farmer Carry',[fp('→ Core Training')],null,'In Folge: 40 min',K(w,0,2)))+
-    dayB(w,1,'Di','40 min · Rudern Pyramide + Core',spl('s-r','Block A · 25 min','Rudern — Pyramiden-Intervall','22→24→26→28–30 spm · je 90 sek Pause 16 spm',[sk('→ Custom-Intervall')],fp('→ Rowing Intervall'),null,K(w,1,1))+orD()+spl('s-c','Block B · 15 min','Core — Posterior Power','Hip Hinge, Good Mornings',[fp('→ Core Training')],null,'In Folge: 40 min',K(w,1,2)))+
+    dayB(w,1,'Di','40 min · Rudern EXR + Core',spl('s-r','Block A · 25 min','EXR: '+e3D[0],e3D[1]+' · '+e3D[2],[EX(e3D[0])],fp('→ Rowing Intervall'),null,K(w,1,1))+orD()+spl('s-c','Block B · 15 min','Core — Posterior Power','Hip Hinge, Good Mornings',[fp('→ Core Training')],null,'In Folge: 40 min',K(w,1,2)))+
     dayB(w,2,'Mi','35 min · Lower A + Cooldown (schwer)',spl('s-k','Block A · 25 min','Lower A — Quad & Glute schwer','Fitness+ Lower Body schwer · 4×6–8 WH',[fp('→ Functional Strength Lower')],null,null,K(w,2,1))+orD()+spl('s-m','Block B · 10 min','Cooldown — Hüfte & Knie','Couch Stretch, 90/90',[fp('→ Cooldown')],null,'In Folge: 35 min',K(w,2,2)))+
-    dayB(w,3,'Do','35 min · HIIT-Rudern + Core',spl('s-h','Block A · 20 min','HIIT-Rudern — 6×2 min Power','2 min Aufwärmen · 6× (2 min @28–30 spm / HR 165–175 / 90 sek locker) · Cool-down',[fp('→ Rowing HIIT')],km('→ Power-Session'),null,K(w,3,1))+orD()+spl('s-c','Block B · 15 min','Core — Anti-Flexion','Fitness+ Core Training',[fp('→ Core Training')],null,'In Folge: 35 min',K(w,3,2)))+
+    dayB(w,3,'Do','35 min · HIIT-Rudern EXR + Core',spl('s-h','Block A · 20 min','EXR: '+e3Do[0],e3Do[1]+' · '+e3Do[2],[EX(e3Do[0])],km('→ Power-Session'),null,K(w,3,1))+orD()+spl('s-c','Block B · 15 min','Core — Anti-Flexion','Fitness+ Core Training',[fp('→ Core Training')],null,'In Folge: 35 min',K(w,3,2)))+
     dayB(w,4,'Fr','35 min · Upper B + Core (Volumen)',spl('s-k','Block A · 25 min','Upper B — Volumen & Isolation','Fitness+ Upper Body Volumen · 10–15 WH',[fp('→ Functional Strength Upper')],null,null,K(w,4,1))+orD()+spl('s-c','Block B · 10 min','Core — kurzes Finish','Fitness+ Core Training',[fp('→ Core Training')],null,'In Folge: 35 min',K(w,4,2)))+
-    dayB(w,5,'Sa','30–35 min · Rudern Ausdauer',spl('s-r','Einzel · 30–35 min','Rudern — Ausdauer & Strecke','20–22 spm · HR 140–155 · Rhythmus konstant',[km('→ Streckenrennen')],sk('→ Ausdauer-Plan'),null,K(w,5,1))+'<div class="note note-g" style="margin-top:4px">Alt. Sa: Gravelbike 60–90 min gleichwertig.</div>')+
+    dayB(w,5,'Sa','30–35 min · Rudern EXR Ausdauer',spl('s-r','Einzel · 30–35 min','EXR: '+e3S[0],e3S[1]+' · '+e3S[2],[EX(e3S[0])],sk('→ Ausdauer-Plan'),null,K(w,5,1))+'<div class="note note-g" style="margin-top:4px">Alt. Sa: Gravelbike 60–90 min gleichwertig.</div>')+
     restB(w,6,'So','Pause')+gbNote();
 }
 
