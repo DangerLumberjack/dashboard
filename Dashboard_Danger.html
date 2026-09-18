@@ -2169,11 +2169,11 @@ function renderP1(w){
     restB(w,6,'So','Pause')+`<div class="note note-g" style="margin-top:4px">Wiedereinstieg: direkt weitermachen — unter 5 Tage Pause, kein Rückschritt nötig.</div>`+gbNote();
   if(isD)return `<div style="min-height:500px"><div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT · Erholung</div>`+
     dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Kraft Oberkörper leicht','Fitness+ Upper Body · 60% Intensität',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+
-    restB(w,1,'Di','Pause · optional Gravelbike locker 30–60 min')+
+    restB(w,1,'Di','Pause · optional Gravelbike locker 30–60 min oder EXR: Tactical Maneuver (30 min, Recovery)')+
     dayB(w,2,'Mi','15 min',spl('s-r','Einzel · 15 min','Rudern sehr locker','16–18 spm · HR unter 125 · sehr locker',[sk('→ freies Rudern')],null,null,K(w,2,1)))+
     restB(w,3,'Do','Pause')+
     dayB(w,4,'Fr','20 min',spl('s-k','Einzel · 20 min','Kraft Oberkörper leicht','Fitness+ Upper Body · 60%',[fp('→ Functional Strength Upper')],null,null,K(w,4,1)))+
-    restB(w,5,'Sa','Pause · optional Gravelbike locker')+
+    restB(w,5,'Sa','Pause · optional Gravelbike locker oder EXR: Regeneration Training 3 (25 min)')+
     restB(w,6,'So','Pause · optional Fitness+ Cooldown');
   return vb(vol,'#c96c2a')+
     dayB(w,0,'Mo','35–40 min · Oberkörper + Core',spl('s-k','Block A · 20 min','Kraft Oberkörper — Push','Fitness+ Functional Strength Upper Body',[fp('→ Functional Strength Upper Body')],null,null,K(w,0,1))+orD()+spl('s-c','Block B · 15 min','Core','Fitness+ Core Training · 15 min',[fp('→ Core Training')],null,'In Folge: 35 min · Getrennt: A morgens, B mittags',K(w,0,2)))+
@@ -2270,14 +2270,14 @@ function renderP2(w){
   const eH=er.hi||['HIIT-Rudern','20 min',''];
   const eS=er.sa||['Rudern Distanz','25 min',''];
   if(isD)return `<div style="min-height:500px"><div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT-Rudern</div>`+
-    dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Push leicht','60% Intensität',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+restB(w,1,'Di','Pause · optional Gravelbike locker')+
+    dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Push leicht','60% Intensität',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+restB(w,1,'Di','Pause · optional Gravelbike locker oder EXR: Time Flies (31 min, Recovery)')+
     dayB(w,2,'Mi',eD[1],spl('s-r','Einzel · '+eD[1],'Rudern locker — EXR: '+eD[0],eD[2],[EX(eD[0])],null,null,K(w,2,1)))+restB(w,3,'Do','Pause')+
-    dayB(w,4,'Fr','20 min',spl('s-k','Einzel · 20 min','Oberkörper leicht','Fitness+ Upper Body · 60% · locker',[fp('→ Functional Strength Upper')],null,null,K(w,4,1)))+restB(w,5,'Sa','Pause · optional Gravelbike locker')+restB(w,6,'So','Pause · optional Yoga');
+    dayB(w,4,'Fr','20 min',spl('s-k','Einzel · 20 min','Oberkörper leicht','Fitness+ Upper Body · 60% · locker',[fp('→ Functional Strength Upper')],null,null,K(w,4,1)))+restB(w,5,'Sa','Pause · optional Gravelbike locker oder EXR: The In-Between (37 min, aktive Regeneration)')+restB(w,6,'So','Pause · optional Yoga');
   return vb(vol,'#3a7a5a')+
     dayB(w,0,'Mo','35–40 min · Push + Core',spl('s-k','Block A · 20 min','Push — Brust & Schulter','Fitness+ Push — Brust & Schulter',[fp('→ Functional Strength Upper (Push)')],null,null,K(w,0,1))+orD()+spl('s-c','Block B · 15 min','Core — Anterior Chain','Hollow Body, Ab Wheel',[fp('→ Core Training')],null,'In Folge: 35 min',K(w,0,2)))+
     dayB(w,1,'Di',addMin(eD[1],15)+' · EXR Rudern + Core',spl('s-r','Block A · '+eD[1],'EXR: '+eD[0],eD[2]+' · Pull-Hypertrophie',[EX(eD[0])],fp('→ Rowing Endurance'),null,K(w,1,1))+orD()+spl('s-c','Block B · 15 min','Core — Posterior Chain','Fitness+ Core Training',[fp('→ Core Training')],null,null,K(w,1,2)))+
     dayB(w,2,'Mi','30–35 min · Oberkörper + Cooldown',spl('s-k','Block A · 20 min','Oberkörper — Push & Pull Mix','Fitness+ Functional Strength Upper Body · Push-ups, Rows, Schulter',[fp('→ Functional Strength Upper Body')],null,null,K(w,2,1))+orD()+spl('s-m','Block B · 10 min','Cooldown — Schulter & Brust','Chest Opener, Lat Stretch, Schultermobilität',[fp('→ Cooldown')],null,'In Folge: 30 min',K(w,2,2)))+
-    restB(w,3,'Do','Pause · optional Gravelbike 30–60 min')+
+    restB(w,3,'Do','Pause · optional Gravelbike 30–60 min oder EXR: Tactical Maneuver (30 min, Recovery)')+
     dayB(w,4,'Fr',addMin(eH[1],20)+' · Push + EXR HIIT',spl('s-k','Block A · 20 min','Push 2 — Schulter & Trizeps','Fitness+ Schulter & Trizeps',[fp('→ Functional Strength Upper')],null,null,K(w,4,1))+orD()+spl('s-h','Block B · '+eH[1],'EXR: '+eH[0],eH[2],[EX(eH[0])],sk('→ Intervall-Programm'),null,K(w,4,2)))+
     dayB(w,5,'Sa',addMin(eS[1],15)+' · EXR Rudern + Core',spl('s-r','Block A · '+eS[1],'EXR: '+eS[0],eS[2],[EX(eS[0])],sk('→ Ausdauer-Plan'),null,K(w,5,1))+orD()+spl('s-c','Block B · 15 min','Core — Stabilität komplex','Copenhagen Plank, Rotation',[fp('→ Core Training')],null,null,K(w,5,2)))+
     restB(w,6,'So','Pause')+gbNote();
@@ -2291,9 +2291,9 @@ function renderP3(w){
   const e3Do=er.hido||['HIIT-Rudern','20 min',''];
   const e3S=er.sa||['Rudern Ausdauer','30 min',''];
   if(isD)return `<div style="min-height:500px"><div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT</div>`+
-    dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Upper leicht','Fitness+ Upper Body · 60%',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+restB(w,1,'Di','Pause · optional Gravelbike locker')+
+    dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Upper leicht','Fitness+ Upper Body · 60%',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+restB(w,1,'Di','Pause · optional Gravelbike locker oder EXR: Time Flies (31 min, Recovery)')+
     dayB(w,2,'Mi',e3D[1],spl('s-r','Einzel · '+e3D[1],'Rudern locker — EXR: '+e3D[0],e3D[2],[EX(e3D[0])],sk('→ freies Rudern'),null,K(w,2,1)))+restB(w,3,'Do','Pause')+
-    dayB(w,4,'Fr','20 min',spl('s-k','Einzel · 20 min','Oberkörper leicht','Fitness+ Upper Body · 60% · locker',[fp('→ Functional Strength Upper')],null,null,K(w,4,1)))+restB(w,5,'Sa','Pause · optional Gravelbike locker')+restB(w,6,'So','Pause');
+    dayB(w,4,'Fr','20 min',spl('s-k','Einzel · 20 min','Oberkörper leicht','Fitness+ Upper Body · 60% · locker',[fp('→ Functional Strength Upper')],null,null,K(w,4,1)))+restB(w,5,'Sa','Pause · optional Gravelbike locker oder EXR: The In-Between (37 min, aktive Regeneration)')+restB(w,6,'So','Pause');
   return vb(vol,'#5a6a9a')+
     dayB(w,0,'Mo','40 min · Upper A + Core (schwer)',spl('s-k','Block A · 25 min','Upper A — schwer, Compound','4 Sätze à 6–8 WH · höchste Last',[fp('→ Functional Strength Upper')],null,null,K(w,0,1))+orD()+spl('s-c','Block B · 15 min','Core — belastet','Weighted Plank, Farmer Carry',[fp('→ Core Training')],null,'In Folge: 40 min',K(w,0,2)))+
     dayB(w,1,'Di',addMin(e3D[1],15)+' · EXR Rudern + Core',spl('s-r','Block A · '+e3D[1],'EXR: '+e3D[0],e3D[2],[EX(e3D[0])],fp('→ Rowing Intervall'),null,K(w,1,1))+orD()+spl('s-c','Block B · 15 min','Core — Posterior Power','Hip Hinge, Good Mornings',[fp('→ Core Training')],null,null,K(w,1,2)))+
