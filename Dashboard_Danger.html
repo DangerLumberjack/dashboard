@@ -68,6 +68,7 @@
   .wk-p3 .wk-type{background:var(--p3bg);color:var(--p3);border-color:var(--p3b)}
   .wk-p3.sel{background:var(--p3bg);border-color:var(--p3b)}
   .detail{flex:1;overflow-y:auto;padding:14px 16px;-webkit-overflow-scrolling:touch;min-width:0}
+  .detail-inner{max-width:860px;margin:0 auto;width:100%}
   .det-head{display:flex;align-items:center;gap:9px;margin-bottom:10px;flex-wrap:wrap}
   .det-title{font-size:16px;font-weight:400;color:var(--text)}
   .det-badge{font-family:var(--mono);font-size:10px;letter-spacing:.05em;padding:2px 8px;border-radius:3px;text-transform:uppercase;border:1px solid}
@@ -116,6 +117,9 @@
   .spl-cb:hover{border-color:var(--done)}
   .spl-cb.checked{background:var(--done);border-color:var(--done)}
   .spl-cb.checked::after{content:'✓';color:#fff;font-size:10px;font-weight:600;line-height:1}
+  .sick-btn{cursor:pointer;font-size:12px;opacity:.3;flex-shrink:0;user-select:none;line-height:1;margin-left:4px}
+  .sick-btn:hover{opacity:.8}
+  .sick-btn.sick{opacity:1}
   .or-div{text-align:center;font-size:10px;color:var(--text3);margin:2px 0;font-family:var(--mono)}
   .combined{border-left:2px solid var(--border2);padding:2px 7px;font-size:11px;color:var(--text3);margin-top:3px}
   .note{padding:6px 9px;border-radius:0 5px 5px 0;font-size:11px;margin:4px 0;line-height:1.5;border-left:3px solid}
@@ -656,7 +660,7 @@ function selWeek(w){
   const badge=d?`<span class="det-badge" style="background:var(--delbg);color:var(--del);border-color:var(--delb)">Deload · 50%</span>`:`<span class="det-badge" style="background:${bg};color:${c};border-color:${bc}">Aufbau · ${volPct(wi,p)}%</span>`;
   const content=curPhase==='p1'?renderP1(w):curPhase==='p2'?renderP2(w):renderP3(w);
   const det=document.getElementById('detail-panel');
-  det.innerHTML=`<div class="det-head"><span class="det-title">Woche ${w}</span>${badge}<button onclick="openAllDays()" style="margin-left:auto;font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:4px;border:1px solid var(--border2);background:var(--bg);color:var(--text2);cursor:pointer">alle auf</button><button onclick="closeAllDays()" style="margin-left:4px;font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:4px;border:1px solid var(--border2);background:var(--bg);color:var(--text2);cursor:pointer">alle zu</button></div>`+content;
+  det.innerHTML=`<div class="detail-inner"><div class="det-head"><span class="det-title">Woche ${w}</span>${badge}<button onclick="openAllDays()" style="margin-left:auto;font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:4px;border:1px solid var(--border2);background:var(--bg);color:var(--text2);cursor:pointer">alle auf</button><button onclick="closeAllDays()" style="margin-left:4px;font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:4px;border:1px solid var(--border2);background:var(--bg);color:var(--text2);cursor:pointer">alle zu</button></div>`+content+`</div>`;
   det.scrollTop=0;
   updateProgress();
   updateSidebarCheck(w);
