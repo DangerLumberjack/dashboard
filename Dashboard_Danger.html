@@ -1209,7 +1209,7 @@ async function syncUp(){
   const yazioRows=[];
   Object.entries(pData).forEach(([date,entries])=>{
     const y=entries.find(e=>e.source==='yazio');
-    if(y) yazioRows.push({metric:'yazio_nutrition',date,qty:y.g,value:JSON.stringify({kcal:y.kcal,carbs:y.carbs,fat:y.fat}),unit:'g'});
+    if(y) yazioRows.push({metric:'yazio_nutrition',date,data:{date,qty:y.g,kcal:y.kcal,carbs:y.carbs,fat:y.fat,source:'yazio'}});
   });
   if(yazioRows.length) ok=ok&&await sbUpsert('raw_health','metric,date',yazioRows);
 
@@ -1313,8 +1313,8 @@ async function syncDown(){
       yazioNutrition.forEach(r=>{
         if(!pData[r.date]) pData[r.date]=[];
         const existing=pData[r.date].find(e=>e.source==='yazio');
-        let macros={};try{macros=r.value?JSON.parse(r.value):{};}catch(e){}
-        const entry={name:'🟢 Yazio (alle Mahlzeiten)',g:parseFloat(r.qty)||0,time:'Yazio',id:'yazio_'+r.date,source:'yazio',kcal:macros.kcal||null,carbs:macros.carbs||null,fat:macros.fat||null};
+        const d=r.data||{};
+        const entry={name:'🟢 Yazio (alle Mahlzeiten)',g:parseFloat(d.qty||r.qty)||0,time:'Yazio',id:'yazio_'+r.date,source:'yazio',kcal:d.kcal||null,carbs:d.carbs||null,fat:d.fat||null};
         if(existing){Object.assign(existing,entry);}else{pData[r.date].push(entry);}
       });
       try{localStorage.setItem(KEY_PROTEIN,JSON.stringify(pData));}catch(e){}
