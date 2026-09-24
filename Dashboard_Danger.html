@@ -842,7 +842,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
     </div>
     <div id="p-kcal-row" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--bg3)">
       <div style="display:flex;align-items:baseline;gap:5px;justify-content:center">
-        <span id="p-kcal-num" style="font-size:20px;font-weight:300;color:var(--text2)">–</span>
+        <span id="p-kcal-num" style="font-size:22px;font-family:var(--serif);font-weight:400;color:var(--text2)">–</span>
         <span style="font-size:11px;color:var(--text3)">kcal</span>
         <span style="font-size:8px;background:#4ade80;color:#000;border-radius:3px;padding:1px 4px;font-weight:700">YZ</span>
       </div>
@@ -1198,12 +1198,20 @@ async function syncUp(){
   sbStatus('⟳ Sync…',true);
   let ok=true;
 
-  // Protein
+  // Protein — Yazio-Einträge (source==='yazio') werden NICHT in protein-Tabelle geschrieben
+  // (Tabelle kennt keine source/kcal/carbs/fat-Spalten) — sie werden separat in raw_health gespeichert
   const pr=[];
   Object.entries(pData).forEach(([date,entries])=>{
-    (entries||[]).forEach(e=>pr.push({entry_id:String(e.id),date,name:e.name,g:e.g,time:e.time||'',source:e.source||null,kcal:e.kcal||null,carbs:e.carbs||null,fat:e.fat||null}));
+    (entries||[]).forEach(e=>{ if(e.source!=='yazio') pr.push({entry_id:String(e.id),date,name:e.name,g:e.g,time:e.time||''}); });
   });
   if(pr.length) ok=ok&&await sbUpsert('protein','entry_id',pr);
+  // Yazio-Daten → raw_health (metric='yazio_nutrition', eine Zeile pro Tag)
+  const yazioRows=[];
+  Object.entries(pData).forEach(([date,entries])=>{
+    const y=entries.find(e=>e.source==='yazio');
+    if(y) yazioRows.push({metric:'yazio_nutrition',date,qty:y.g,value:JSON.stringify({kcal:y.kcal,carbs:y.carbs,fat:y.fat}),unit:'g'});
+  });
+  if(yazioRows.length) ok=ok&&await sbUpsert('raw_health','metric,date',yazioRows);
 
   // Alcohol
   const al=Object.entries(aData.days||{}).map(([date,v])=>({
@@ -1299,6 +1307,18 @@ async function syncDown(){
     rh.forEach(r=>{if(!rawHealth[r.metric])rawHealth[r.metric]=[];rawHealth[r.metric].push(r.data);});
     Object.keys(rawHealth).forEach(k=>{rawHealth[k].sort((a,b)=>a.date<b.date?-1:1);});
     try{localStorage.setItem(KEY_RAWHEALTH,JSON.stringify(rawHealth));}catch(e){}
+    // Inject Yazio nutrition rows back into pData
+    const yazioNutrition=rh.filter(r=>r.metric==='yazio_nutrition');
+    if(yazioNutrition.length){
+      yazioNutrition.forEach(r=>{
+        if(!pData[r.date]) pData[r.date]=[];
+        const existing=pData[r.date].find(e=>e.source==='yazio');
+        let macros={};try{macros=r.value?JSON.parse(r.value):{};}catch(e){}
+        const entry={name:'🟢 Yazio (alle Mahlzeiten)',g:parseFloat(r.qty)||0,time:'Yazio',id:'yazio_'+r.date,source:'yazio',kcal:macros.kcal||null,carbs:macros.carbs||null,fat:macros.fat||null};
+        if(existing){Object.assign(existing,entry);}else{pData[r.date].push(entry);}
+      });
+      try{localStorage.setItem(KEY_PROTEIN,JSON.stringify(pData));}catch(e){}
+    }
     changed=true;
   }
 
