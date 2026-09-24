@@ -623,6 +623,17 @@ h1 strong{font-weight:500;color:var(--brg2)}
         <div style="height:3px;width:60px;background:var(--bg3);border-radius:2px;margin-top:3px;overflow:hidden"><div id="hc-protein-bar" style="height:100%;width:0%;background:var(--brg2);border-radius:2px;transition:width .3s"></div></div>
       </div>
     </div>
+    <div class="day-list-item" onclick="switchTab('protein')" style="cursor:pointer">
+      <div class="day-list-dot" style="background:#4ade80"></div>
+      <div class="day-list-body">
+        <div class="day-list-name">Kalorien heute <span style="font-size:8px;background:#4ade80;color:#000;border-radius:3px;padding:1px 4px;font-weight:700;margin-left:3px">YZ</span></div>
+        <div class="day-list-sub" id="hc-kcal-sub">Ziel: 3000 kcal · via Yazio</div>
+      </div>
+      <div class="day-list-right">
+        <div class="day-list-val" id="hc-kcal-val">–</div>
+        <div style="height:3px;width:60px;background:var(--bg3);border-radius:2px;margin-top:3px;overflow:hidden"><div id="hc-kcal-bar" style="height:100%;width:0%;border-radius:2px;transition:width .3s"></div></div>
+      </div>
+    </div>
     <div class="day-list-item">
       <div class="day-list-dot" style="background:var(--text4)" id="hc-ex-dot"></div>
       <div class="day-list-body">
@@ -828,6 +839,18 @@ h1 strong{font-weight:500;color:var(--brg2)}
     <div class="progress-wrap">
       <div class="progress-track"><div class="progress-fill" id="p-prog-fill" style="width:0%"></div></div>
       <span class="progress-target" id="p-target-label">–</span>
+    </div>
+    <div id="p-kcal-row" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--bg3);display:none">
+      <div style="display:flex;align-items:baseline;gap:6px;justify-content:center">
+        <span id="p-kcal-num" style="font-size:28px;font-weight:700;font-family:var(--mono);color:var(--text1)">0</span>
+        <span style="font-size:12px;color:var(--text3)">kcal heute</span>
+        <span id="p-kcal-badge" style="font-size:9px;background:#4ade80;color:#000;border-radius:3px;padding:1px 5px;font-weight:700">YZ</span>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:3px;text-align:center" id="p-kcal-sub">Ziel: 3000 kcal</div>
+      <div class="progress-wrap" style="margin-top:6px">
+        <div class="progress-track"><div class="progress-fill" id="p-kcal-fill" style="width:0%;background:var(--good)"></div></div>
+        <span class="progress-target">3000 kcal</span>
+      </div>
     </div>
   </div>
 
@@ -1339,6 +1362,8 @@ function pGetTargets(){
   return {min:Math.round(kg*1.8), max:Math.round(kg*2.2), kg:Math.round(kg*10)/10};
 }
 function pDayTotal(ds){ if(!pData[ds]) return 0; return pData[ds].reduce((s,e)=>s+e.g,0); }
+function pDayKcal(ds){ if(!pData[ds]) return 0; const y=pData[ds].find(e=>e.source==='yazio'&&e.kcal); return y?y.kcal:0; }
+const KCAL_GOAL=3000;
 
 const QUICK=[
   {name:'Shake (Sportness 90 + 300ml Milch)',cat:'Nach Training',g:38},
@@ -1399,6 +1424,22 @@ function pRenderHero(){
   else if(total>=pMin){num.className='hero-num on-track';hero.className='hero on-track';fill.className='progress-fill green';sub.textContent='Im Zielbereich — '+(pMax-total)+'g unter Maximum';}
   else if(total>=Math.round(pMin*0.7)){num.className='hero-num on-track';hero.className='hero';fill.className='progress-fill';sub.textContent='Auf Kurs — noch '+(pMin-total)+'g bis zum Minimalziel';}
   else{num.className='hero-num low';hero.className='hero';fill.className='progress-fill';sub.textContent=total===0?`Heute starten — Ziel: ${pMin}–${pMax}g (${pKg}kg × 1.8–2.2)`:`Noch ${pMin-total}g bis zum Minimalziel`;}
+  // Kalorien-Sektion (nur wenn Yazio-Daten vorhanden)
+  const kcal=pDayKcal(todayStr());
+  const kcalRow=document.getElementById('p-kcal-row');
+  if(kcalRow){
+    if(kcal>0){
+      kcalRow.style.display='block';
+      document.getElementById('p-kcal-num').textContent=kcal;
+      const kpct=Math.min(Math.round(kcal/KCAL_GOAL*100),100);
+      document.getElementById('p-kcal-fill').style.width=kpct+'%';
+      const kcalSub=document.getElementById('p-kcal-sub');
+      if(kcal>=KCAL_GOAL) kcalSub.textContent='Ziel erreicht! 💪';
+      else kcalSub.textContent='Noch '+(KCAL_GOAL-kcal)+' kcal bis zum Aufbauziel ('+KCAL_GOAL+' kcal)';
+    } else {
+      kcalRow.style.display='none';
+    }
+  }
 }
 function pRenderLog(){
   const t=todayStr();
@@ -1425,7 +1466,9 @@ function pRenderWeek(){
     const {min:wMin,max:wMax}=pGetTargets();
     const pct=Math.min(Math.round(total/wMax*100),100);
     let gCls='low'; if(total>=wMax) gCls='over'; else if(total>=wMin) gCls='on-track';
-    html+=`<div class="wday${isToday?' today':''}"><div class="wday-label">${labels[i]}</div><div class="wday-g ${isFuture?'low':gCls}">${isFuture?'–':total>0?total+'g':'–'}</div><div class="wday-bar"><div class="wday-fill" style="width:${isFuture?0:pct}%;background:${total>=wMin?'var(--good)':'var(--accent)'}"></div></div></div>`;
+    const kcal=pDayKcal(ds);
+    const kcalStr=(!isFuture&&kcal>0)?`<div style="font-size:9px;color:var(--text3);margin-top:2px">${kcal} kcal</div>`:'';
+    html+=`<div class="wday${isToday?' today':''}"><div class="wday-label">${labels[i]}</div><div class="wday-g ${isFuture?'low':gCls}">${isFuture?'–':total>0?total+'g':'–'}</div>${kcalStr}<div class="wday-bar"><div class="wday-fill" style="width:${isFuture?0:pct}%;background:${total>=wMin?'var(--good)':'var(--accent)'}"></div></div></div>`;
   }
   el.innerHTML=html;
 }
@@ -2444,6 +2487,14 @@ function renderHome(){
   if(pBar){ pBar.style.width=ppct+'%'; pBar.style.background=pcol; }
   const pSub=document.getElementById('hc-protein-sub');
   if(pSub) pSub.textContent=ptotal>=145?'Tagesziel erreicht ✓':ptotal>=115?'Im Zielbereich ✓':'Noch '+(115-ptotal)+'g bis Minimum';
+  // Kalorien heute (Yazio)
+  const todayKcal=pDayKcal(todayStr());
+  const hcKcalVal=document.getElementById('hc-kcal-val');
+  const hcKcalSub=document.getElementById('hc-kcal-sub');
+  const hcKcalBar=document.getElementById('hc-kcal-bar');
+  if(hcKcalVal){ hcKcalVal.textContent=todayKcal>0?todayKcal+'kcal':'–'; hcKcalVal.style.color=todayKcal>=KCAL_GOAL?C_GOOD:todayKcal>=Math.round(KCAL_GOAL*0.7)?C_MID:C_BAD; }
+  if(hcKcalSub) hcKcalSub.textContent=todayKcal>0?(todayKcal>=KCAL_GOAL?'Aufbauziel erreicht ✓':'Noch '+(KCAL_GOAL-todayKcal)+' kcal bis '+KCAL_GOAL):'Ziel: '+KCAL_GOAL+' kcal · via Yazio';
+  if(hcKcalBar){ hcKcalBar.style.width=todayKcal>0?Math.min(Math.round(todayKcal/KCAL_GOAL*100),100)+'%':'0%'; hcKcalBar.style.background=todayKcal>=KCAL_GOAL?C_GOOD:C_MID; }
 
   // Streak — Tages-Liste
   const stats=aCalcStats();
@@ -4461,9 +4512,11 @@ function renderWeeklyReview(){
   const weekWorkouts=workoutData.filter(w=>days.includes(w.date));
   const totalKcal=weekWorkouts.reduce((s,w)=>s+(w.kcal||0),0);
   const totalMin=weekWorkouts.reduce((s,w)=>s+w.durationMin,0);
-  // Protein last week
+  // Protein + Kalorien last week
   const proteinDays=days.map(ds=>({ds,g:pDayTotal(ds)})).filter(d=>d.g>0);
   const avgProtein=proteinDays.length?Math.round(proteinDays.reduce((s,d)=>s+d.g,0)/proteinDays.length):null;
+  const kcalDays=days.map(ds=>pDayKcal(ds)).filter(k=>k>0);
+  const avgKcal=kcalDays.length?Math.round(kcalDays.reduce((s,k)=>s+k,0)/kcalDays.length):null;
   // Sleep last week
   const sleepEntries=aData.hrv.filter(e=>days.includes(e.date)&&e.sleepH);
   const avgSleep=sleepEntries.length?Math.round(sleepEntries.reduce((s,e)=>s+parseFloat(e.sleepH),0)/sleepEntries.length*10)/10:null;
@@ -4478,6 +4531,7 @@ function renderWeeklyReview(){
   const stat=(label,val,unit,sub)=>`<div style="background:var(--bg3);border-radius:6px;padding:6px 8px"> <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase">${label}</div> <div style="font-size:14px;font-weight:500;color:var(--text)">${val}<span style="font-size:10px;color:var(--text3)"> ${unit}</span></div> ${sub?`<div style="font-family:var(--mono);font-size:9px;color:var(--text3)">${sub}</div>`:''} </div>`;
   html+=stat('Trainings',weekWorkouts.length,'Sessions',totalMin+' min · '+totalKcal+' kcal');
   html+=stat('Eiweiß Ø',avgProtein||'–','g/Tag',proteinDays.length+' Tage eingetragen');
+  if(avgKcal) html+=stat('Kalorien Ø',avgKcal,'kcal/Tag',(avgKcal>=KCAL_GOAL?'✅ Aufbauziel erreicht':'Ziel: '+KCAL_GOAL+' kcal · '+(KCAL_GOAL-avgKcal)+' fehlen Ø')+' · '+kcalDays.length+' Tage Yazio');
   html+=stat('Schlaf Ø',avgSleep||'–','h',sleepEntries.length+' Nächte');
   html+=stat('Alkoholfrei',alcDays,'/ 7 Tage','');
   html+=stat('Routine',routineDays,'/ 7 Tage komplett','');
