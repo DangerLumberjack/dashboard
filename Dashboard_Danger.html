@@ -623,17 +623,6 @@ h1 strong{font-weight:500;color:var(--brg2)}
         <div style="height:3px;width:60px;background:var(--bg3);border-radius:2px;margin-top:3px;overflow:hidden"><div id="hc-protein-bar" style="height:100%;width:0%;background:var(--brg2);border-radius:2px;transition:width .3s"></div></div>
       </div>
     </div>
-    <div class="day-list-item" onclick="switchTab('protein')" style="cursor:pointer">
-      <div class="day-list-dot" style="background:#4ade80"></div>
-      <div class="day-list-body">
-        <div class="day-list-name">Kalorien heute <span style="font-size:8px;background:#4ade80;color:#000;border-radius:3px;padding:1px 4px;font-weight:700;margin-left:3px">YZ</span></div>
-        <div class="day-list-sub" id="hc-kcal-sub">Ziel: 3000 kcal · via Yazio</div>
-      </div>
-      <div class="day-list-right">
-        <div class="day-list-val" id="hc-kcal-val">–</div>
-        <div style="height:3px;width:60px;background:var(--bg3);border-radius:2px;margin-top:3px;overflow:hidden"><div id="hc-kcal-bar" style="height:100%;width:0%;border-radius:2px;transition:width .3s"></div></div>
-      </div>
-    </div>
     <div class="day-list-item">
       <div class="day-list-dot" style="background:var(--text4)" id="hc-ex-dot"></div>
       <div class="day-list-body">
@@ -840,18 +829,6 @@ h1 strong{font-weight:500;color:var(--brg2)}
       <div class="progress-track"><div class="progress-fill" id="p-prog-fill" style="width:0%"></div></div>
       <span class="progress-target" id="p-target-label">–</span>
     </div>
-    <div id="p-kcal-row" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--bg3)">
-      <div style="display:flex;align-items:baseline;gap:5px;justify-content:center">
-        <span id="p-kcal-num" style="font-size:22px;font-family:var(--serif);font-weight:400;color:var(--text2)">–</span>
-        <span style="font-size:11px;color:var(--text3)">kcal</span>
-        <span style="font-size:8px;background:#4ade80;color:#000;border-radius:3px;padding:1px 4px;font-weight:700">YZ</span>
-      </div>
-      <div style="font-size:10px;color:var(--text3);margin-top:2px;text-align:center" id="p-kcal-sub">Noch kein Yazio-Import für heute</div>
-      <div class="progress-wrap" style="margin-top:5px">
-        <div class="progress-track" style="height:3px"><div class="progress-fill" id="p-kcal-fill" style="width:0%;background:var(--good);height:3px"></div></div>
-        <span class="progress-target" style="font-size:9px">3000 kcal</span>
-      </div>
-    </div>
   </div>
 
   <div class="section-title">Schnell eintragen</div>
@@ -866,7 +843,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
     </div>
   </div>
 
-  <div class="section-title">Heute eingetragen <span style="font-size:9px;background:#4ade80;color:#000;border-radius:3px;padding:1px 5px;font-weight:700;margin-left:4px">YZ</span> <span style="font-size:9px;color:var(--text3)">= Yazio via Health Import</span></div>
+  <div class="section-title">Heute eingetragen</div>
   <div class="log-card" id="p-log-card"><div class="log-empty">Noch nichts eingetragen</div></div>
 
   <div class="section-title">Diese Woche</div>
@@ -1198,20 +1175,12 @@ async function syncUp(){
   sbStatus('⟳ Sync…',true);
   let ok=true;
 
-  // Protein — Yazio-Einträge (source==='yazio') werden NICHT in protein-Tabelle geschrieben
-  // (Tabelle kennt keine source/kcal/carbs/fat-Spalten) — sie werden separat in raw_health gespeichert
+  // Protein
   const pr=[];
   Object.entries(pData).forEach(([date,entries])=>{
-    (entries||[]).forEach(e=>{ if(e.source!=='yazio') pr.push({entry_id:String(e.id),date,name:e.name,g:e.g,time:e.time||''}); });
+    (entries||[]).forEach(e=>pr.push({entry_id:String(e.id),date,name:e.name,g:e.g,time:e.time||''}));
   });
   if(pr.length) ok=ok&&await sbUpsert('protein','entry_id',pr);
-  // Yazio-Daten → raw_health (metric='yazio_nutrition', eine Zeile pro Tag)
-  const yazioRows=[];
-  Object.entries(pData).forEach(([date,entries])=>{
-    const y=entries.find(e=>e.source==='yazio');
-    if(y) yazioRows.push({metric:'yazio_nutrition',date,data:{date,qty:y.g,kcal:y.kcal,carbs:y.carbs,fat:y.fat,source:'yazio'}});
-  });
-  if(yazioRows.length) ok=ok&&await sbUpsert('raw_health','metric,date',yazioRows);
 
   // Alcohol
   const al=Object.entries(aData.days||{}).map(([date,v])=>({
@@ -1273,7 +1242,7 @@ async function syncDown(){
 
   if(pr.length){
     const d={};
-    pr.forEach(r=>{if(!d[r.date])d[r.date]=[];d[r.date].push({name:r.name,g:r.g,time:r.time,id:r.entry_id||r.id,source:r.source||undefined,kcal:r.kcal||undefined,carbs:r.carbs||undefined,fat:r.fat||undefined});});
+    pr.forEach(r=>{if(!d[r.date])d[r.date]=[];d[r.date].push({name:r.name,g:r.g,time:r.time,id:r.entry_id||r.id});});
     pData=d; try{localStorage.setItem(KEY_PROTEIN,JSON.stringify(pData));}catch(e){}
     changed=true;
   }
@@ -1307,18 +1276,6 @@ async function syncDown(){
     rh.forEach(r=>{if(!rawHealth[r.metric])rawHealth[r.metric]=[];rawHealth[r.metric].push(r.data);});
     Object.keys(rawHealth).forEach(k=>{rawHealth[k].sort((a,b)=>a.date<b.date?-1:1);});
     try{localStorage.setItem(KEY_RAWHEALTH,JSON.stringify(rawHealth));}catch(e){}
-    // Inject Yazio nutrition rows back into pData
-    const yazioNutrition=rh.filter(r=>r.metric==='yazio_nutrition');
-    if(yazioNutrition.length){
-      yazioNutrition.forEach(r=>{
-        if(!pData[r.date]) pData[r.date]=[];
-        const existing=pData[r.date].find(e=>e.source==='yazio');
-        const d=r.data||{};
-        const entry={name:'🟢 Yazio (alle Mahlzeiten)',g:parseFloat(d.qty||r.qty)||0,time:'Yazio',id:'yazio_'+r.date,source:'yazio',kcal:d.kcal||null,carbs:d.carbs||null,fat:d.fat||null};
-        if(existing){Object.assign(existing,entry);}else{pData[r.date].push(entry);}
-      });
-      try{localStorage.setItem(KEY_PROTEIN,JSON.stringify(pData));}catch(e){}
-    }
     changed=true;
   }
 
@@ -1382,8 +1339,6 @@ function pGetTargets(){
   return {min:Math.round(kg*1.8), max:Math.round(kg*2.2), kg:Math.round(kg*10)/10};
 }
 function pDayTotal(ds){ if(!pData[ds]) return 0; return pData[ds].reduce((s,e)=>s+e.g,0); }
-function pDayKcal(ds){ if(!pData[ds]) return 0; const y=pData[ds].find(e=>e.source==='yazio'&&e.kcal); return y?y.kcal:0; }
-const KCAL_GOAL=3000;
 
 const QUICK=[
   {name:'Shake (Sportness 90 + 300ml Milch)',cat:'Nach Training',g:38},
@@ -1444,34 +1399,13 @@ function pRenderHero(){
   else if(total>=pMin){num.className='hero-num on-track';hero.className='hero on-track';fill.className='progress-fill green';sub.textContent='Im Zielbereich — '+(pMax-total)+'g unter Maximum';}
   else if(total>=Math.round(pMin*0.7)){num.className='hero-num on-track';hero.className='hero';fill.className='progress-fill';sub.textContent='Auf Kurs — noch '+(pMin-total)+'g bis zum Minimalziel';}
   else{num.className='hero-num low';hero.className='hero';fill.className='progress-fill';sub.textContent=total===0?`Heute starten — Ziel: ${pMin}–${pMax}g (${pKg}kg × 1.8–2.2)`:`Noch ${pMin-total}g bis zum Minimalziel`;}
-  // Kalorien-Sektion (nur wenn Yazio-Daten vorhanden)
-  const kcal=pDayKcal(todayStr());
-  const kcalNumEl=document.getElementById('p-kcal-num');
-  const kcalSubEl=document.getElementById('p-kcal-sub');
-  const kcalFillEl=document.getElementById('p-kcal-fill');
-  if(kcalNumEl){
-    if(kcal>0){
-      kcalNumEl.textContent=kcal;
-      kcalFillEl.style.width=Math.min(Math.round(kcal/KCAL_GOAL*100),100)+'%';
-      kcalSubEl.textContent=kcal>=KCAL_GOAL?'Aufbauziel erreicht! 💪':'Noch '+(KCAL_GOAL-kcal)+' kcal bis zum Aufbauziel';
-    } else {
-      kcalNumEl.textContent='–';
-      kcalFillEl.style.width='0%';
-      kcalSubEl.textContent='Noch kein Yazio-Import für heute';
-    }
-  }
 }
 function pRenderLog(){
   const t=todayStr();
   const el=document.getElementById('p-log-card');
   const entries=pData[t]||[];
   if(!entries.length){el.innerHTML='<div class="log-empty">Noch nichts eingetragen</div>';return;}
-  el.innerHTML=entries.slice().reverse().map(e=>{
-    const macros=e.source==='yazio'&&(e.kcal||e.carbs||e.fat)?
-      `<span style="font-size:9px;color:var(--text3);margin-left:4px">${[e.kcal?e.kcal+'kcal':null,e.carbs?'K:'+e.carbs+'g':null,e.fat?'F:'+e.fat+'g':null].filter(Boolean).join(' · ')}</span>`:'';
-    const delBtn=e.source==='yazio'?`<span style="font-size:9px;color:var(--text3);padding:2px 6px" title="Via Yazio Import">↻</span>`:`<button class="log-del" onclick="pRemoveEntry(${e.id})">×</button>`;
-    return `<div class="log-item">${e.source==='yazio'?'<span style="font-size:9px;background:#4ade80;color:#000;border-radius:3px;padding:1px 5px;margin-right:6px;font-weight:700">YZ</span>':''}<span class="log-name">${e.name}</span>${macros}<span class="log-time">${e.time}</span><span class="log-g">+${e.g}g</span>${delBtn}</div>`;
-  }).join('');
+  el.innerHTML=entries.slice().reverse().map(e=>`<div class="log-item"><span class="log-name">${e.name}</span><span class="log-time">${e.time}</span><span class="log-g">+${e.g}g</span><button class="log-del" onclick="pRemoveEntry(${e.id})">×</button></div>`).join('');
 }
 function pRenderWeek(){
   const el=document.getElementById('p-week-grid');
@@ -1486,9 +1420,7 @@ function pRenderWeek(){
     const {min:wMin,max:wMax}=pGetTargets();
     const pct=Math.min(Math.round(total/wMax*100),100);
     let gCls='low'; if(total>=wMax) gCls='over'; else if(total>=wMin) gCls='on-track';
-    const kcal=pDayKcal(ds);
-    const kcalStr=(!isFuture&&kcal>0)?`<div style="font-size:9px;color:var(--text3);margin-top:2px">${kcal} kcal</div>`:'';
-    html+=`<div class="wday${isToday?' today':''}"><div class="wday-label">${labels[i]}</div><div class="wday-g ${isFuture?'low':gCls}">${isFuture?'–':total>0?total+'g':'–'}</div>${kcalStr}<div class="wday-bar"><div class="wday-fill" style="width:${isFuture?0:pct}%;background:${total>=wMin?'var(--good)':'var(--accent)'}"></div></div></div>`;
+    html+=`<div class="wday${isToday?' today':''}"><div class="wday-label">${labels[i]}</div><div class="wday-g ${isFuture?'low':gCls}">${isFuture?'–':total>0?total+'g':'–'}</div><div class="wday-bar"><div class="wday-fill" style="width:${isFuture?0:pct}%;background:${total>=wMin?'var(--good)':'var(--accent)'}"></div></div></div>`;
   }
   el.innerHTML=html;
 }
@@ -1511,12 +1443,7 @@ function pRenderPastLog(){
   const el=document.getElementById('p-past-log-card');
   const entries=pData[pCurrentPastDate]||[];
   if(!entries.length){el.innerHTML='<div class="log-empty">Noch nichts eingetragen</div>';return;}
-  el.innerHTML=entries.slice().reverse().map(e=>{
-    const macros=e.source==='yazio'&&(e.kcal||e.carbs||e.fat)?
-      `<span style="font-size:9px;color:var(--text3);margin-left:4px">${[e.kcal?e.kcal+'kcal':null,e.carbs?'K:'+e.carbs+'g':null,e.fat?'F:'+e.fat+'g':null].filter(Boolean).join(' · ')}</span>`:'';
-    const delBtn=e.source==='yazio'?`<span style="font-size:9px;color:var(--text3);padding:2px 6px" title="Via Yazio Import">↻</span>`:`<button class="log-del" onclick="pRemovePastEntry(${e.id})">×</button>`;
-    return `<div class="log-item">${e.source==='yazio'?'<span style="font-size:9px;background:#4ade80;color:#000;border-radius:3px;padding:1px 5px;margin-right:6px;font-weight:700">YZ</span>':''}<span class="log-name">${e.name}</span>${macros}<span class="log-time">${e.time}</span><span class="log-g">+${e.g}g</span>${delBtn}</div>`;
-  }).join('');
+  el.innerHTML=entries.slice().reverse().map(e=>`<div class="log-item"><span class="log-name">${e.name}</span><span class="log-time">${e.time}</span><span class="log-g">+${e.g}g</span><button class="log-del" onclick="pRemovePastEntry(${e.id})">×</button></div>`).join('');
 }
 function pRemovePastEntry(id){
   if(!pCurrentPastDate||!pData[pCurrentPastDate]) return;
@@ -2507,14 +2434,6 @@ function renderHome(){
   if(pBar){ pBar.style.width=ppct+'%'; pBar.style.background=pcol; }
   const pSub=document.getElementById('hc-protein-sub');
   if(pSub) pSub.textContent=ptotal>=145?'Tagesziel erreicht ✓':ptotal>=115?'Im Zielbereich ✓':'Noch '+(115-ptotal)+'g bis Minimum';
-  // Kalorien heute (Yazio)
-  const todayKcal=pDayKcal(todayStr());
-  const hcKcalVal=document.getElementById('hc-kcal-val');
-  const hcKcalSub=document.getElementById('hc-kcal-sub');
-  const hcKcalBar=document.getElementById('hc-kcal-bar');
-  if(hcKcalVal){ hcKcalVal.textContent=todayKcal>0?todayKcal+'kcal':'–'; hcKcalVal.style.color=todayKcal>=KCAL_GOAL?C_GOOD:todayKcal>=Math.round(KCAL_GOAL*0.7)?C_MID:C_BAD; }
-  if(hcKcalSub) hcKcalSub.textContent=todayKcal>0?(todayKcal>=KCAL_GOAL?'Aufbauziel erreicht ✓':'Noch '+(KCAL_GOAL-todayKcal)+' kcal bis '+KCAL_GOAL):'Ziel: '+KCAL_GOAL+' kcal · via Yazio';
-  if(hcKcalBar){ hcKcalBar.style.width=todayKcal>0?Math.min(Math.round(todayKcal/KCAL_GOAL*100),100)+'%':'0%'; hcKcalBar.style.background=todayKcal>=KCAL_GOAL?C_GOOD:C_MID; }
 
   // Streak — Tages-Liste
   const stats=aCalcStats();
@@ -3673,7 +3592,6 @@ async function importCombined(input){
         'running_vertical_oscillation','running_stride_length',
         'headphone_audio_exposure','environmental_audio_exposure',
         'handwashing','blood_pressure','sleep_analysis','dietary_water','alcohol_consumption','caffeine',
-        'protein','dietary_energy','carbohydrates','total_fat','saturated_fat','fiber','dietary_sugar',
         // Title case
         'Heart Rate Variability','Resting Heart Rate','Weight','Body Fat Percentage',
         'VO2 Max','Oxygen Saturation','Respiratory Rate',
@@ -3746,56 +3664,10 @@ async function importCombined(input){
       });
       aData.hrv.sort((a,b)=>a.date<b.date?1:-1);
       aSave(); syncProfileFromVitals();
-
-      // ── YAZIO NUTRITION: protein + Makros aus Health Auto Export → pData ──
-      let yazioAdded=0;
-      const proteinMetric=metrics.find(m=>m.name==='protein');
-      const energyMetric=metrics.find(m=>m.name==='dietary_energy');
-      const carbMetric=metrics.find(m=>m.name==='carbohydrates');
-      const fatMetric=metrics.find(m=>m.name==='total_fat');
-      if(proteinMetric&&proteinMetric.data.length){
-        // Build per-date maps for all nutrition metrics
-        const energyByDate={}; (energyMetric||{data:[]}).data.forEach(e=>{ energyByDate[(e.date||'').slice(0,10)]=Math.round(parseFloat(e.qty||0)/4.184); }); // kJ→kcal
-        const carbByDate={};   (carbMetric||{data:[]}).data.forEach(e=>{ carbByDate[(e.date||'').slice(0,10)]=Math.round(parseFloat(e.qty||0)); });
-        const fatByDate={};    (fatMetric||{data:[]}).data.forEach(e=>{ fatByDate[(e.date||'').slice(0,10)]=Math.round(parseFloat(e.qty||0)); });
-        proteinMetric.data.forEach(entry=>{
-          const date=(entry.date||'').slice(0,10);
-          const gProtein=Math.round(parseFloat(entry.qty||0)*10)/10;
-          if(!date||gProtein<=0) return;
-          if(!pData[date]) pData[date]=[];
-          // Check if a Yazio entry already exists for this date
-          const existingYazio=pData[date].find(e=>e.source==='yazio');
-          if(existingYazio){
-            // Update if protein changed
-            if(existingYazio.g!==gProtein){
-              existingYazio.g=gProtein;
-              existingYazio.kcal=energyByDate[date]||null;
-              existingYazio.carbs=carbByDate[date]||null;
-              existingYazio.fat=fatByDate[date]||null;
-              yazioAdded++;
-            }
-          } else {
-            pData[date].push({
-              name:'🟢 Yazio (alle Mahlzeiten)',
-              g:gProtein,
-              time:'Yazio',
-              id:Date.now()+Math.random(),
-              source:'yazio',
-              kcal:energyByDate[date]||null,
-              carbs:carbByDate[date]||null,
-              fat:fatByDate[date]||null,
-            });
-            yazioAdded++;
-          }
-        });
-        pSave(); pRenderAll();
-      }
-
       renderHome(); renderProfSections();
       if(location.protocol==="https:"){ await syncUp(); await syncRawUp(); }
       if(location.protocol==="https:") _syncInterval=setInterval(async()=>{ await syncDown(); renderSparkCards(); renderBioAge(); renderActivityPath(); }, 30000);
-      const yazioStr=yazioAdded?` · Yazio: ${yazioAdded} Tag(e) Protein importiert`:'';
-      alert(`✅ Workouts: ${wAdded} neu · ${wDupes} Duplikate\nGesundheit: ${hAdded} neue Tage · ${hMerged} ergänzt\nGesamt: ${workoutData.length} Workouts · ${aData.hrv.length} Gesundheitstage${yazioStr}`);
+      alert(`✅ Workouts: ${wAdded} neu · ${wDupes} Duplikate\nGesundheit: ${hAdded} neue Tage · ${hMerged} ergänzt\nGesamt: ${workoutData.length} Workouts · ${aData.hrv.length} Gesundheitstage`);
     }catch(err){ alert('Fehler: '+err.message+'\n'+err.stack?.slice(0,200)); }
     input.value='';
   };
@@ -4532,11 +4404,9 @@ function renderWeeklyReview(){
   const weekWorkouts=workoutData.filter(w=>days.includes(w.date));
   const totalKcal=weekWorkouts.reduce((s,w)=>s+(w.kcal||0),0);
   const totalMin=weekWorkouts.reduce((s,w)=>s+w.durationMin,0);
-  // Protein + Kalorien last week
+  // Protein last week
   const proteinDays=days.map(ds=>({ds,g:pDayTotal(ds)})).filter(d=>d.g>0);
   const avgProtein=proteinDays.length?Math.round(proteinDays.reduce((s,d)=>s+d.g,0)/proteinDays.length):null;
-  const kcalDays=days.map(ds=>pDayKcal(ds)).filter(k=>k>0);
-  const avgKcal=kcalDays.length?Math.round(kcalDays.reduce((s,k)=>s+k,0)/kcalDays.length):null;
   // Sleep last week
   const sleepEntries=aData.hrv.filter(e=>days.includes(e.date)&&e.sleepH);
   const avgSleep=sleepEntries.length?Math.round(sleepEntries.reduce((s,e)=>s+parseFloat(e.sleepH),0)/sleepEntries.length*10)/10:null;
@@ -4551,7 +4421,6 @@ function renderWeeklyReview(){
   const stat=(label,val,unit,sub)=>`<div style="background:var(--bg3);border-radius:6px;padding:6px 8px"> <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase">${label}</div> <div style="font-size:14px;font-weight:500;color:var(--text)">${val}<span style="font-size:10px;color:var(--text3)"> ${unit}</span></div> ${sub?`<div style="font-family:var(--mono);font-size:9px;color:var(--text3)">${sub}</div>`:''} </div>`;
   html+=stat('Trainings',weekWorkouts.length,'Sessions',totalMin+' min · '+totalKcal+' kcal');
   html+=stat('Eiweiß Ø',avgProtein||'–','g/Tag',proteinDays.length+' Tage eingetragen');
-  if(avgKcal) html+=stat('Kalorien Ø',avgKcal,'kcal/Tag',(avgKcal>=KCAL_GOAL?'✅ Aufbauziel erreicht':'Ziel: '+KCAL_GOAL+' kcal · '+(KCAL_GOAL-avgKcal)+' fehlen Ø')+' · '+kcalDays.length+' Tage Yazio');
   html+=stat('Schlaf Ø',avgSleep||'–','h',sleepEntries.length+' Nächte');
   html+=stat('Alkoholfrei',alcDays,'/ 7 Tage','');
   html+=stat('Routine',routineDays,'/ 7 Tage komplett','');
