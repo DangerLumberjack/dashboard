@@ -840,13 +840,13 @@ h1 strong{font-weight:500;color:var(--brg2)}
       <div class="progress-track"><div class="progress-fill" id="p-prog-fill" style="width:0%"></div></div>
       <span class="progress-target" id="p-target-label">–</span>
     </div>
-    <div id="p-kcal-row" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--bg3);display:none">
+    <div id="p-kcal-row" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--bg3)">
       <div style="display:flex;align-items:baseline;gap:5px;justify-content:center">
-        <span id="p-kcal-num" style="font-size:20px;font-weight:600;font-family:var(--mono);color:var(--text2)">0</span>
+        <span id="p-kcal-num" style="font-size:20px;font-weight:300;color:var(--text2)">–</span>
         <span style="font-size:11px;color:var(--text3)">kcal</span>
         <span style="font-size:8px;background:#4ade80;color:#000;border-radius:3px;padding:1px 4px;font-weight:700">YZ</span>
       </div>
-      <div style="font-size:10px;color:var(--text3);margin-top:2px;text-align:center" id="p-kcal-sub">Ziel: 3000 kcal</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:2px;text-align:center" id="p-kcal-sub">Noch kein Yazio-Import für heute</div>
       <div class="progress-wrap" style="margin-top:5px">
         <div class="progress-track" style="height:3px"><div class="progress-fill" id="p-kcal-fill" style="width:0%;background:var(--good);height:3px"></div></div>
         <span class="progress-target" style="font-size:9px">3000 kcal</span>
@@ -1426,18 +1426,18 @@ function pRenderHero(){
   else{num.className='hero-num low';hero.className='hero';fill.className='progress-fill';sub.textContent=total===0?`Heute starten — Ziel: ${pMin}–${pMax}g (${pKg}kg × 1.8–2.2)`:`Noch ${pMin-total}g bis zum Minimalziel`;}
   // Kalorien-Sektion (nur wenn Yazio-Daten vorhanden)
   const kcal=pDayKcal(todayStr());
-  const kcalRow=document.getElementById('p-kcal-row');
-  if(kcalRow){
+  const kcalNumEl=document.getElementById('p-kcal-num');
+  const kcalSubEl=document.getElementById('p-kcal-sub');
+  const kcalFillEl=document.getElementById('p-kcal-fill');
+  if(kcalNumEl){
     if(kcal>0){
-      kcalRow.style.display='block';
-      document.getElementById('p-kcal-num').textContent=kcal;
-      const kpct=Math.min(Math.round(kcal/KCAL_GOAL*100),100);
-      document.getElementById('p-kcal-fill').style.width=kpct+'%';
-      const kcalSub=document.getElementById('p-kcal-sub');
-      if(kcal>=KCAL_GOAL) kcalSub.textContent='Ziel erreicht! 💪';
-      else kcalSub.textContent='Noch '+(KCAL_GOAL-kcal)+' kcal bis zum Aufbauziel ('+KCAL_GOAL+' kcal)';
+      kcalNumEl.textContent=kcal;
+      kcalFillEl.style.width=Math.min(Math.round(kcal/KCAL_GOAL*100),100)+'%';
+      kcalSubEl.textContent=kcal>=KCAL_GOAL?'Aufbauziel erreicht! 💪':'Noch '+(KCAL_GOAL-kcal)+' kcal bis zum Aufbauziel';
     } else {
-      kcalRow.style.display='none';
+      kcalNumEl.textContent='–';
+      kcalFillEl.style.width='0%';
+      kcalSubEl.textContent='Noch kein Yazio-Import für heute';
     }
   }
 }
