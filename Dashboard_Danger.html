@@ -840,16 +840,16 @@ h1 strong{font-weight:500;color:var(--brg2)}
       <div class="progress-track"><div class="progress-fill" id="p-prog-fill" style="width:0%"></div></div>
       <span class="progress-target" id="p-target-label">–</span>
     </div>
-    <div id="p-kcal-row" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--bg3);display:none">
-      <div style="display:flex;align-items:baseline;gap:6px;justify-content:center">
-        <span id="p-kcal-num" style="font-size:28px;font-weight:700;font-family:var(--mono);color:var(--text1)">0</span>
-        <span style="font-size:12px;color:var(--text3)">kcal heute</span>
-        <span id="p-kcal-badge" style="font-size:9px;background:#4ade80;color:#000;border-radius:3px;padding:1px 5px;font-weight:700">YZ</span>
+    <div id="p-kcal-row" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--bg3);display:none">
+      <div style="display:flex;align-items:baseline;gap:5px;justify-content:center">
+        <span id="p-kcal-num" style="font-size:20px;font-weight:600;font-family:var(--mono);color:var(--text2)">0</span>
+        <span style="font-size:11px;color:var(--text3)">kcal</span>
+        <span style="font-size:8px;background:#4ade80;color:#000;border-radius:3px;padding:1px 4px;font-weight:700">YZ</span>
       </div>
-      <div style="font-size:11px;color:var(--text3);margin-top:3px;text-align:center" id="p-kcal-sub">Ziel: 3000 kcal</div>
-      <div class="progress-wrap" style="margin-top:6px">
-        <div class="progress-track"><div class="progress-fill" id="p-kcal-fill" style="width:0%;background:var(--good)"></div></div>
-        <span class="progress-target">3000 kcal</span>
+      <div style="font-size:10px;color:var(--text3);margin-top:2px;text-align:center" id="p-kcal-sub">Ziel: 3000 kcal</div>
+      <div class="progress-wrap" style="margin-top:5px">
+        <div class="progress-track" style="height:3px"><div class="progress-fill" id="p-kcal-fill" style="width:0%;background:var(--good);height:3px"></div></div>
+        <span class="progress-target" style="font-size:9px">3000 kcal</span>
       </div>
     </div>
   </div>
@@ -1201,7 +1201,7 @@ async function syncUp(){
   // Protein
   const pr=[];
   Object.entries(pData).forEach(([date,entries])=>{
-    (entries||[]).forEach(e=>pr.push({entry_id:String(e.id),date,name:e.name,g:e.g,time:e.time||''}));
+    (entries||[]).forEach(e=>pr.push({entry_id:String(e.id),date,name:e.name,g:e.g,time:e.time||'',source:e.source||null,kcal:e.kcal||null,carbs:e.carbs||null,fat:e.fat||null}));
   });
   if(pr.length) ok=ok&&await sbUpsert('protein','entry_id',pr);
 
@@ -1265,7 +1265,7 @@ async function syncDown(){
 
   if(pr.length){
     const d={};
-    pr.forEach(r=>{if(!d[r.date])d[r.date]=[];d[r.date].push({name:r.name,g:r.g,time:r.time,id:r.entry_id||r.id});});
+    pr.forEach(r=>{if(!d[r.date])d[r.date]=[];d[r.date].push({name:r.name,g:r.g,time:r.time,id:r.entry_id||r.id,source:r.source||undefined,kcal:r.kcal||undefined,carbs:r.carbs||undefined,fat:r.fat||undefined});});
     pData=d; try{localStorage.setItem(KEY_PROTEIN,JSON.stringify(pData));}catch(e){}
     changed=true;
   }
