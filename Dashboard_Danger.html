@@ -1373,9 +1373,9 @@ function pRenderQuickButtons(){
 function pAddQuick(i){ const q=QUICK[i]; pAddEntry(q.name,q.g,q.kcal||0); }
 function pAddCustom(){
   const name=document.getElementById('p-custom-name').value.trim();
-  const g=parseInt(document.getElementById('p-custom-g').value);
+  const g=parseInt(document.getElementById('p-custom-g').value)||0;
   const kcal=parseInt(document.getElementById('p-custom-kcal').value)||0;
-  if(!name||!g||g<1) return;
+  if(!name||(!g&&!kcal)) return;
   pAddEntry(name,g,kcal);
   document.getElementById('p-custom-name').value='';
   document.getElementById('p-custom-g').value='';
@@ -1473,9 +1473,9 @@ function pRemovePastEntry(id){
 function pAddPastEntry(){
   if(!pCurrentPastDate) return;
   const name=document.getElementById('p-past-name').value.trim();
-  const g=parseInt(document.getElementById('p-past-g').value);
+  const g=parseInt(document.getElementById('p-past-g').value)||0;
   const kcal=parseInt(document.getElementById('p-past-kcal').value)||0;
-  if(!name||!g||g<1) return;
+  if(!name||(!g&&!kcal)) return;
   if(!pData[pCurrentPastDate]) pData[pCurrentPastDate]=[];
   pData[pCurrentPastDate].push({name,g,kcal,time:'manuell',id:Date.now()});
   pSave(); document.getElementById('p-past-name').value=''; document.getElementById('p-past-g').value=''; document.getElementById('p-past-kcal').value='';
