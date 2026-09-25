@@ -1187,7 +1187,7 @@ async function syncUp(){
   // Protein
   const pr=[];
   Object.entries(pData).forEach(([date,entries])=>{
-    (entries||[]).forEach(e=>{ if(e.source!=='yazio') pr.push({entry_id:String(e.id),date,name:e.name,g:e.g,time:e.time||''}); });
+    (entries||[]).forEach(e=>{ if(e.source!=='yazio') pr.push({entry_id:String(e.id),date,name:e.name,g:e.g,kcal:e.kcal||0,time:e.time||''}); });
   });
   if(pr.length) ok=ok&&await sbUpsert('protein','entry_id',pr);
 
@@ -1251,7 +1251,7 @@ async function syncDown(){
 
   if(pr.length){
     const d={};
-    pr.forEach(r=>{if(!d[r.date])d[r.date]=[];d[r.date].push({name:r.name,g:r.g,time:r.time,id:r.entry_id||r.id});});
+    pr.forEach(r=>{if(!d[r.date])d[r.date]=[];d[r.date].push({name:r.name,g:r.g,kcal:r.kcal||0,time:r.time,id:r.entry_id||r.id});});
     pData=d; try{localStorage.setItem(KEY_PROTEIN,JSON.stringify(pData));}catch(e){}
     changed=true;
   }
@@ -1440,7 +1440,10 @@ function pRenderWeek(){
     const {min:wMin,max:wMax}=pGetTargets();
     const pct=Math.min(Math.round(total/wMax*100),100);
     let gCls='low'; if(total>=wMax) gCls='over'; else if(total>=wMin) gCls='on-track';
-    html+=`<div class="wday${isToday?' today':''}"><div class="wday-label">${labels[i]}</div><div class="wday-g ${isFuture?'low':gCls}">${isFuture?'–':total>0?total+'g':'–'}</div><div class="wday-bar"><div class="wday-fill" style="width:${isFuture?0:pct}%;background:${total>=wMin?'var(--good)':'var(--accent)'}"></div></div></div>`;
+    const kcalDay=(pData[ds]||[]).reduce((s,e)=>s+(e.kcal||0),0);
+    const kcalPct=Math.min(Math.round(kcalDay/2800*100),100);
+    const kcalStr=isFuture?'–':kcalDay>0?kcalDay+'':' –';
+    html+=`<div class="wday${isToday?' today':''}"><div class="wday-label">${labels[i]}</div><div class="wday-g ${isFuture?'low':gCls}">${isFuture?'–':total>0?total+'g':'–'}</div><div class="wday-bar"><div class="wday-fill" style="width:${isFuture?0:pct}%;background:${total>=wMin?'var(--good)':'var(--accent)'}"></div></div><div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:3px">${kcalStr}${kcalDay>0?' kcal':''}</div><div class="wday-bar" style="margin-top:2px"><div class="wday-fill" style="width:${isFuture?0:kcalPct}%;background:linear-gradient(90deg,#e8a045,#e8714a)"></div></div></div>`;
   }
   el.innerHTML=html;
 }
