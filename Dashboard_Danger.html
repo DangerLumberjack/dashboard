@@ -24,7 +24,6 @@
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   html,body{height:100%;overflow:hidden}
   body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6;display:flex;flex-direction:column}
-
   header{background:var(--bg2);border-bottom:1px solid var(--border2);padding:10px 16px 8px;flex-shrink:0}
   .header-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
   .logo-row{display:flex;align-items:center;gap:7px}
@@ -69,7 +68,6 @@
   .wk-p3 .wk-type{background:var(--p3bg);color:var(--p3);border-color:var(--p3b)}
   .wk-p3.sel{background:var(--p3bg);border-color:var(--p3b)}
   .detail{flex:1;overflow-y:auto;padding:14px 16px;-webkit-overflow-scrolling:touch;min-width:0}
-
   .det-head{display:flex;align-items:center;gap:9px;margin-bottom:10px;flex-wrap:wrap}
   .det-title{font-size:16px;font-weight:400;color:var(--text)}
   .det-badge{font-family:var(--mono);font-size:10px;letter-spacing:.05em;padding:2px 8px;border-radius:3px;text-transform:uppercase;border:1px solid}
@@ -90,14 +88,12 @@
   .day-date{font-family:var(--mono);font-size:10px;color:var(--text3);flex-shrink:0}
   .day-total{font-size:11px;color:var(--text3);flex:1}
   .day-all-done{font-size:11px;color:var(--done);margin-left:auto;flex-shrink:0}
-  /* optional rest day checkbox */
   .opt-cb{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;margin-left:auto;opacity:.6}
   .opt-cb:hover{border-color:var(--done);opacity:1}
   .opt-cb.checked{background:var(--done);border-color:var(--done);opacity:1}
   .opt-cb.checked::after{content:'✓';color:#fff;font-size:10px;font-weight:600;line-height:1}
   .day-rest{padding:8px 11px;font-size:12px;color:var(--text3);font-style:italic}
   .splits{padding:8px 11px;display:flex;flex-direction:column;gap:5px}
-  /* split with checkbox */
   .split{border-radius:5px;padding:7px 9px;border:1px solid;transition:opacity .2s}
   .split.spl-done{opacity:.55}
   .split-head{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px}
@@ -113,7 +109,6 @@
   .ab-exr{background:#0d1f2d;color:#4ab8f0;border-color:#2a6898}
   .app-why{font-size:10px;color:var(--text3)}
   .app-alt{font-size:10px;color:var(--text3);margin-top:2px;display:flex;align-items:center;gap:4px}
-  /* split checkbox */
   .spl-cb{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;margin-left:auto}
   .spl-cb:hover{border-color:var(--done)}
   .spl-cb.checked{background:var(--done);border-color:var(--done)}
@@ -185,58 +180,58 @@
     <span class="progress-count" id="prog-count">0 / 0 Einheiten</span>
     <span class="progress-streak" id="prog-streak" style="display:none"></span>
     <button class="reset-btn" onclick="showReset()">Zurücksetzen</button>
-        <button class="reset-btn" onclick="exportProgress()" style="margin-left:4px">💾 Sichern</button>
-        <button class="reset-btn" onclick="document.getElementById('import-file').click()" style="margin-left:4px">📂 Laden</button>
-        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importProgress(this)">
+    <button class="reset-btn" onclick="exportProgress()" style="margin-left:4px">Sichern</button>
+    <button class="reset-btn" onclick="document.getElementById('import-file').click()" style="margin-left:4px">Laden</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importProgress(this)">
   </div>
 </header>
 <div class="tabs">
-  <div class="tab on-p1" id="tab-p1"    onclick="switchPhase('p1')">Phase 1 · Wo. 1–12</div>
-  <div class="tab"       id="tab-p2"    onclick="switchPhase('p2')">Phase 2 · Wo. 13–36</div>
-  <div class="tab"       id="tab-p3"    onclick="switchPhase('p3')">Phase 3 · Wo. 37–52</div>
-  <div class="tab"       id="tab-reise" onclick="switchPhase('reise')">✈ Reise</div>
+  <div class="tab on-p1" id="tab-p1"    onclick="switchPhase('p1')">Phase 1 &middot; Wo. 1-12</div>
+  <div class="tab"       id="tab-p2"    onclick="switchPhase('p2')">Phase 2 &middot; Wo. 13-36</div>
+  <div class="tab"       id="tab-p3"    onclick="switchPhase('p3')">Phase 3 &middot; Wo. 37-52</div>
+  <div class="tab"       id="tab-reise" onclick="switchPhase('reise')">Reise</div>
 </div>
 <div class="mobile-nav" id="mobile-nav">
-  <div class="mnav-btn" id="mnav-prev" onclick="mnavStep(-1)">‹</div>
+  <div class="mnav-btn" id="mnav-prev" onclick="mnavStep(-1)">&#8249;</div>
   <div class="mnav-center"><div id="mnav-title"></div><div id="mnav-badge" class="mnav-label"></div></div>
-  <div class="mnav-btn" id="mnav-next" onclick="mnavStep(1)">›</div>
+  <div class="mnav-btn" id="mnav-next" onclick="mnavStep(1)">&#8250;</div>
 </div>
 <div class="main" id="main-layout">
   <aside class="sidebar"><div class="sidebar-label">Wochen</div><div class="week-list" id="week-list"></div></aside>
-  <section class="detail" id="detail-panel"><p class="placeholder">← Woche auswählen</p></section>
+  <section class="detail" id="detail-panel"><p class="placeholder">Woche auswaehlen</p></section>
 </div>
 <div id="panel-reise">
   <div class="reise-panel">
-    <div class="note note-a" style="margin-bottom:10px">Reise-Modus — kein Torin nötig. Fitness+ läuft überall.</div>
+    <div class="note note-a" style="margin-bottom:10px">Reise-Modus - kein Torin noetig. Fitness+ laeuft ueberall.</div>
     <div class="reise-grid">
       <div class="rcard">
         <div class="rcard-title">Musterwoche auf Reisen</div>
-        <div class="day-block"><div class="day-header"><span class="day-name">Mo</span><span class="day-total">30–35 min</span></div><div class="splits">
-          <div class="split s-k"><div class="split-head"><span class="split-time">A · 20 min</span><span class="split-title">Kraft Oberkörper — kein Equipment</span></div><div class="split-detail">Push-Up Variationen, Pike Push-Up, Dips</div><div class="app-row"><span class="app-badge ab-fp">Fitness+</span><span class="app-why">→ No Equipment Upper</span></div></div>
-          <div class="or-div">── oder getrennt ──</div>
-          <div class="split s-c"><div class="split-head"><span class="split-time">B · 15 min</span><span class="split-title">Core</span></div><div class="app-row"><span class="app-badge ab-fp">Fitness+</span><span class="app-why">→ Core Training</span></div></div>
+        <div class="day-block"><div class="day-header"><span class="day-name">Mo</span><span class="day-total">30-35 min</span></div><div class="splits">
+          <div class="split s-k"><div class="split-head"><span class="split-time">A 20 min</span><span class="split-title">Kraft Oberkoerper - kein Equipment</span></div><div class="split-detail">Push-Up Variationen, Pike Push-Up, Dips</div><div class="app-row"><span class="app-badge ab-fp">Fitness+</span><span class="app-why">No Equipment Upper</span></div></div>
+          <div class="or-div">-- oder getrennt --</div>
+          <div class="split s-c"><div class="split-head"><span class="split-time">B 15 min</span><span class="split-title">Core</span></div><div class="app-row"><span class="app-badge ab-fp">Fitness+</span><span class="app-why">Core Training</span></div></div>
         </div></div>
-        <div class="day-block"><div class="day-header"><span class="day-name">Di</span><span class="day-total">25–30 min</span></div><div class="splits">
-          <div class="split s-h"><div class="split-head"><span class="split-time">Einzel</span><span class="split-title">Cardio-Ersatz</span></div><div class="split-detail">HIIT oder Hotel-Gerät</div><div class="app-row"><span class="app-badge ab-fp">Fitness+</span><span class="app-why">→ HIIT Full Body</span></div></div>
+        <div class="day-block"><div class="day-header"><span class="day-name">Di</span><span class="day-total">25-30 min</span></div><div class="splits">
+          <div class="split s-h"><div class="split-head"><span class="split-time">Einzel</span><span class="split-title">Cardio-Ersatz</span></div><div class="split-detail">HIIT oder Hotel-Geraet</div><div class="app-row"><span class="app-badge ab-fp">Fitness+</span><span class="app-why">HIIT Full Body</span></div></div>
         </div></div>
         <div class="day-block"><div class="day-header"><span class="day-name">Mi</span><span class="day-total" style="font-style:italic">Pause</span></div></div>
-        <div class="day-block"><div class="day-header"><span class="day-name">Do</span><span class="day-total">30–35 min</span></div><div class="splits">
-          <div class="split s-k"><div class="split-head"><span class="split-time">A · 20 min</span><span class="split-title">Kraft Unterkörper — kein Equipment</span></div><div class="split-detail">Squats, Lunges, Glute Bridge · 4×15–20 WH</div><div class="app-row"><span class="app-badge ab-fp">Fitness+</span><span class="app-why">→ No Equipment Lower</span></div></div>
-          <div class="or-div">── oder getrennt ──</div>
-          <div class="split s-c"><div class="split-head"><span class="split-time">B · 15 min</span><span class="split-title">Core</span></div><div class="app-row"><span class="app-badge ab-fp">Fitness+</span><span class="app-why">→ Core Training</span></div></div>
+        <div class="day-block"><div class="day-header"><span class="day-name">Do</span><span class="day-total">30-35 min</span></div><div class="splits">
+          <div class="split s-k"><div class="split-head"><span class="split-time">A 20 min</span><span class="split-title">Kraft Unterkoerper - kein Equipment</span></div><div class="split-detail">Squats, Lunges, Glute Bridge 4x15-20</div><div class="app-row"><span class="app-badge ab-fp">Fitness+</span><span class="app-why">No Equipment Lower</span></div></div>
+          <div class="or-div">-- oder getrennt --</div>
+          <div class="split s-c"><div class="split-head"><span class="split-time">B 15 min</span><span class="split-title">Core</span></div><div class="app-row"><span class="app-badge ab-fp">Fitness+</span><span class="app-why">Core Training</span></div></div>
         </div></div>
         <div class="day-block"><div class="day-header"><span class="day-name">Fr</span><span class="day-total">25 min</span></div><div class="splits">
-          <div class="split s-h"><div class="split-head"><span class="split-time">Einzel · 25 min</span><span class="split-title">HIIT Vollkörper</span></div><div class="app-row"><span class="app-badge ab-fp">Fitness+</span><span class="app-why">→ HIIT Full Body</span></div></div>
+          <div class="split s-h"><div class="split-head"><span class="split-time">Einzel 25 min</span><span class="split-title">HIIT Vollkoerper</span></div><div class="app-row"><span class="app-badge ab-fp">Fitness+</span><span class="app-why">HIIT Full Body</span></div></div>
         </div></div>
         <div class="day-block"><div class="day-header"><span class="day-name">Sa+So</span><span class="day-total" style="font-style:italic">Pause</span></div></div>
       </div>
       <div>
         <div class="rcard" style="margin-bottom:10px"><div class="rcard-title">Wiedereinstieg</div>
           <table class="rtable"><tr><th>Pause</th><th>Vorgehen</th></tr>
-            <tr><td>1–3 Tage</td><td>Direkt weiter</td></tr>
-            <tr><td>1 Woche</td><td>Eine Woche zurück</td></tr>
+            <tr><td>1-3 Tage</td><td>Direkt weiter</td></tr>
+            <tr><td>1 Woche</td><td>Eine Woche zurueck</td></tr>
             <tr><td>2+ Wochen</td><td>Phasenanfang + 50% Volumen</td></tr>
-            <tr><td>Hotel-Gerät</td><td>Normal weiter</td></tr>
+            <tr><td>Hotel-Geraet</td><td>Normal weiter</td></tr>
           </table>
         </div>
         <div class="rcard"><div class="rcard-title">Apps</div>
@@ -244,64 +239,66 @@
             <tr><td><span class="app-badge ab-fp">Fitness+</span></td><td>Kraft, Core, HIIT, Reise</td></tr>
             <tr><td><span class="app-badge ab-sk">Skandika</span></td><td>Technik, Ausdauer, Intervalle</td></tr>
             <tr><td><span class="app-badge ab-km">Kinomap</span></td><td>Lange Einheiten, Streckenrennen</td></tr>
-            <tr><td><span class="app-badge ab-exr">EXR</span></td><td>Geführte Ruder-Workouts, Torin</td></tr>
+            <tr><td><span class="app-badge ab-exr">EXR</span></td><td>Gefuehrte Ruder-Workouts, Torin</td></tr>
             <tr><td><span class="app-badge ab-gb">Gravelbike</span></td><td>Aktive Erholung, Outdoor</td></tr>
           </table>
         </div>
-        <div class="note note-g" style="margin-top:10px">HRV zeigt nach Reisen oft Anstieg — Rückkehr-Woche leichter starten.</div>
+        <div class="note note-g" style="margin-top:10px">HRV zeigt nach Reisen oft Anstieg - Rueckkehr-Woche leichter starten.</div>
       </div>
     </div>
   </div>
 </div>
 <div class="modal-overlay" id="reset-modal">
   <div class="modal">
-    <div class="modal-title">Fortschritt zurücksetzen?</div>
-    <div class="modal-desc">Alle Haken und der gesamte Fortschritt werden gelöscht. Das kann nicht rückgängig gemacht werden.</div>
+    <div class="modal-title">Fortschritt zuruecksetzen?</div>
+    <div class="modal-desc">Alle Haken und der gesamte Fortschritt werden geloescht. Das kann nicht rueckgaengig gemacht werden.</div>
     <div class="modal-btns">
       <button class="modal-cancel" onclick="hideReset()">Abbrechen</button>
-      <button class="modal-confirm" onclick="confirmReset()">Ja, zurücksetzen</button>
+      <button class="modal-confirm" onclick="confirmReset()">Ja, zuruecksetzen</button>
     </div>
   </div>
 </div>
 <script>
-const STORAGE_KEY='marcus_v3';
-let progress={};
-let curPhase='p1',curWeek=1;
-const phaseRanges={p1:{s:1,e:12},p2:{s:13,e:36},p3:{s:37,e:52}};
-// Registry of all checkable keys built during render
-let allKeys=new Set();
+var STORAGE_KEY='marcus_v3';
+var progress={};
+var curPhase='p1',curWeek=1;
+var phaseRanges={p1:{s:1,e:12},p2:{s:13,e:36},p3:{s:37,e:52}};
+var allKeys=new Set();
 
 function save(){
-  const json=JSON.stringify(progress);
-  try{ localStorage.setItem(STORAGE_KEY,json); }catch(e){ /* localStorage blocked - progress lives in memory only */ }
+  var json=JSON.stringify(progress);
+  try{ localStorage.setItem(STORAGE_KEY,json); }catch(e){}
 }
 function load(){
   try{
-    const d=localStorage.getItem(STORAGE_KEY);
-    if(d){ const p=JSON.parse(d); const v={};
-      Object.keys(p).forEach(k=>{ if(/^w[0-9]+_/.test(k)) v[k]=p[k]; });
+    var d=localStorage.getItem(STORAGE_KEY);
+    if(d){
+      var p=JSON.parse(d);
+      var v={};
+      Object.keys(p).forEach(function(k){ if(/^w[0-9]+_/.test(k)) v[k]=p[k]; });
       progress=v;
     }
   }catch(e){}
 }
 
 function updateProgress(){
-  const total=allKeys.size;
+  var total=allKeys.size;
   if(total===0)return;
-  const done=[...allKeys].filter(k=>!!progress[k]).length;
-  const pct=Math.round(done/total*100);
+  var done=0;
+  allKeys.forEach(function(k){ if(progress[k]) done++; });
+  var pct=Math.round(done/total*100);
   document.getElementById('prog-fill').style.width=pct+'%';
   document.getElementById('prog-pct').textContent=pct+'%';
   document.getElementById('prog-count').textContent=done+' / '+total+' Einheiten';
-  const streak=calcStreak();
-  const se=document.getElementById('prog-streak');
-  if(streak>0){se.textContent='🔥 '+streak+' Wo.';se.style.display='';}
+  var streak=calcStreak();
+  var se=document.getElementById('prog-streak');
+  if(streak>0){se.textContent=streak+' Wo.';se.style.display='';}
   else se.style.display='none';
 }
 
 function calcStreak(){
-  let s=0;
-  for(let w=52;w>=1;w--){
+  var s=0;
+  for(var w=52;w>=1;w--){
     if(weekRatio(w)>=0.8)s++;
     else if(s>0)break;
   }
@@ -309,163 +306,160 @@ function calcStreak(){
 }
 
 function weekRatio(w){
-  const wKeys=[...allKeys].filter(k=>k.startsWith('w'+w+'_'));
+  var wKeys=[];
+  allKeys.forEach(function(k){ if(k.indexOf('w'+w+'_')===0) wKeys.push(k); });
   if(!wKeys.length)return 0;
-  return wKeys.filter(k=>!!progress[k]).length/wKeys.length;
+  var done=0;
+  wKeys.forEach(function(k){ if(progress[k]) done++; });
+  return done/wKeys.length;
 }
 
 function updateSidebarCheck(w){
-  const el=document.getElementById('wk-check-'+w);
-  if(el)el.classList.toggle('visible',weekRatio(w)>=0.8);
+  var el=document.getElementById('wk-check-'+w);
+  if(el){
+    if(weekRatio(w)>=0.8) el.classList.add('visible');
+    else el.classList.remove('visible');
+  }
 }
 
-// Toggle split checkbox
-function toggleSplit(key){ try{
-  progress[key]=!progress[key];
-  save();
-  const cb=document.getElementById('scb-'+key);
-  const sp=document.getElementById('sp-'+key);
-  if(cb)cb.classList.toggle('checked',!!progress[key]);
-  if(sp)sp.classList.toggle('spl-done',!!progress[key]);
-  // update day header done indicator
-  const parts=key.split('_');
-  const w=parseInt(parts[0].replace('w',''));
-  const d=parseInt(parts[1]);
-  updateDayHeader(w,d);
-  updateProgress();
-  updateSidebarCheck(w);
-  }catch(e){ console.error('toggleSplit error:', e); } // never crash the page
+function toggleSplit(key){
+  try{
+    progress[key]=!progress[key];
+    save();
+    var cb=document.getElementById('scb-'+key);
+    var sp=document.getElementById('sp-'+key);
+    if(cb){ if(progress[key]) cb.classList.add('checked'); else cb.classList.remove('checked'); }
+    if(sp){ if(progress[key]) sp.classList.add('spl-done'); else sp.classList.remove('spl-done'); }
+    var parts=key.split('_');
+    var w=parseInt(parts[0].replace('w',''));
+    var di=parseInt(parts[1]);
+    updateDayHeader(w,di);
+    updateProgress();
+    updateSidebarCheck(w);
+  }catch(e){ console.error('toggleSplit error:',e); }
 }
 
 function toggleOpt(key){
   try{
     progress[key]=!progress[key];
     save();
-    const cb=document.getElementById('ocb-'+key);
-    const bl=document.getElementById('ob-'+key);
-    if(cb)cb.classList.toggle('checked',!!progress[key]);
-    if(bl)bl.classList.toggle('day-done',!!progress[key]);
+    var cb=document.getElementById('ocb-'+key);
+    var bl=document.getElementById('ob-'+key);
+    if(cb){ if(progress[key]) cb.classList.add('checked'); else cb.classList.remove('checked'); }
+    if(bl){ if(progress[key]) bl.classList.add('day-done'); else bl.classList.remove('day-done'); }
     updateProgress();
-  }catch(e){ console.error('toggleOpt error:', e); }
+  }catch(e){ console.error('toggleOpt error:',e); }
 }
 
-function updateDayHeader(w,d){
-  const dayKeys=[...allKeys].filter(k=>k.startsWith('w'+w+'_'+d+'_s'));
-  const block=document.getElementById('db-w'+w+'_'+d);
+function updateDayHeader(w,di){
+  var dayKeys=[];
+  allKeys.forEach(function(k){ if(k.indexOf('w'+w+'_'+di+'_s')===0) dayKeys.push(k); });
+  var block=document.getElementById('db-w'+w+'_'+di);
   if(!block)return;
-  const allDone=dayKeys.length>0&&dayKeys.every(k=>!!progress[k]);
-  block.classList.toggle('day-done',allDone);
-  const hdr=block.querySelector('.day-header');
-  let ind=hdr.querySelector('.day-all-done');
+  var allDone=dayKeys.length>0&&dayKeys.every(function(k){ return !!progress[k]; });
+  if(allDone) block.classList.add('day-done'); else block.classList.remove('day-done');
+  var hdr=block.querySelector('.day-header');
+  var ind=hdr.querySelector('.day-all-done');
   if(allDone&&!ind){
     ind=document.createElement('span');
-    ind.className='day-all-done';ind.textContent='✓';
+    ind.className='day-all-done';ind.textContent='';
     hdr.appendChild(ind);
   }else if(!allDone&&ind)ind.remove();
 }
 
-// ── RENDER HELPERS ─────────────────────────────────────────────────────
-const PLAN_START=new Date(2026,5,1);
+var PLAN_START=new Date(2026,5,1);
 
-function toggleSick(week, dayIdx){
-  const key='w'+week+'_'+dayIdx+'_sick';
+function toggleSick(week,dayIdx){
+  var key='w'+week+'_'+dayIdx+'_sick';
   progress[key]=!progress[key];
   save();
-  const btn=document.getElementById('sick-'+week+'-'+dayIdx);
-  const block=document.getElementById('db-w'+week+'_'+dayIdx);
-  if(btn) btn.classList.toggle('sick', !!progress[key]);
-  if(block) block.classList.toggle('sick-day', !!progress[key]);
+  var btn=document.getElementById('sick-'+week+'-'+dayIdx);
+  var block=document.getElementById('db-w'+week+'_'+dayIdx);
+  if(btn){ if(progress[key]) btn.classList.add('sick'); else btn.classList.remove('sick'); }
+  if(block){ if(progress[key]) block.classList.add('sick-day'); else block.classList.remove('sick-day'); }
   updateProgress();
   updateSidebarCheck(week);
 }
 
-function toggleDay(blockId, event){
-  // Don't toggle if clicking on interactive elements inside
-  if(event && event.target.closest('.spl-cb,.opt-cb,.sick-btn')) return;
-  const block=document.getElementById(blockId);
-  if(block) block.classList.toggle('open');
+function toggleDay(blockId,event){
+  if(event&&event.target.closest('.spl-cb,.opt-cb,.sick-btn'))return;
+  var block=document.getElementById(blockId);
+  if(block){ if(block.classList.contains('open')) block.classList.remove('open'); else block.classList.add('open'); }
 }
 
 function openAllDays(){
-  document.querySelectorAll('.day-block').forEach(b=>b.classList.add('open'));
+  document.querySelectorAll('.day-block').forEach(function(b){ b.classList.add('open'); });
 }
 function closeAllDays(){
-  document.querySelectorAll('.day-block').forEach(b=>b.classList.remove('open'));
+  document.querySelectorAll('.day-block').forEach(function(b){ b.classList.remove('open'); });
 }
 
 function fmtDate(w,d){
-  const dt=new Date(PLAN_START);
+  var dt=new Date(PLAN_START);
   dt.setDate(dt.getDate()+(w-1)*7+d);
   return dt.getDate()+'.'+(dt.getMonth()+1)+'.';
 }
 
-function volPct(w,p){const c=(w-1)%4,cn=Math.floor((w-1)/4);if(c===3)return 50;return Math.min((p===1?70:p===2?75:80)+cn*5+c*5,100);}
-function isDeload(w,ph){const wi=ph==='p1'?w:ph==='p2'?w-12:w-36;return wi%4===0;}
+function volPct(w,p){
+  var c=(w-1)%4;
+  if(c===3)return 50;
+  var base=p===1?70:p===2?75:80;
+  return Math.min(base+Math.floor((w-1)/4)*5+c*5,100);
+}
+function isDeload(w,ph){
+  var wi=ph==='p1'?w:ph==='p2'?w-12:w-36;
+  return wi%4===0;
+}
 
-// Build a split with checkbox
-function spl(cls,time,title,detail,apps,alt,comb,key){
-  if(key)allKeys.add(key);
-  let ah='';if(apps)apps.forEach(a=>{ah+=`<span class="app-badge ab-${a.c}">${a.n}</span><span class="app-why">${a.w}</span>`;});
-  const alh=alt?`<div class="app-alt"><span style="opacity:.4">oder:</span><span class="app-badge ab-${alt.c}">${alt.n}</span><span class="app-why">${alt.w}</span></div>`:'';
-  const ch=comb?`<div class="combined">${comb}</div>`:'';
+function exrLabel(arr){
+  return (arr[2]?arr[2]+' - ':'')+arr[0]+' ('+arr[1]+')';
+}
+
+function splHtml(cls,time,title,detail,appC,appN,appW,altC,altN,altW,comb,key){
+  if(key) allKeys.add(key);
+  var appHtml='';
+  if(appC){ appHtml='<span class="app-badge ab-'+appC+'">'+appN+'</span><span class="app-why">'+appW+'</span>'; }
+  var altHtml=altC?'<div class="app-alt"><span style="opacity:.4">oder:</span><span class="app-badge ab-'+altC+'">'+altN+'</span><span class="app-why">'+altW+'</span></div>':'';
+  var combHtml=comb?'<div class="combined">'+comb+'</div>':'';
   if(key){
-    const done=!!progress[key];
-    const dCls=done?' spl-done':'';
-    const cCls=done?' checked':'';
-    return `<div class="split ${cls}${dCls}" id="sp-${key}"><div class="split-head"><span class="split-time">${time}</span><span class="split-title">${title}</span><div class="spl-cb${cCls}" id="scb-${key}" onclick="toggleSplit('${key}')"></div></div><div class="split-detail">${detail}</div><div class="app-row">${ah}</div>${alh}</div>${ch}`;
+    var done=!!progress[key];
+    var dCls=done?' spl-done':'';
+    var cCls=done?' checked':'';
+    return '<div class="split '+cls+dCls+'" id="sp-'+key+'"><div class="split-head"><span class="split-time">'+time+'</span><span class="split-title">'+title+'</span><div class="spl-cb'+cCls+'" id="scb-'+key+'" onclick="toggleSplit(\''+key+'\')"></div></div><div class="split-detail">'+detail+'</div><div class="app-row">'+appHtml+'</div>'+altHtml+'</div>'+combHtml;
   }
-  return `<div class="split ${cls}"><div class="split-head"><span class="split-time">${time}</span><span class="split-title">${title}</span></div><div class="split-detail">${detail}</div><div class="app-row">${ah}</div>${alh}</div>${ch}`;
+  return '<div class="split '+cls+'"><div class="split-head"><span class="split-time">'+time+'</span><span class="split-title">'+title+'</span></div><div class="split-detail">'+detail+'</div><div class="app-row">'+appHtml+'</div>'+altHtml+'</div>'+combHtml;
 }
 
 function dayB(w,di,name,total,content){
-  const dayKeys=[...allKeys].filter(k=>k.startsWith('w'+w+'_'+di+'_s'));
-  const allDone=dayKeys.length>0&&dayKeys.every(k=>!!progress[k]);
-  const isSick=!!progress[`w${w}_${di}_sick`];
-  const dCls=(allDone?' day-done':'')+(isSick?' sick-day':'');
-  const ind=allDone?'<span class="day-all-done">✓</span>':'';
-  const sickCls=isSick?' sick':'';
-  return `<div class="day-block${dCls}" id="db-w${w}_${di}">
-    <div class="day-header" onclick="toggleDay('db-w${w}_${di}',event)">
-      <span class="day-name">${name}</span>
-      <span class="day-date">${fmtDate(w,di)}</span>
-      <span class="day-total">${total}</span>
-      ${ind}
-      <div class="sick-btn${sickCls}" id="sick-${w}-${di}" title="Krank — zählt nicht als verpasst" onclick="toggleSick(${w},${di});event.stopPropagation()">🤒</div>
-      <span class="day-chevron">▼</span>
-    </div>
-    <div class="day-body"><div class="splits">${content}</div></div>
-  </div>`;
+  var dayKeys=[];
+  allKeys.forEach(function(k){ if(k.indexOf('w'+w+'_'+di+'_s')===0) dayKeys.push(k); });
+  var allDone=dayKeys.length>0&&dayKeys.every(function(k){ return !!progress[k]; });
+  var isSick=!!progress['w'+w+'_'+di+'_sick'];
+  var dCls=(allDone?' day-done':'')+(isSick?' sick-day':'');
+  var ind=allDone?'<span class="day-all-done"></span>':'';
+  var sickCls=isSick?' sick':'';
+  return '<div class="day-block'+dCls+'" id="db-w'+w+'_'+di+'"><div class="day-header" onclick="toggleDay(\'db-w'+w+'_'+di+'\',event)"><span class="day-name">'+name+'</span><span class="day-date">'+fmtDate(w,di)+'</span><span class="day-total">'+total+'</span>'+ind+'<div class="sick-btn'+sickCls+'" id="sick-'+w+'-'+di+'" title="Krank" onclick="toggleSick('+w+','+di+');event.stopPropagation()">K</div><span class="day-chevron">v</span></div><div class="day-body"><div class="splits">'+content+'</div></div></div>';
 }
 
 function restB(w,di,name,txt){
-  const key=`w${w}_${di}_opt`;
+  var key='w'+w+'_'+di+'_opt';
   allKeys.add(key);
-  const done=!!progress[key];
-  const dCls=done?' day-done':'';
-  const cCls=done?' checked':'';
-  return `<div class="day-block${dCls}" id="ob-${key}">
-    <div class="day-header">
-      <span class="day-name">${name}</span>
-      <span class="day-date">${fmtDate(w,di)}</span>
-      <span class="day-total" style="font-style:italic;flex:1">${txt}</span>
-      <div class="opt-cb${cCls}" id="ocb-${key}" title="Optional erledigt" onclick="toggleOpt('${key}')"></div>
-    </div>
-  </div>`;
+  var done=!!progress[key];
+  var dCls=done?' day-done':'';
+  var cCls=done?' checked':'';
+  return '<div class="day-block'+dCls+'" id="ob-'+key+'"><div class="day-header"><span class="day-name">'+name+'</span><span class="day-date">'+fmtDate(w,di)+'</span><span class="day-total" style="font-style:italic;flex:1">'+txt+'</span><div class="opt-cb'+cCls+'" id="ocb-'+key+'" title="Optional erledigt" onclick="toggleOpt(\''+key+'\')"></div></div></div>';
 }
 
-function orD(){return '<div class="or-div">── direkt danach oder getrennt ──</div>';}
-function fp(w){return{c:'fp',n:'Fitness+',w};}
-function sk(w){return{c:'sk',n:'Skandika',w};}
-function km(w){return{c:'km',n:'Kinomap',w};}
-function vb(pct,col){return `<div class="vol-wrap"><span class="vol-label">Volumen</span><div class="vol-track"><div class="vol-fill" style="width:${pct}%;background:${col}"></div></div><span class="vol-pct">${pct}%</span></div>`;}
-function gbNote(){return `<div class="note note-g" style="margin-top:4px">Gravelbike optional an Pausen- oder Sonntagen (30–60 min) — fördert aktive Erholung und HRV.</div>`;}
-function pullNote(){return `<div class="note note-a" style="margin-top:4px">Pull-Isolation: Bent-over Row 3×10, Face Pull Band 3×15, Bizeps-Curl 3×12 — Hanteln + Widerstandsband</div>`;}
-function test2kNote(){return `<div class="note note-b" style="margin-top:4px">🎯 2k-Test auf Torin — Bestzeit notieren! Widerstand konstant halten, Ergebnis als Referenz festhalten.</div>`;}
+function orD(){ return '<div class="or-div">-- direkt danach oder getrennt --</div>'; }
+function noteHtml(cls,txt){ return '<div class="note '+cls+'" style="margin-top:4px">'+txt+'</div>'; }
+function pullNote(){ return noteHtml('note-a','Pull-Isolation: Bent-over Row 3x10, Face Pull Band 3x15, Bizeps-Curl 3x12 - Hanteln + Widerstandsband'); }
+function test2kNote(){ return noteHtml('note-b','2k-Test auf Torin - Bestzeit notieren! Widerstand konstant halten, Ergebnis als Referenz festhalten.'); }
+function gbNote(){ return noteHtml('note-g','Gravelbike optional an Pausen- oder Sonntagen (30-60 min) - foerdert aktive Erholung und HRV.'); }
+function vb(pct,col){ return '<div class="vol-wrap"><span class="vol-label">Volumen</span><div class="vol-track"><div class="vol-fill" style="width:'+pct+'%;background:'+col+'"></div></div><span class="vol-pct">'+pct+'%</span></div>'; }
 
-function K(w,d,s){return `w${w}_${d}_s${s}`;} // split key helper
-function EX(n){return{c:'exr',n:'EXR',w:'→ '+n};}
+function K(w,d,s){ return 'w'+w+'_'+d+'_s'+s; }
 
-const EXR_ROWING={
+var EXR_ROWING={
   13:{di:['Quick Row 2','8 km','Aerobic Base'],hi:['Cardiac Arrest 1','19 min','HIIT'],sa:['Endurance Rally 1','35 min','Ausdauer']},
   14:{di:['Quick Row 3','10 km','Aerobic Base'],hi:['HIIT 1','7 km','HIIT'],sa:['Endurance Rally 2','50 min','Ausdauer']},
   15:{di:['Aerobic Power 1','25 min','Aerobic'],hi:['HIIT Pyramid 1','23 min','HIIT'],sa:['Take it easy','6,5 km','Locker']},
@@ -480,204 +474,226 @@ const EXR_ROWING={
   24:{di:['Cadence Drill 1','28 min','Technik'],hi:['Five Alive: Short','22 min','Locker'],sa:['The Sweet Nothing','46 min','Locker']},
   25:{di:['Resilient Racer 1','40 min','FTP'],hi:['Engine Room','36 min','HIIT'],sa:['The Ziggurat','52 min','Ausdauer']},
   26:{di:['Resilient Racer 2','40 min','FTP'],hi:['Hold the Line','50 min','HIIT'],sa:['The Trick Question','42 min','Ausdauer']},
-  27:{di:['Tempo Check','56 min','FTP'],hi:['Turn up the HIIT — short','4 km','HIIT'],sa:['Sustainable Surge','39 min','Ausdauer']},
+  27:{di:['Tempo Check','56 min','FTP'],hi:['Turn up the HIIT short','4 km','HIIT'],sa:['Sustainable Surge','39 min','Ausdauer']},
   28:{di:['Cadence Drill 2','26 min','Technik'],hi:['Six Small Fires','32 min','Locker'],sa:['Time Flies','31 min','Locker']},
-  29:{di:['Resilient Racer 3','45 min','FTP'],hi:['Turn up the HIIT','7 km','⚡⚡⚡'],sa:['VO2max Preparation 1','8 km','VO2max']},
-  30:{di:['Resilient Racer 4','45 min','FTP'],hi:['Twenty Rounds','47 min','⚡⚡⚡'],sa:['VO2max Preparation 2','9,5 km','VO2max']},
+  29:{di:['Resilient Racer 3','45 min','FTP'],hi:['Turn up the HIIT','7 km','HIIT+++'],sa:['VO2max Preparation 1','8 km','VO2max']},
+  30:{di:['Resilient Racer 4','45 min','FTP'],hi:['Twenty Rounds','47 min','HIIT+++'],sa:['VO2max Preparation 2','9,5 km','VO2max']},
   31:{di:['No Easy Way Through','46 min','FTP'],hi:['Pyramids of Giza','55 min','HIIT'],sa:['Time Flies Eventually','1h 6min','Ausdauer']},
   32:{di:['Cadence Drill 4','30 min','Technik'],hi:['DEFCON One','26 min','Locker'],sa:['The Countdown','52 min','Locker']},
-  33:{di:['The Necessary Evil','32 min','⚡⚡⚡'],hi:['V for Effort','6,3 km','⚡⚡⚡'],sa:['The Toothbrush 2','43 min','⚡⚡⚡']},
-  34:{di:['Sustainable Surge','39 min','FTP'],hi:['Top Effort','59 min','🔴 MAX'],sa:['VO2 Max Mayhem','1h 10min','⚡⚡⚡']},
-  35:{di:['The Reckoning','54 min','⚡⚡⚡'],hi:['Turn up the HIIT hardcore','10 km','🔴 MAX'],sa:['The Toothbrush 3','1h 1min','🔴 MAX']},
-  36:{di:['Tactical Maneuver','30 min','Locker'],hi:['The Slap-bang','30 min','⚡⚡⚡'],sa:['VO2max Preparation 1','8 km','VO2max']},
-  37:{di:['The Ziggurat','52 min','⚡⚡⚡'],hido:['The Toothbrush','24 min','⚡⚡⚡'],sa:['VO2max Preparation 2','9,5 km','⚡⚡⚡']},
-  38:{di:['Comfortably Uncomfortable','43 min','FTP'],hido:['Cardiac Arrest 3','23 min','HIIT'],sa:['The Slow Burn 3','46 min','⚡⚡⚡']},
-  39:{di:['Resilient Racer 3','45 min','FTP'],hido:['The Toothbrush 2','43 min','⚡⚡⚡'],sa:['VO2 Max Mayhem','1h 10min','⚡⚡⚡']},
+  33:{di:['The Necessary Evil','32 min','HIIT+++'],hi:['V for Effort','6,3 km','HIIT+++'],sa:['The Toothbrush 2','43 min','HIIT+++']},
+  34:{di:['Sustainable Surge','39 min','FTP'],hi:['Top Effort','59 min','MAX'],sa:['VO2 Max Mayhem','1h 10min','HIIT+++']},
+  35:{di:['The Reckoning','54 min','HIIT+++'],hi:['Turn up the HIIT hardcore','10 km','MAX'],sa:['The Toothbrush 3','1h 1min','MAX']},
+  36:{di:['Tactical Maneuver','30 min','Locker'],hi:['The Slap-bang','30 min','HIIT+++'],sa:['VO2max Preparation 1','8 km','VO2max']},
+  37:{di:['The Ziggurat','52 min','HIIT+++'],hido:['The Toothbrush','24 min','HIIT+++'],sa:['VO2max Preparation 2','9,5 km','HIIT+++']},
+  38:{di:['Comfortably Uncomfortable','43 min','FTP'],hido:['Cardiac Arrest 3','23 min','HIIT'],sa:['The Slow Burn 3','46 min','HIIT+++']},
+  39:{di:['Resilient Racer 3','45 min','FTP'],hido:['The Toothbrush 2','43 min','HIIT+++'],sa:['VO2 Max Mayhem','1h 10min','HIIT+++']},
   40:{di:['The In-Between','37 min','Locker'],hido:['Brush & Burn','49 min','FTP'],sa:['Silent Watch','40 min','Locker']},
   41:{di:['No Easy Way Through','46 min','FTP'],hido:['HIIT Pyramid 2','14 km','HIIT'],sa:['Time Flies Eventually','1h 6min','Ausdauer']},
-  42:{di:['The Necessary Evil','32 min','⚡⚡⚡'],hido:['Turn up the HIIT','7 km','⚡⚡⚡'],sa:['VO2 Max Mayhem','1h 10min','VO2max']},
-  43:{di:['Sustainable Surge','39 min','FTP'],hido:['Hold the Line','50 min','HIIT'],sa:['The Toothbrush 3','1h 1min','🔴 MAX']},
-  44:{di:['Cadence Drill 5','40 min','Technik'],hido:['The Trick Question','42 min','⚡⚡⚡'],sa:['Time Flies Eventually','1h 6min','Ausdauer']},
-  45:{di:['Resilient Racer 4','45 min','FTP'],hido:['Turn up the HIIT hardcore','10 km','🔴 MAX'],sa:['VO2max Preparation 2','9,5 km','VO2max']},
-  46:{di:['Full Throttle','38 min','⚡⚡⚡'],hido:['Pyramids of Giza','55 min','HIIT'],sa:['VO2 Max Mayhem','1h 10min','⚡⚡⚡']},
-  47:{di:['Tempo Check','56 min','FTP'],hido:['V for Effort','6,3 km','⚡⚡⚡'],sa:['The Toothbrush 3','1h 1min','🔴 MAX']},
-  48:{di:['Cadence drill 6','30 min','Technik'],hido:['The Slap-bang','30 min','⚡⚡⚡'],sa:['VO2max Preparation 1','8 km','VO2max']},
-  49:{di:['The Reckoning','54 min','⚡⚡⚡'],hido:['Twenty Rounds','47 min','⚡⚡⚡'],sa:['VO2 Max Mayhem','1h 10min','VO2max']},
-  50:{di:['The Necessary Evil','32 min','⚡⚡⚡'],hido:['Turn up the HIIT hardcore','10 km','🔴 MAX'],sa:['Top Effort','59 min','🔴 MAX']},
-  51:{di:['The Protocol','35 min','🔴 MAX'],hido:['V for Effort','6,3 km','⚡⚡⚡'],sa:['The Toothbrush 3','1h 1min','🔴 MAX']},
-  52:{di:['Stir the Tanks','25 min','⚡⚡⚡'],hido:['The Slap-bang','30 min','⚡⚡⚡'],sa:['VO2max Preparation 1','8 km','VO2max']}
+  42:{di:['The Necessary Evil','32 min','HIIT+++'],hido:['Turn up the HIIT','7 km','HIIT+++'],sa:['VO2 Max Mayhem','1h 10min','VO2max']},
+  43:{di:['Sustainable Surge','39 min','FTP'],hido:['Hold the Line','50 min','HIIT'],sa:['The Toothbrush 3','1h 1min','MAX']},
+  44:{di:['Cadence Drill 5','40 min','Technik'],hido:['The Trick Question','42 min','HIIT+++'],sa:['Time Flies Eventually','1h 6min','Ausdauer']},
+  45:{di:['Resilient Racer 4','45 min','FTP'],hido:['Turn up the HIIT hardcore','10 km','MAX'],sa:['VO2max Preparation 2','9,5 km','VO2max']},
+  46:{di:['Full Throttle','38 min','HIIT+++'],hido:['Pyramids of Giza','55 min','HIIT'],sa:['VO2 Max Mayhem','1h 10min','HIIT+++']},
+  47:{di:['Tempo Check','56 min','FTP'],hido:['V for Effort','6,3 km','HIIT+++'],sa:['The Toothbrush 3','1h 1min','MAX']},
+  48:{di:['Cadence drill 6','30 min','Technik'],hido:['The Slap-bang','30 min','HIIT+++'],sa:['VO2max Preparation 1','8 km','VO2max']},
+  49:{di:['The Reckoning','54 min','HIIT+++'],hido:['Twenty Rounds','47 min','HIIT+++'],sa:['VO2 Max Mayhem','1h 10min','VO2max']},
+  50:{di:['The Necessary Evil','32 min','HIIT+++'],hido:['Turn up the HIIT hardcore','10 km','MAX'],sa:['Top Effort','59 min','MAX']},
+  51:{di:['The Protocol','35 min','MAX'],hido:['V for Effort','6,3 km','HIIT+++'],sa:['The Toothbrush 3','1h 1min','MAX']},
+  52:{di:['Stir the Tanks','25 min','HIIT+++'],hido:['The Slap-bang','30 min','HIIT+++'],sa:['VO2max Preparation 1','8 km','VO2max']}
 };
 
 function renderP1(w){
-  allKeys=new Set([...allKeys].filter(k=>!k.startsWith('w'+w+'_')));// reset week keys
-  const isD=w%4===0,vol=volPct(w,1),cy=Math.floor((w-1)/4);
-  if(isD)return `<div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT · Erholung</div>`+
-    dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Kraft Oberkörper leicht','60% Intensität · Technik-Fokus',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+
-    restB(w,1,'Di','Pause · optional Gravelbike locker 30–60 min')+
-    dayB(w,2,'Mi','15 min',spl('s-r','Einzel · 15 min','Rudern sehr locker','16–18 spm · HR unter 125 · sehr locker',[sk('→ freies Rudern')],null,null,K(w,2,1)))+
-    restB(w,3,'Do','Pause')+
-    dayB(w,4,'Fr','20 min',spl('s-k','Einzel · 20 min','Kraft Unterkörper leicht','60% · kein Muskelkater',[fp('→ Functional Strength Lower')],null,null,K(w,4,1)))+
-    dayB(w,5,'Sa','10 min · 🎯 2k-Test',
-      spl('s-r','Einzel · ~10 min','2000m Torin-Test','Aufwärmen 3 min locker · dann 2000m Vollgas · gleicher Widerstand immer · Zeit notieren!',[sk('→ freies Rudern / freie Distanz')],null,null,K(w,5,1))+
-      test2kNote())+
-    restB(w,6,'So','Pause · optional Fitness+ Cooldown');
+  allKeys=new Set(Array.from(allKeys).filter(function(k){ return k.indexOf('w'+w+'_')!==0; }));
+  var isD=w%4===0;
+  var vol=volPct(w,1);
+  if(isD){
+    return '<div class="note note-b" style="margin-bottom:10px">Deload-Woche - Volumen 50% - kein HIIT - Erholung</div>'+
+      dayB(w,0,'Mo','20 min',splHtml('s-k','Einzel 20 min','Kraft Oberkoerper leicht','60% Intensitaet - Technik-Fokus','fp','Fitness+','Functional Strength Upper','','','','',K(w,0,1)))+
+      restB(w,1,'Di','Pause - optional Gravelbike locker 30-60 min')+
+      dayB(w,2,'Mi','15 min',splHtml('s-r','Einzel 15 min','Rudern sehr locker','16-18 spm - HR unter 125 - sehr locker','sk','Skandika','freies Rudern','','','','',K(w,2,1)))+
+      restB(w,3,'Do','Pause')+
+      dayB(w,4,'Fr','20 min',splHtml('s-k','Einzel 20 min','Kraft Unterkoerper leicht','60% - kein Muskelkater','fp','Fitness+','Functional Strength Lower','','','','',K(w,4,1)))+
+      dayB(w,5,'Sa','~10 min - 2k-Test',
+        splHtml('s-r','Einzel ~10 min','2000m Torin-Test','Aufwaermen 3 min locker - dann 2000m Vollgas - gleicher Widerstand immer - Zeit notieren!','sk','Skandika','freies Rudern','','','','',K(w,5,1))+
+        test2kNote())+
+      restB(w,6,'So','Pause - optional Fitness+ Cooldown');
+  }
   return vb(vol,'#c96c2a')+
-    dayB(w,0,'Mo','35–40 min · Oberkörper Push + Core',
-      spl('s-k','Block A · 20 min','Kraft Oberkörper — Push','Schulter, Brust, Trizeps',[fp('→ Functional Strength Upper Body')],null,null,K(w,0,1))+
+    dayB(w,0,'Mo','35-40 min - Oberkoerper Push + Core',
+      splHtml('s-k','Block A 20 min','Kraft Oberkoerper Push','Schulter, Brust, Trizeps','fp','Fitness+','Functional Strength Upper Body','','','','',K(w,0,1))+
       orD()+
-      spl('s-c','Block B · 15 min','Core','Planks, Dead Bug, Pallof Press',[fp('→ Core Training')],null,'In Folge: 35 min · Getrennt: A morgens, B mittags',K(w,0,2)))+
-    dayB(w,1,'Di','30 min · Rudern + Pull-Isolation',
-      spl('s-r','Block A · 20 min','Rudern — Steady State & Technik','18–20 spm · HR 120–140 · Z2 locker',[sk('→ Anfänger-Programm / Technik')],null,null,K(w,1,1))+
+      splHtml('s-c','Block B 15 min','Core','Planks, Dead Bug, Pallof Press','fp','Fitness+','Core Training','','','In Folge: 35 min - Getrennt: A morgens, B mittags',K(w,0,2)))+
+    dayB(w,1,'Di','30 min - Rudern + Pull-Isolation',
+      splHtml('s-r','Block A 20 min','Rudern Steady State & Technik','18-20 spm - HR 120-140 - Z2 locker','sk','Skandika','Anfaenger-Programm / Technik','','','','',K(w,1,1))+
       orD()+
-      spl('s-k','Block B · 10 min','Pull-Isolation — Lats & Bizeps','Bent-over Row 3×10 · Face Pull Band 3×15 · Bizeps-Curl 3×12',null,null,'In Folge: 30 min · Getrennt: Rudern morgens, Pull abends',K(w,1,2))+
+      splHtml('s-k','Block B 10 min','Pull-Isolation Lats & Bizeps','Bent-over Row 3x10 - Face Pull Band 3x15 - Bizeps-Curl 3x12','','','','','','In Folge: 30 min - Getrennt: Rudern morgens, Pull abends',K(w,1,2))+
       pullNote())+
-    restB(w,2,'Mi','Pause · optional Cooldown 10 min')+
-    dayB(w,3,'Do','35–40 min · Unterkörper + Core',
-      spl('s-k','Block A · 20 min','Kraft Unterkörper','Squats, Lunges, Glutes, Hamstrings',[fp('→ Functional Strength Lower Body')],null,null,K(w,3,1))+
+    restB(w,2,'Mi','Pause - optional Cooldown 10 min')+
+    dayB(w,3,'Do','35-40 min - Unterkoerper + Core',
+      splHtml('s-k','Block A 20 min','Kraft Unterkoerper','Squats, Lunges, Glutes, Hamstrings','fp','Fitness+','Functional Strength Lower Body','','','','',K(w,3,1))+
       orD()+
-      spl('s-c','Block B · 15 min','Core — Rotation & Stabilität','Obliques, Rotation, Anti-Rotation',[fp('→ Core Training')],null,'In Folge: 35 min · Getrennt: A morgens, B abends',K(w,3,2)))+
-    dayB(w,4,'Fr','30 min · Pull-Kraft + HIIT-Rudern',
-      spl('s-k','Block A · 12 min','Pull-Kraft — Rücken & Bizeps','Bent-over Row schwer 4×8 · Reverse Fly Band 3×15 · Hammer Curl 3×10',null,null,null,K(w,4,1))+
+      splHtml('s-c','Block B 15 min','Core Rotation & Stabilitaet','Obliques, Rotation, Anti-Rotation','fp','Fitness+','Core Training','','','In Folge: 35 min - Getrennt: A morgens, B abends',K(w,3,2)))+
+    dayB(w,4,'Fr','30 min - Pull-Kraft + HIIT-Rudern',
+      splHtml('s-k','Block A 12 min','Pull-Kraft Ruecken & Bizeps','Bent-over Row schwer 4x8 - Reverse Fly Band 3x15 - Hammer Curl 3x10','','','','','','',K(w,4,1))+
       orD()+
-      spl('s-h','Block B · 22–25 min','Rudern — 4×4 Intervall','3 min Aufwärmen · 4× (4 min @24–26 spm / HR 155–165 / 2 min locker 18 spm) · 3 min Cool-down',[sk('→ Intervall-Programm')],null,'In Folge: 35 min · Getrennt: Pull morgens, HIIT-Rudern abends',K(w,4,2)))+
-    dayB(w,5,'Sa','35–40 min · Vollkörper + Rudern Finish',
-      spl('s-k','Block A · 20 min','Kraft Vollkörper','Compound-Kombis: Squat+Press, Hinge+Row',[fp('→ Functional Strength Full Body')],null,null,K(w,5,1))+
+      splHtml('s-h','Block B 22-25 min','Rudern 4x4 Intervall','3 min Aufwaermen - 4x (4 min @24-26 spm / HR 155-165 / 2 min locker 18 spm) - 3 min Cool-down','sk','Skandika','Intervall-Programm','','','In Folge: 35 min - Getrennt: Pull morgens, HIIT-Rudern abends',K(w,4,2)))+
+    dayB(w,5,'Sa','35-40 min - Vollkoerper + Rudern Finish',
+      splHtml('s-k','Block A 20 min','Kraft Vollkoerper','Compound-Kombis: Squat+Press, Hinge+Row','fp','Fitness+','Functional Strength Full Body','','','','',K(w,5,1))+
       orD()+
-      spl('s-r','Block B · 15 min','Rudern — lockeres Technik-Finish','20 spm · HR 120–130 · locker',[km('→ Landschaftsstrecke')],sk('→ freies Rudern'),'In Folge: 35 min · Getrennt: Kraft morgens, Rudern nachmittags',K(w,5,2)))+
+      splHtml('s-r','Block B 15 min','Rudern lockeres Technik-Finish','20 spm - HR 120-130 - locker','km','Kinomap','Landschaftsstrecke','sk','Skandika','freies Rudern - In Folge: 35 min',K(w,5,2)))+
     restB(w,6,'So','Pause')+gbNote();
 }
 
 function renderP2(w){
-  allKeys=new Set([...allKeys].filter(k=>!k.startsWith('w'+w+'_')));
-  const wi=w-12,isD=wi%4===0,vol=volPct(wi,2),cy=Math.floor((wi-1)/4);
-  const er=EXR_ROWING[w]||{},eD=er.di||['Rudern Aerobic','25 min',''],eH=er.hi||['HIIT-Rudern','20 min',''],eS=er.sa||['Rudern Distanz','25 min',''];
-  if(isD)return `<div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT-Rudern</div>`+
-    dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Push leicht','60% Intensität',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+
-    restB(w,1,'Di','Pause · optional Gravelbike locker')+
-    dayB(w,2,'Mi','20 min',spl('s-r','Einzel · '+eD[1],eD[0],(eD[2]?eD[2]+' · ':'')+' EXR · Torin',[EX(eD[0])],null,null,K(w,2,1)))+
-    restB(w,3,'Do','Pause')+
-    dayB(w,4,'Fr','20 min',spl('s-k','Einzel · 20 min','Legs leicht','60% · Bewegungsqualität',[fp('→ Functional Strength Lower')],null,null,K(w,4,1)))+
-    dayB(w,5,'Sa','10 min · 🎯 2k-Test',
-      spl('s-r','Einzel · ~10 min','2000m Torin-Test','Aufwärmen 3 min locker · dann 2000m Vollgas · gleicher Widerstand immer · Zeit notieren!',[sk('→ freies Rudern / freie Distanz')],null,null,K(w,5,1))+
-      test2kNote())+
-    restB(w,6,'So','Pause · optional Yoga for Athletes');
+  allKeys=new Set(Array.from(allKeys).filter(function(k){ return k.indexOf('w'+w+'_')!==0; }));
+  var wi=w-12,isD=wi%4===0,vol=volPct(wi,2);
+  var er=EXR_ROWING[w]||{};
+  var eD=er.di||['Rudern Aerobic','25 min',''];
+  var eH=er.hi||['HIIT-Rudern','20 min',''];
+  var eS=er.sa||['Rudern Distanz','25 min',''];
+  if(isD){
+    return '<div class="note note-b" style="margin-bottom:10px">Deload-Woche - Volumen 50% - kein HIIT-Rudern</div>'+
+      dayB(w,0,'Mo','20 min',splHtml('s-k','Einzel 20 min','Push leicht','60% Intensitaet','fp','Fitness+','Functional Strength Upper','','','','',K(w,0,1)))+
+      restB(w,1,'Di','Pause - optional Gravelbike locker')+
+      dayB(w,2,'Mi','20 min',splHtml('s-r','Einzel '+eD[1],eD[0],exrLabel(eD),'exr','EXR',eD[0],'','','','',K(w,2,1)))+
+      restB(w,3,'Do','Pause')+
+      dayB(w,4,'Fr','20 min',splHtml('s-k','Einzel 20 min','Legs leicht','60% - Bewegungsqualitaet','fp','Fitness+','Functional Strength Lower','','','','',K(w,4,1)))+
+      dayB(w,5,'Sa','~10 min - 2k-Test',
+        splHtml('s-r','Einzel ~10 min','2000m Torin-Test','Aufwaermen 3 min locker - dann 2000m Vollgas - gleicher Widerstand immer - Zeit notieren!','sk','Skandika','freies Rudern','','','','',K(w,5,1))+
+        test2kNote())+
+      restB(w,6,'So','Pause - optional Yoga for Athletes');
+  }
   return vb(vol,'#3a7a5a')+
-    dayB(w,0,'Mo','35–40 min · Push + Core',
-      spl('s-k','Block A · 20 min','Push — Brust & Schulter','Bench-Varianten, Schulterpress, Trizeps · 3–4 Sätze',[fp('→ Functional Strength Upper (Push)')],null,null,K(w,0,1))+
+    dayB(w,0,'Mo','35-40 min - Push + Core',
+      splHtml('s-k','Block A 20 min','Push Brust & Schulter','Bench-Varianten, Schulterpress, Trizeps 3-4 Saetze','fp','Fitness+','Functional Strength Upper (Push)','','','','',K(w,0,1))+
       orD()+
-      spl('s-c','Block B · 15 min','Core — Anterior Chain','Hollow Body, Ab Wheel, Hanging Knee Raises',[fp('→ Core Training')],null,'In Folge: 35 min · Getrennt: Push morgens, Core mittags',K(w,0,2)))+
-    dayB(w,1,'Di','45 min · Rudern EXR + Pull-Isolation',
-      spl('s-r','Block A · '+eD[1],eD[0],(eD[2]?eD[2]+' · ')+'EXR · Torin',[EX(eD[0])],sk('→ Skandika App'),null,K(w,1,1))+
+      splHtml('s-c','Block B 15 min','Core Anterior Chain','Hollow Body, Ab Wheel, Hanging Knee Raises','fp','Fitness+','Core Training','','','In Folge: 35 min - Getrennt: Push morgens, Core mittags',K(w,0,2)))+
+    dayB(w,1,'Di','45 min - Rudern EXR + Pull-Isolation',
+      splHtml('s-r','Block A '+eD[1],eD[0],exrLabel(eD),'exr','EXR',eD[0],'sk','Skandika','Skandika App','',K(w,1,1))+
       orD()+
-      spl('s-k','Block B · 12 min','Pull-Isolation — Lats & Bizeps','Bent-over Row 3×10 (7,5–10kg) · Face Pull Band 3×15 · Bizeps-Curl 3×12 (5–7,5kg)',null,null,'In Folge: 45 min · Getrennt: Rudern morgens, Pull abends',K(w,1,2))+
+      splHtml('s-k','Block B 12 min','Pull-Isolation Lats & Bizeps','Bent-over Row 3x10 (7,5-10kg) - Face Pull Band 3x15 - Bizeps-Curl 3x12 (5-7,5kg)','','','','','','In Folge: 45 min - Getrennt: Rudern morgens, Pull abends',K(w,1,2))+
       pullNote())+
-    dayB(w,2,'Mi','30–35 min · Legs + Cooldown',
-      spl('s-k','Block A · 20 min','Legs — Quad-dominiert','Squats, Split-Squats, Step-Ups · schwerste Einheit',[fp('→ Functional Strength Lower Body')],null,null,K(w,2,1))+
+    dayB(w,2,'Mi','30-35 min - Legs + Cooldown',
+      splHtml('s-k','Block A 20 min','Legs Quad-dominiert','Squats, Split-Squats, Step-Ups - schwerste Einheit','fp','Fitness+','Functional Strength Lower Body','','','','',K(w,2,1))+
       orD()+
-      spl('s-m','Block B · 10 min','Cooldown — Hüfte & Oberschenkel','Hüftöffner, Oberschenkel',[fp('→ Cooldown')],null,'In Folge: 30 min',K(w,2,2)))+
-    restB(w,3,'Do','Pause · optional Gravelbike 30–60 min')+
-    dayB(w,4,'Fr','40 min · Pull-Kraft + HIIT-Rudern',
-      spl('s-k','Block A · 15 min','Pull-Kraft — Rücken & Bizeps','Bent-over Row schwer 4×8 (10kg) · Reverse Fly Band 3×15 · Hammer Curl 3×10 (7,5kg)',null,null,null,K(w,4,1))+
+      splHtml('s-m','Block B 10 min','Cooldown Huefte & Oberschenkel','Huefte, Oberschenkel','fp','Fitness+','Cooldown','','','In Folge: 30 min',K(w,2,2)))+
+    restB(w,3,'Do','Pause - optional Gravelbike 30-60 min')+
+    dayB(w,4,'Fr','40 min - Pull-Kraft + HIIT-Rudern',
+      splHtml('s-k','Block A 15 min','Pull-Kraft Ruecken & Bizeps','Bent-over Row schwer 4x8 (10kg) - Reverse Fly Band 3x15 - Hammer Curl 3x10 (7,5kg)','','','','','','',K(w,4,1))+
       orD()+
-      spl('s-h','Block B · '+eH[1],eH[0],(eH[2]?eH[2]+' · ')+'EXR · Torin',[EX(eH[0])],sk('→ Skandika App'),'In Folge: 40 min · Getrennt: Pull morgens, HIIT-Rudern abends',K(w,4,2)))+
-    dayB(w,5,'Sa','40 min · Rudern Distanz + Core',
-      spl('s-r','Block A · '+eS[1],eS[0],(eS[2]?eS[2]+' · ')+'EXR · Torin',[EX(eS[0])],km('→ Streckenrennen / EXR'),null,K(w,5,1))+
+      splHtml('s-h','Block B '+eH[1],eH[0],exrLabel(eH),'exr','EXR',eH[0],'sk','Skandika','In Folge: 40 min - Getrennt: Pull morgens, HIIT-Rudern abends',K(w,4,2)))+
+    dayB(w,5,'Sa','40 min - Rudern Distanz + Core',
+      splHtml('s-r','Block A '+eS[1],eS[0],exrLabel(eS),'exr','EXR',eS[0],'km','Kinomap','Streckenrennen / EXR',K(w,5,1))+
       orD()+
-      spl('s-c','Block B · 15 min','Core — Stabilität komplex','Copenhagen Plank, Rotation, Suitcase Carry',[fp('→ Core Training')],null,'In Folge: 40 min',K(w,5,2)))+
+      splHtml('s-c','Block B 15 min','Core Stabilitaet komplex','Copenhagen Plank, Rotation, Suitcase Carry','fp','Fitness+','Core Training','','','In Folge: 40 min',K(w,5,2)))+
     restB(w,6,'So','Pause')+gbNote();
 }
 
 function renderP3(w){
-  allKeys=new Set([...allKeys].filter(k=>!k.startsWith('w'+w+'_')));
-  const wi=w-36,isD=wi%4===0,vol=volPct(wi,3);
-  const er=EXR_ROWING[w]||{},e3D=er.di||['Rudern Pyramide','25 min',''],e3Do=er.hido||['HIIT-Rudern','20 min',''],e3S=er.sa||['Rudern Ausdauer','30 min',''];
-  if(isD)return `<div class="note note-b" style="margin-bottom:10px">Deload-Woche · Volumen 50% · kein HIIT · kein Pyramiden-Rudern</div>`+
-    dayB(w,0,'Mo','20 min',spl('s-k','Einzel · 20 min','Upper leicht','60% Gewichte',[fp('→ Functional Strength Upper')],null,null,K(w,0,1)))+
-    restB(w,1,'Di','Pause · optional Gravelbike locker')+
-    dayB(w,2,'Mi','20 min',spl('s-r','Einzel · '+e3D[1],e3D[0],(e3D[2]?e3D[2]+' · ':'')+' EXR · Torin',[EX(e3D[0])],null,null,K(w,2,1)))+
-    restB(w,3,'Do','Pause')+
-    dayB(w,4,'Fr','20 min',spl('s-k','Einzel · 20 min','Lower leicht','60% · Hüftmobilität',[fp('→ Functional Strength Lower')],null,null,K(w,4,1)))+
-    dayB(w,5,'Sa','10 min · 🎯 2k-Test',
-      spl('s-r','Einzel · ~10 min','2000m Torin-Test','Aufwärmen 3 min locker · dann 2000m Vollgas · gleicher Widerstand immer · Zeit notieren!',[sk('→ freies Rudern / freie Distanz')],null,null,K(w,5,1))+
-      test2kNote())+
-    restB(w,6,'So','Pause · optional Fitness+ Cooldown');
+  allKeys=new Set(Array.from(allKeys).filter(function(k){ return k.indexOf('w'+w+'_')!==0; }));
+  var wi=w-36,isD=wi%4===0,vol=volPct(wi,3);
+  var er=EXR_ROWING[w]||{};
+  var e3D=er.di||['Rudern Pyramide','25 min',''];
+  var e3Do=er.hido||['HIIT-Rudern','20 min',''];
+  var e3S=er.sa||['Rudern Ausdauer','30 min',''];
+  if(isD){
+    return '<div class="note note-b" style="margin-bottom:10px">Deload-Woche - Volumen 50% - kein HIIT - kein Pyramiden-Rudern</div>'+
+      dayB(w,0,'Mo','20 min',splHtml('s-k','Einzel 20 min','Upper leicht','60% Gewichte','fp','Fitness+','Functional Strength Upper','','','','',K(w,0,1)))+
+      restB(w,1,'Di','Pause - optional Gravelbike locker')+
+      dayB(w,2,'Mi','20 min',splHtml('s-r','Einzel '+e3D[1],e3D[0],exrLabel(e3D),'exr','EXR',e3D[0],'','','','',K(w,2,1)))+
+      restB(w,3,'Do','Pause')+
+      dayB(w,4,'Fr','20 min',splHtml('s-k','Einzel 20 min','Lower leicht','60% - Huefte','fp','Fitness+','Functional Strength Lower','','','','',K(w,4,1)))+
+      dayB(w,5,'Sa','~10 min - 2k-Test',
+        splHtml('s-r','Einzel ~10 min','2000m Torin-Test','Aufwaermen 3 min locker - dann 2000m Vollgas - gleicher Widerstand immer - Zeit notieren!','sk','Skandika','freies Rudern','','','','',K(w,5,1))+
+        test2kNote())+
+      restB(w,6,'So','Pause - optional Fitness+ Cooldown');
+  }
   return vb(vol,'#5a6a9a')+
-    dayB(w,0,'Mo','45 min · Upper A + Pull-Isolation + Core',
-      spl('s-k','Block A · 25 min','Upper A — schwer, Compound','4 Sätze à 6–8 WH · höchste Last des Plans',[fp('→ Functional Strength Upper')],null,null,K(w,0,1))+
+    dayB(w,0,'Mo','45 min - Upper A + Pull-Isolation + Core',
+      splHtml('s-k','Block A 25 min','Upper A schwer Compound','4 Saetze a 6-8 WH - hoechste Last des Plans','fp','Fitness+','Functional Strength Upper','','','','',K(w,0,1))+
       orD()+
-      spl('s-k','Block B · 12 min','Pull-Isolation — Lats & Bizeps','Bent-over Row 4×8 (10kg) · Face Pull Band 3×15 · Bizeps-Curl 4×10 (7,5–10kg)',null,null,null,K(w,0,2))+
+      splHtml('s-k','Block B 12 min','Pull-Isolation Lats & Bizeps','Bent-over Row 4x8 (10kg) - Face Pull Band 3x15 - Bizeps-Curl 4x10 (7,5-10kg)','','','','','','',K(w,0,2))+
       orD()+
-      spl('s-c','Block C · 10 min','Core — belastet','Weighted Plank, Farmer Carry-Simulation',[fp('→ Core Training')],null,'In Folge: 45 min',K(w,0,3))+
+      splHtml('s-c','Block C 10 min','Core belastet','Weighted Plank, Farmer Carry-Simulation','fp','Fitness+','Core Training','','','In Folge: 45 min',K(w,0,3))+
       pullNote())+
-    dayB(w,1,'Di','40 min · Rudern Pyramide + Core',
-      spl('s-r','Block A · '+e3D[1],e3D[0],(e3D[2]?e3D[2]+' · ')+'EXR · Torin',[EX(e3D[0])],sk('→ Skandika App'),null,K(w,1,1))+
+    dayB(w,1,'Di','40 min - Rudern Pyramide + Core',
+      splHtml('s-r','Block A '+e3D[1],e3D[0],exrLabel(e3D),'exr','EXR',e3D[0],'sk','Skandika','Skandika App','',K(w,1,1))+
       orD()+
-      spl('s-c','Block B · 15 min','Core — Posterior Power','Hip Hinge, Good Mornings, Hamstring',[fp('→ Core Training')],null,'In Folge: 40 min',K(w,1,2)))+
-    dayB(w,2,'Mi','35 min · Lower A + Cooldown (schwer)',
-      spl('s-k','Block A · 25 min','Lower A — Quad & Glute schwer','Bulgarian Split Squat, Hip Thrust, RDL · 4×6–8 WH',[fp('→ Functional Strength Lower')],null,null,K(w,2,1))+
+      splHtml('s-c','Block B 15 min','Core Posterior Power','Hip Hinge, Good Mornings, Hamstring','fp','Fitness+','Core Training','','','In Folge: 40 min',K(w,1,2)))+
+    dayB(w,2,'Mi','35 min - Lower A + Cooldown (schwer)',
+      splHtml('s-k','Block A 25 min','Lower A Quad & Glute schwer','Bulgarian Split Squat, Hip Thrust, RDL 4x6-8 WH','fp','Fitness+','Functional Strength Lower','','','','',K(w,2,1))+
       orD()+
-      spl('s-m','Block B · 10 min','Cooldown — Hüfte & Knie','Couch Stretch, 90/90, Ankle Mobility',[fp('→ Cooldown')],null,'In Folge: 35 min',K(w,2,2)))+
-    dayB(w,3,'Do','35 min · HIIT-Rudern + Core',
-      spl('s-h','Block A · '+e3Do[1],e3Do[0],(e3Do[2]?e3Do[2]+' · ')+'EXR · Torin',[EX(e3Do[0])],km('→ Streckenrennen / EXR'),null,K(w,3,1))+
+      splHtml('s-m','Block B 10 min','Cooldown Huefte & Knie','Couch Stretch, 90/90, Ankle Mobility','fp','Fitness+','Cooldown','','','In Folge: 35 min',K(w,2,2)))+
+    dayB(w,3,'Do','35 min - HIIT-Rudern + Core',
+      splHtml('s-h','Block A '+e3Do[1],e3Do[0],exrLabel(e3Do),'exr','EXR',e3Do[0],'km','Kinomap','Streckenrennen / EXR','',K(w,3,1))+
       orD()+
-      spl('s-c','Block B · 15 min','Core — Anti-Flexion','Ab Rollout, Stir the Pot, RKC Plank',[fp('→ Core Training')],null,'In Folge: 35 min',K(w,3,2)))+
-    dayB(w,4,'Fr','40 min · Upper B Pull-Fokus + Core',
-      spl('s-k','Block A · 25 min','Upper B — Pull-Volumen & Isolation','Bent-over Row 4×10 · Reverse Fly 3×15 · Bizeps-Curl 4×12 · Hammer Curl 3×10',[fp('→ Functional Strength Upper')],null,null,K(w,4,1))+
+      splHtml('s-c','Block B 15 min','Core Anti-Flexion','Ab Rollout, Stir the Pot, RKC Plank','fp','Fitness+','Core Training','','','In Folge: 35 min',K(w,3,2)))+
+    dayB(w,4,'Fr','40 min - Upper B Pull-Fokus + Core',
+      splHtml('s-k','Block A 25 min','Upper B Pull-Volumen & Isolation','Bent-over Row 4x10 - Reverse Fly 3x15 - Bizeps-Curl 4x12 - Hammer Curl 3x10','fp','Fitness+','Functional Strength Upper','','','','',K(w,4,1))+
       orD()+
-      spl('s-c','Block B · 10 min','Core — kurzes Finish','Kontrolle, keine Erschöpfung',[fp('→ Core Training')],null,'In Folge: 35 min',K(w,4,2)))+
-    dayB(w,5,'Sa','30–35 min · Rudern Ausdauer',
-      spl('s-r','Einzel · '+e3S[1],e3S[0],(e3S[2]?e3S[2]+' · ')+'EXR · Torin',[EX(e3S[0])],km('→ Streckenrennen / EXR'),null,K(w,5,1))+
-      '<div class="note note-g" style="margin-top:4px">Alt. Sa: Gravelbike 60–90 min gleichwertig.</div>')+
+      splHtml('s-c','Block B 10 min','Core kurzes Finish','Kontrolle, keine Erschoepfung','fp','Fitness+','Core Training','','','In Folge: 35 min',K(w,4,2)))+
+    dayB(w,5,'Sa','30-35 min - Rudern Ausdauer',
+      splHtml('s-r','Einzel '+e3S[1],e3S[0],exrLabel(e3S),'exr','EXR',e3S[0],'km','Kinomap','Streckenrennen / EXR','',K(w,5,1))+
+      noteHtml('note-g','Alt. Sa: Gravelbike 60-90 min gleichwertig.'))+
     restB(w,6,'So','Pause')+gbNote();
 }
 
-// ── NAVIGATION ─────────────────────────────────────────────────────────
 function buildSidebar(ph){
-  const list=document.getElementById('week-list');list.innerHTML='';
-  const r=phaseRanges[ph];
-  for(let w=r.s;w<=r.e;w++){
-    const d=isDeload(w,ph),cls=d?'wk-del':`wk-${ph}`;
-    const div=document.createElement('div');
-    div.className=`wk ${cls}`;div.id=`wk-${w}`;
-    div.innerHTML=`<span class="wk-num">Woche ${w}</span><div class="wk-right"><span class="wk-type">${d?'Deload':'Aufbau'}</span><span class="wk-check" id="wk-check-${w}">✓</span></div>`;
-    div.addEventListener('click',()=>selWeek(w));
+  var list=document.getElementById('week-list');
+  list.innerHTML='';
+  var r=phaseRanges[ph];
+  for(var w=r.s;w<=r.e;w++){
+    var d=isDeload(w,ph),cls=d?'wk-del':'wk-'+ph;
+    var div=document.createElement('div');
+    div.className='wk '+cls;div.id='wk-'+w;
+    div.innerHTML='<span class="wk-num">Woche '+w+'</span><div class="wk-right"><span class="wk-type">'+(d?'Deload':'Aufbau')+'</span><span class="wk-check" id="wk-check-'+w+'">ok</span></div>';
+    (function(week){ div.addEventListener('click',function(){ selWeek(week); }); })(w);
     list.appendChild(div);
   }
-  // Haken für alle Wochen sofort aktualisieren
-  for(let w=r.s;w<=r.e;w++) updateSidebarCheck(w);
+  for(var ww=r.s;ww<=r.e;ww++) updateSidebarCheck(ww);
 }
 
 function updateMobileNav(){
-  const r=phaseRanges[curPhase];
-  const d=isDeload(curWeek,curPhase);
-  const wi=curPhase==='p1'?curWeek:curPhase==='p2'?curWeek-12:curWeek-36;
-  const p=curPhase==='p1'?1:curPhase==='p2'?2:3;
-  const cols={p1:['#c96c2a','var(--p1bg)','var(--p1b)'],p2:['#3a7a5a','var(--p2bg)','var(--p2b)'],p3:['#5a6a9a','var(--p3bg)','var(--p3b)']}[curPhase];
-  document.getElementById('mnav-title').textContent=`Woche ${curWeek}`;
-  const badge=document.getElementById('mnav-badge');
-  if(d){badge.textContent='Deload · 50%';badge.style.cssText='background:var(--delbg);color:var(--del);border-color:var(--delb)';}
-  else{badge.textContent=`Aufbau · ${volPct(wi,p)}%`;badge.style.cssText=`background:${cols[1]};color:${cols[0]};border-color:${cols[2]}`;}
-  document.getElementById('mnav-prev').classList.toggle('disabled',curWeek<=r.s);
-  document.getElementById('mnav-next').classList.toggle('disabled',curWeek>=r.e);
+  var r=phaseRanges[curPhase];
+  var d=isDeload(curWeek,curPhase);
+  var wi=curPhase==='p1'?curWeek:curPhase==='p2'?curWeek-12:curWeek-36;
+  var p=curPhase==='p1'?1:curPhase==='p2'?2:3;
+  var colMap={p1:['#c96c2a','var(--p1bg)','var(--p1b)'],p2:['#3a7a5a','var(--p2bg)','var(--p2b)'],p3:['#5a6a9a','var(--p3bg)','var(--p3b)']};
+  var cols=colMap[curPhase];
+  document.getElementById('mnav-title').textContent='Woche '+curWeek;
+  var badge=document.getElementById('mnav-badge');
+  if(d){badge.textContent='Deload 50%';badge.style.cssText='background:var(--delbg);color:var(--del);border-color:var(--delb)';}
+  else{badge.textContent='Aufbau '+volPct(wi,p)+'%';badge.style.cssText='background:'+cols[1]+';color:'+cols[0]+';border-color:'+cols[2];}
+  var prev=document.getElementById('mnav-prev');
+  var next=document.getElementById('mnav-next');
+  if(curWeek<=r.s) prev.classList.add('disabled'); else prev.classList.remove('disabled');
+  if(curWeek>=r.e) next.classList.add('disabled'); else next.classList.remove('disabled');
 }
 
-function mnavStep(dir){const r=phaseRanges[curPhase],n=curWeek+dir;if(n>=r.s&&n<=r.e)selWeek(n);}
+function mnavStep(dir){
+  var r=phaseRanges[curPhase],n=curWeek+dir;
+  if(n>=r.s&&n<=r.e) selWeek(n);
+}
 
 function selWeek(w){
   curWeek=w;
-  document.querySelectorAll('.wk').forEach(e=>e.classList.remove('sel'));
-  const el=document.getElementById('wk-'+w);
+  document.querySelectorAll('.wk').forEach(function(e){ e.classList.remove('sel'); });
+  var el=document.getElementById('wk-'+w);
   if(el){el.classList.add('sel');el.scrollIntoView({block:'nearest'});}
   updateMobileNav();
-  const d=isDeload(w,curPhase);
-  const wi=curPhase==='p1'?w:curPhase==='p2'?w-12:w-36;
-  const p=curPhase==='p1'?1:curPhase==='p2'?2:3;
-  const cols={p1:['#c96c2a','var(--p1bg)','var(--p1b)'],p2:['#3a7a5a','var(--p2bg)','var(--p2b)'],p3:['#5a6a9a','var(--p3bg)','var(--p3b)']}[curPhase];
-  const [c,bg,bc]=cols;
-  const badge=d?`<span class="det-badge" style="background:var(--delbg);color:var(--del);border-color:var(--delb)">Deload · 50%</span>`:`<span class="det-badge" style="background:${bg};color:${c};border-color:${bc}">Aufbau · ${volPct(wi,p)}%</span>`;
-  const content=curPhase==='p1'?renderP1(w):curPhase==='p2'?renderP2(w):renderP3(w);
-  const det=document.getElementById('detail-panel');
-  det.innerHTML=`<div class="det-head"><span class="det-title">Woche ${w}</span>${badge}<button onclick="openAllDays()" style="margin-left:auto;font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:4px;border:1px solid var(--border2);background:var(--bg);color:var(--text2);cursor:pointer">alle auf</button><button onclick="closeAllDays()" style="margin-left:4px;font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:4px;border:1px solid var(--border2);background:var(--bg);color:var(--text2);cursor:pointer">alle zu</button></div>`+content;
+  var d=isDeload(w,curPhase);
+  var wi=curPhase==='p1'?w:curPhase==='p2'?w-12:w-36;
+  var p=curPhase==='p1'?1:curPhase==='p2'?2:3;
+  var colMap={p1:['#c96c2a','var(--p1bg)','var(--p1b)'],p2:['#3a7a5a','var(--p2bg)','var(--p2b)'],p3:['#5a6a9a','var(--p3bg)','var(--p3b)']};
+  var cols=colMap[curPhase];
+  var badge=d?
+    '<span class="det-badge" style="background:var(--delbg);color:var(--del);border-color:var(--delb)">Deload 50%</span>':
+    '<span class="det-badge" style="background:'+cols[1]+';color:'+cols[0]+';border-color:'+cols[2]+'">Aufbau '+volPct(wi,p)+'%</span>';
+  var content=curPhase==='p1'?renderP1(w):curPhase==='p2'?renderP2(w):renderP3(w);
+  var det=document.getElementById('detail-panel');
+  det.innerHTML='<div class="det-head"><span class="det-title">Woche '+w+'</span>'+badge+
+    '<button onclick="openAllDays()" style="margin-left:auto;font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:4px;border:1px solid var(--border2);background:var(--bg);color:var(--text2);cursor:pointer">alle auf</button>'+
+    '<button onclick="closeAllDays()" style="margin-left:4px;font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:4px;border:1px solid var(--border2);background:var(--bg);color:var(--text2);cursor:pointer">alle zu</button></div>'+content;
   det.scrollTop=0;
   updateProgress();
   updateSidebarCheck(w);
@@ -685,14 +701,18 @@ function selWeek(w){
 
 function switchPhase(p){
   curPhase=p;
-  document.querySelectorAll('.tab').forEach(t=>t.className='tab');
-  if(p==='reise')document.getElementById('tab-reise').classList.add('on-reise');
-  else document.getElementById(`tab-${p}`).classList.add(`on-${p}`);
-  const isR=p==='reise';
+  document.querySelectorAll('.tab').forEach(function(t){ t.className='tab'; });
+  if(p==='reise') document.getElementById('tab-reise').classList.add('on-reise');
+  else document.getElementById('tab-'+p).classList.add('on-'+p);
+  var isR=p==='reise';
   document.getElementById('main-layout').style.display=isR?'none':'flex';
   document.getElementById('mobile-nav').style.display=isR?'none':'';
   document.getElementById('panel-reise').style.display=isR?'flex':'none';
-  if(!isR){buildSidebar(p);selWeek({p1:1,p2:13,p3:37}[p]);}
+  if(!isR){
+    var startWeek={p1:1,p2:13,p3:37}[p];
+    buildSidebar(p);
+    selWeek(startWeek);
+  }
 }
 
 function showReset(){document.getElementById('reset-modal').classList.add('show');}
@@ -707,46 +727,39 @@ function confirmReset(){
   selWeek(curWeek);
 }
 
-// Pre-register all keys for all 52 weeks so total is correct from the start
 function preRegisterAllKeys(){
-  const savedPhase=curPhase, savedWeek=curWeek;
-  // Temporarily suppress DOM rendering — just call render to populate allKeys
-  const det=document.getElementById('detail-panel');
-  const origInnerHTML=det.innerHTML;
-  for(let w=1;w<=52;w++){
-    const ph=w<=12?'p1':w<=36?'p2':'p3';
-    curPhase=ph; curWeek=w;
+  var savedPhase=curPhase,savedWeek=curWeek;
+  for(var w=1;w<=52;w++){
+    var ph=w<=12?'p1':w<=36?'p2':'p3';
+    curPhase=ph;curWeek=w;
     if(ph==='p1') renderP1(w);
     else if(ph==='p2') renderP2(w);
     else renderP3(w);
   }
-  // Restore
-  curPhase=savedPhase; curWeek=savedWeek;
-  det.innerHTML=origInnerHTML;
+  curPhase=savedPhase;curWeek=savedWeek;
 }
 
-
-// ── EXPORT / IMPORT ────────────────────────────────────────────────────
 function exportProgress(){
-  const json=JSON.stringify(progress,null,2);
-  const blob=new Blob([json],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download='trainingsplan_fortschritt.json'; a.click();
+  var json=JSON.stringify(progress,null,2);
+  var blob=new Blob([json],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download='trainingsplan_fortschritt.json';a.click();
   URL.revokeObjectURL(url);
 }
+
 function importProgress(input){
-  const file=input.files[0]; if(!file)return;
-  const reader=new FileReader();
+  var file=input.files[0];if(!file)return;
+  var reader=new FileReader();
   reader.onload=function(e){
     try{
-      const parsed=JSON.parse(e.target.result);
-      const valid={};
-      Object.keys(parsed).forEach(k=>{ if(/^w[0-9]+_/.test(k)) valid[k]=parsed[k]; });
-      progress=valid; save();
-      allKeys=new Set(); selWeek(curWeek); buildSidebar(curPhase); selWeek(curWeek);
-      alert('Geladen: '+Object.keys(valid).length+' Einträge');
-    }catch(err){ alert('Fehler: '+err.message); }
+      var parsed=JSON.parse(e.target.result);
+      var valid={};
+      Object.keys(parsed).forEach(function(k){ if(/^w[0-9]+_/.test(k)) valid[k]=parsed[k]; });
+      progress=valid;save();
+      allKeys=new Set();selWeek(curWeek);buildSidebar(curPhase);selWeek(curWeek);
+      alert('Geladen: '+Object.keys(valid).length+' Eintraege');
+    }catch(err){alert('Fehler: '+err.message);}
     input.value='';
   };
   reader.readAsText(file);
