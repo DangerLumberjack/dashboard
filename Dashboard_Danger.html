@@ -494,6 +494,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
     <div class="nav-tab"        id="tab-training" onclick="switchTab('training')">💪 Training</div>
     <div class="nav-tab"        id="tab-protein"  onclick="switchTab('protein')">🥩 Ernährung</div>
     <div class="nav-tab"        id="tab-health"   onclick="switchTab('health')">❤️ Gesundheit</div>
+    <div class="nav-tab"        id="tab-rowing"   onclick="switchTab('rowing')" style="display:flex;align-items:center;gap:6px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 389 165.03" width="28" height="12" style="display:block;flex-shrink:0"><path fill="currentColor" d="M215,113.96l-3.7-2.07-12.58-3.39-12.33,3.24c-1.44,1.21-3.04,2.08-4.91,2.45l-3.56.92c.11.78.1,1.48-.35,1.92s-1.22.64-2,.61l-.5-1.64-8.53,2.07c-.65-.68-1.13-.67-2.09-.43l-56.75,14.25c-.55,1.01-1.14,1.7-1.88,2.45-3.45,3.5-5.6,7.94-6.29,12.82-.17,1.22-1.02,1.98-2.22,2.27l-30.5,7.49c-.84.21-1.51.02-2.1-.44-.54-.42-.85-1.11-.81-2.03l.99-23.5c.05-1.25,1.3-2.14,2.45-2.5,13.1-4.05,24.93-3.4,38.49-2.23l17.56-4.33,41.17-10.33.3-.91,8.66-2.23-.08-1.65c-.02-.49,1.18-.67,1.69-.57.6.12,1,.82,1.32,1.58l5.29-1.17c1.59-.35,3.54.94,6.49-.64l-30.77-7.74-20.75-5.3c-1.17-.3-1.58-1.66-1.45-2.65.16-1.19.87-2.14,2.32-2.24l40.26,10.13,20.87,5.32,61.3-15.42c1.4-.35,2.31,1.55,2.35,2.42.06,1.15-.66,2.33-1.98,2.66l-5.71,1.46-45.32,11.32c1.21.62,2.21.68,3.32.94,1.42-.47,2.77-.42,4.19-.09l4.23.99c.24-.8.59-1.39,1.18-1.56.51-.15,1.92-.03,1.87.48l-.15,1.65,8.36,2.13.69,1.07,58.63,14.69,16.77-.9c4.39-.24,8.57.29,12.88,1.04,3.26.49,6.37,1.2,9.42,2.35,1.29.49,1.87,1.62,1.92,2.95l.9,23.04c.05,1.36-1.11,2.61-2.56,2.26l-30.72-7.53c-1.31-.32-2.07-1.16-2.3-2.44-.75-4.27-2.54-8.26-5.31-11.59l-2.93-3.52-57.97-14.61c-.38.76-.95.84-1.69.65l-7.57-1.97c-.36.51-.36,1.01-.51,1.68-.8-.1-1.77-.27-2.22-.97l-.32-1.62-4.45-1.09Z"/></svg> 2k</div>
   </div>
 </header>
 <!-- ══════════════════════════════════════════════════════ HOME ══ -->
@@ -1074,6 +1075,123 @@ h1 strong{font-weight:500;color:var(--brg2)}
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════ 2k TRACKER ══ -->
+<div class="panel" id="panel-rowing">
+<div class="panel-inner">
+
+<style>
+.r2k-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.r2k-tile{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.r2k-tile .lbl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text2);margin-bottom:3px}
+.r2k-tile .val{font-family:var(--mono,monospace);font-size:20px;font-weight:700;color:var(--accent,#c0392b);font-variant-numeric:tabular-nums}
+.r2k-tile .val.empty{color:var(--text2);font-size:14px}
+.r2k-tile .sub{font-size:10px;color:var(--text2);margin-top:2px}
+.r2k-chart-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px}
+.r2k-chart-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.r2k-chart-title{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text2)}
+#r2k-svg{width:100%;overflow:visible}
+.r2k-table-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px}
+.r2k-table-hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 8px;border-bottom:1px solid var(--border)}
+.r2k-table-title{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text2)}
+#r2k-table table{width:100%;border-collapse:collapse}
+#r2k-table th{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text2);padding:6px 12px;text-align:left;border-bottom:1px solid var(--border);background:var(--bg)}
+#r2k-table td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:12px;font-variant-numeric:tabular-nums;vertical-align:middle}
+#r2k-table tr:last-child td{border-bottom:none}
+#r2k-table tr:hover td{background:var(--bg)}
+.r2k-mono{font-family:var(--mono,monospace);font-size:13px}
+.r2k-time{font-family:var(--mono,monospace);font-size:14px;font-weight:700}
+.r2k-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 6px;border-radius:3px;background:var(--bg);color:var(--text2);margin-left:4px}
+.r2k-badge.pr{background:#fdf0ee;color:#c0392b}
+.r2k-badge.base{background:var(--bg);color:var(--text2)}
+.r2k-delta{font-size:10px}
+.r2k-delta.pos{color:#1a6b3c}
+.r2k-delta.neg{color:#c0392b}
+.r2k-empty{text-align:center;padding:32px 16px;color:var(--text2);font-size:13px}
+.r2k-actions{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.r2k-btn{font-size:12px;font-weight:500;padding:6px 14px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text);cursor:pointer}
+.r2k-btn:hover{background:var(--bg)}
+.r2k-btn.primary{background:#c0392b;color:#fff;border-color:#c0392b}
+.r2k-btn.primary:hover{opacity:.88}
+/* Modal */
+#r2k-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
+#r2k-modal .inner{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;width:100%;max-width:380px;max-height:90vh;overflow-y:auto}
+#r2k-modal h3{font-size:14px;font-weight:600;margin-bottom:14px}
+.r2k-field{margin-bottom:11px}
+.r2k-field label{display:block;font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text2);margin-bottom:4px}
+.r2k-field input,.r2k-field textarea,.r2k-field select{width:100%;padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;font-family:inherit}
+.r2k-field input:focus,.r2k-field textarea:focus{outline:2px solid #c0392b;outline-offset:1px;border-color:transparent}
+.r2k-field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.r2k-modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.r2k-tip{background:var(--bg);border-left:3px solid var(--border);border-radius:0 6px 6px 0;padding:9px 12px;font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.r2k-tip strong{color:var(--text)}
+@media(max-width:480px){.r2k-tiles{grid-template-columns:1fr 1fr}.r2k-tiles .r2k-tile:last-child{grid-column:span 2}.r2k-hide-sm{display:none}}
+</style>
+
+<!-- Add Modal -->
+<div id="r2k-modal" hidden>
+  <div class="inner">
+    <h3>2k Test eintragen</h3>
+    <div class="r2k-field-row">
+      <div class="r2k-field"><label>Datum</label><input type="date" id="r2k-date"></div>
+      <div class="r2k-field"><label>Woche (Plan)</label><input type="number" id="r2k-week" min="1" max="52" placeholder="z.B. 22"></div>
+    </div>
+    <div class="r2k-field"><label>Zeit (mm:ss)</label><input type="text" id="r2k-time" placeholder="8:24" maxlength="6" inputmode="numeric"></div>
+    <div class="r2k-field-row">
+      <div class="r2k-field"><label>Ø 500m Split (mm:ss)</label><input type="text" id="r2k-split" placeholder="2:06" maxlength="6" inputmode="numeric"></div>
+      <div class="r2k-field"><label>Ø Watt</label><input type="number" id="r2k-watt" min="50" max="500" placeholder="z.B. 180"></div>
+    </div>
+    <div class="r2k-field-row">
+      <div class="r2k-field"><label>Stroke Rate (s/min)</label><input type="number" id="r2k-spm" min="12" max="40" placeholder="z.B. 24"></div>
+      <div class="r2k-field"><label>Widerstand (1–32)</label><input type="number" id="r2k-resist" min="1" max="32" placeholder="z.B. 11"></div>
+    </div>
+    <div class="r2k-field"><label>Notiz (optional)</label><textarea id="r2k-note" rows="2" placeholder="Gefühl, Bedingungen…" style="resize:vertical"></textarea></div>
+    <div class="r2k-modal-footer">
+      <button class="r2k-btn" onclick="r2kCloseModal()">Abbrechen</button>
+      <button class="r2k-btn primary" onclick="r2kSave()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- Content -->
+<div class="r2k-actions">
+  <button class="r2k-btn primary" onclick="r2kOpenModal()">+ Test eintragen</button>
+  <button class="r2k-btn" onclick="r2kExport()">↓ Export JSON</button>
+  <button class="r2k-btn" onclick="r2kImportClick()">↑ Import JSON</button>
+  <input type="file" id="r2k-file" accept=".json" style="display:none" onchange="r2kLoadFile(event)">
+</div>
+
+<div class="r2k-tiles">
+  <div class="r2k-tile"><div class="lbl">Bestzeit</div><div class="val empty" id="r2k-t-pr">–</div><div class="sub" id="r2k-t-pr-d"></div></div>
+  <div class="r2k-tile"><div class="lbl">Letzter Test</div><div class="val empty" id="r2k-t-last">–</div><div class="sub" id="r2k-t-last-d"></div></div>
+  <div class="r2k-tile"><div class="lbl">Verbesserung</div><div class="val empty" id="r2k-t-delta">–</div><div class="sub" id="r2k-t-delta-d"></div></div>
+</div>
+
+<div class="r2k-chart-wrap">
+  <div class="r2k-chart-hdr"><span class="r2k-chart-title">Zeitverlauf</span><span style="font-size:10px;color:var(--text2)" id="r2k-chart-sub"></span></div>
+  <svg id="r2k-svg" height="100" viewBox="0 0 600 100" preserveAspectRatio="none"></svg>
+</div>
+
+<div class="r2k-tip"><strong>Protokoll:</strong> 5–10 min locker einrudern · gleichen Widerstand bei jedem Test · 2000m gleichmäßig, nicht zu schnell starten · Watt + Split + Schlagzahl notieren · Baseline (Wo 22) vs. Ende 2k Breakthrough (Wo 45) vergleichen.</div>
+
+<div class="r2k-table-wrap">
+  <div class="r2k-table-hdr"><span class="r2k-table-title">Alle Tests</span><span style="font-size:11px;color:var(--text2)" id="r2k-count"></span></div>
+  <div style="overflow-x:auto" id="r2k-table">
+    <table>
+      <thead><tr>
+        <th>Datum</th><th>Zeit</th><th>Split</th><th>Watt</th><th class="r2k-hide-sm">SPM</th><th class="r2k-hide-sm">Wid.</th><th>Wo.</th><th class="r2k-hide-sm">Δ</th><th></th>
+      </tr></thead>
+      <tbody id="r2k-tbody"></tbody>
+    </table>
+    <div id="r2k-empty" class="r2k-empty">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 389 165.03" width="120" height="51" style="display:block;margin:0 auto 12px;opacity:.25"><path fill="currentColor" d="M215,113.96l-3.7-2.07-12.58-3.39-12.33,3.24c-1.44,1.21-3.04,2.08-4.91,2.45l-3.56.92c.11.78.1,1.48-.35,1.92s-1.22.64-2,.61l-.5-1.64-8.53,2.07c-.65-.68-1.13-.67-2.09-.43l-56.75,14.25c-.55,1.01-1.14,1.7-1.88,2.45-3.45,3.5-5.6,7.94-6.29,12.82-.17,1.22-1.02,1.98-2.22,2.27l-30.5,7.49c-.84.21-1.51.02-2.1-.44-.54-.42-.85-1.11-.81-2.03l.99-23.5c.05-1.25,1.3-2.14,2.45-2.5,13.1-4.05,24.93-3.4,38.49-2.23l17.56-4.33,41.17-10.33.3-.91,8.66-2.23-.08-1.65c-.02-.49,1.18-.67,1.69-.57.6.12,1,.82,1.32,1.58l5.29-1.17c1.59-.35,3.54.94,6.49-.64l-30.77-7.74-20.75-5.3c-1.17-.3-1.58-1.66-1.45-2.65.16-1.19.87-2.14,2.32-2.24l40.26,10.13,20.87,5.32,61.3-15.42c1.4-.35,2.31,1.55,2.35,2.42.06,1.15-.66,2.33-1.98,2.66l-5.71,1.46-45.32,11.32c1.21.62,2.21.68,3.32.94,1.42-.47,2.77-.42,4.19-.09l4.23.99c.24-.8.59-1.39,1.18-1.56.51-.15,1.92-.03,1.87.48l-.15,1.65,8.36,2.13.69,1.07,58.63,14.69,16.77-.9c4.39-.24,8.57.29,12.88,1.04,3.26.49,6.37,1.2,9.42,2.35,1.29.49,1.87,1.62,1.92,2.95l.9,23.04c.05,1.36-1.11,2.61-2.56,2.26l-30.72-7.53c-1.31-.32-2.07-1.16-2.3-2.44-.75-4.27-2.54-8.26-5.31-11.59l-2.93-3.52-57.97-14.61c-.38.76-.95.84-1.69.65l-7.57-1.97c-.36.51-.36,1.01-.51,1.68-.8-.1-1.77-.27-2.22-.97l-.32-1.62-4.45-1.09Z"/></svg>
+      Noch kein Test — starte mit deinem Baseline-Test!
+    </div>
+  </div>
+</div>
+
+</div><!-- panel-inner -->
+</div><!-- panel-rowing -->
+
 <!-- Sparkline Tooltip -->
 <div id="spark-tooltip"></div>
 
@@ -1329,7 +1447,7 @@ function hideModal(id){document.getElementById(id).classList.remove('show');}
 let activeTab='home';
 function switchTab(t){
   activeTab=t;
-  ['home','training','protein','health'].forEach(id=>{
+  ['home','training','protein','health','rowing'].forEach(id=>{
     document.getElementById('panel-'+id).classList.toggle('active',id===t);
     document.getElementById('tab-'+id).classList.toggle('active',id===t);
   });
@@ -1337,6 +1455,7 @@ function switchTab(t){
   if(t==='training') renderVolumeTrend();
   if(t==='protein') pRenderAll();
   if(t==='health'){ renderProfSections(); renderProfile(); renderAnalysen(); }
+  if(t==='rowing') r2kRender();
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -4540,6 +4659,176 @@ window.addEventListener('load',async function(){
   if(location.protocol==="https:"){ await syncUp(); if(Object.keys(rawHealth).length>0) await syncRawUp(); await syncDown(); }
   if(location.protocol==="https:") _syncInterval=setInterval(async()=>{ await syncDown(); renderSparkCards(); renderBioAge(); renderActivityPath(); }, 30000);
 });
+
+// ══════════════════════════════════════════ 2k TRACKER ══════════════════════
+const R2K_KEY = 'danger_2k_tests';
+function r2kLoad(){ try{ return JSON.parse(localStorage.getItem(R2K_KEY)||'[]'); }catch{ return []; } }
+function r2kSaveAll(d){ try{ localStorage.setItem(R2K_KEY, JSON.stringify(d)); }catch{} }
+function r2kToSec(s){ if(!s) return null; const m=s.trim().match(/^(\d+):(\d{2})$/); if(!m) return null; return +m[1]*60+ +m[2]; }
+function r2kFmt(sec){ if(sec==null) return '–'; return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'); }
+function r2kDateLabel(d){ if(!d) return ''; const [y,m,day]=d.split('-'); return `${day}.${m}.${y.slice(2)}`; }
+
+function r2kRender(){
+  const raw = r2kLoad().sort((a,b)=>a.date.localeCompare(b.date));
+  const n = raw.length;
+  const secs = raw.map(d=>r2kToSec(d.time)).filter(Boolean);
+  const prSec = secs.length ? Math.min(...secs) : null;
+
+  // Tiles
+  const prEntry = prSec != null ? raw.find(d=>r2kToSec(d.time)===prSec) : null;
+  const last = n ? raw[n-1] : null;
+  const el = id => document.getElementById(id);
+  el('r2k-t-pr').textContent = r2kFmt(prSec);
+  el('r2k-t-pr').className = 'val'+(prSec?'':' empty');
+  el('r2k-t-pr-d').textContent = prEntry ? r2kDateLabel(prEntry.date)+(prEntry.week?' · W'+prEntry.week:'') : '';
+  el('r2k-t-last').textContent = last ? r2kFmt(r2kToSec(last.time)) : '–';
+  el('r2k-t-last').className = 'val'+(last?'':' empty');
+  el('r2k-t-last-d').textContent = last ? r2kDateLabel(last.date)+(last.week?' · W'+last.week:'')+(last.watt?' · '+last.watt+' W':'') : '';
+  if(n>=2){
+    const diff = r2kToSec(raw[0].time) - r2kToSec(last.time);
+    el('r2k-t-delta').textContent = (diff>0?'−':diff<0?'+':'')+r2kFmt(Math.abs(diff));
+    el('r2k-t-delta').className = 'val'+(diff>0?' '+([])+' ':diff<0?' neg ':' ');
+    el('r2k-t-delta').style.color = diff>0 ? '#1a6b3c' : diff<0 ? '#c0392b' : '';
+    el('r2k-t-delta-d').textContent = 'seit '+r2kDateLabel(raw[0].date);
+  } else {
+    el('r2k-t-delta').textContent = '–';
+    el('r2k-t-delta').className = 'val empty';
+    el('r2k-t-delta').style.color='';
+    el('r2k-t-delta-d').textContent = n<2 ? 'Erst ab 2 Tests' : '';
+  }
+
+  // Chart
+  r2kRenderChart(raw);
+
+  // Table
+  el('r2k-count').textContent = n ? n+' Test'+(n>1?'s':'') : '';
+  el('r2k-empty').hidden = n>0;
+  const tbody = el('r2k-tbody');
+  tbody.innerHTML='';
+  [...raw].reverse().forEach((entry,i)=>{
+    const origIdx = n-1-i;
+    const prev = origIdx>0 ? raw[origIdx-1] : null;
+    const currSec = r2kToSec(entry.time);
+    const prevSec = prev ? r2kToSec(prev.time) : null;
+    let dHtml='<span class="r2k-delta">–</span>';
+    if(prevSec&&currSec){
+      const d=prevSec-currSec;
+      const cls=d>0?'pos':d<0?'neg':'';
+      const sign=d>0?'−':d<0?'+':'';
+      dHtml=`<span class="r2k-delta ${cls}">${sign}${r2kFmt(Math.abs(d))}</span>`;
+    }
+    const isPR = currSec===prSec;
+    const isBase = origIdx===0;
+    const tr=document.createElement('tr');
+    if(entry.note) tr.title=entry.note;
+    tr.innerHTML=`
+      <td>${r2kDateLabel(entry.date)}</td>
+      <td class="r2k-time">${entry.time||'–'}${isPR?'<span class="r2k-badge pr">PR</span>':''}${isBase?'<span class="r2k-badge base">Basis</span>':''}</td>
+      <td class="r2k-mono">${entry.split||'–'}</td>
+      <td class="r2k-mono">${entry.watt?entry.watt+' W':'–'}</td>
+      <td class="r2k-mono r2k-hide-sm">${entry.spm||'–'}</td>
+      <td class="r2k-mono r2k-hide-sm">${entry.resist||'–'}</td>
+      <td class="r2k-mono">${entry.week?'W'+entry.week:'–'}</td>
+      <td class="r2k-hide-sm">${dHtml}</td>
+      <td><button onclick="r2kDelete(${origIdx})" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:12px;padding:2px 6px">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function r2kRenderChart(data){
+  const svg = document.getElementById('r2k-svg');
+  const valid = data.filter(d=>r2kToSec(d.time));
+  document.getElementById('r2k-chart-sub').textContent = valid.length>1?'PR markiert':'';
+  if(!valid.length){ svg.innerHTML=''; return; }
+  const W=600,H=100,P={t:12,r:6,b:22,l:38};
+  const cW=W-P.l-P.r, cH=H-P.t-P.b;
+  const secs=valid.map(d=>r2kToSec(d.time));
+  const minS=Math.min(...secs)-3, maxS=Math.max(...secs)+3;
+  const prSec=Math.min(...secs);
+  const x=i=>P.l+(valid.length<2?cW/2:i/(valid.length-1)*cW);
+  const y=s=>P.t+(1-(s-minS)/(maxS-minS))*cH;
+  const path=valid.map((d,i)=>`${i===0?'M':'L'}${x(i)},${y(r2kToSec(d.time))}`).join(' ');
+  const area=`${path} L${x(valid.length-1)},${H-P.b} L${x(0)},${H-P.b} Z`;
+  const ticks=[minS+3,maxS-3];
+  svg.innerHTML=`
+    <defs><linearGradient id="r2k-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c0392b" stop-opacity=".15"/>
+      <stop offset="100%" stop-color="#c0392b" stop-opacity="0"/>
+    </linearGradient></defs>
+    ${ticks.map(t=>`<line x1="${P.l}" y1="${y(t)}" x2="${W-P.r}" y2="${y(t)}" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3"/><text x="${P.l-4}" y="${y(t)+4}" text-anchor="end" font-size="9" fill="var(--text2)" font-family="monospace">${r2kFmt(t)}</text>`).join('')}
+    ${valid.map((d,i)=>`<text x="${x(i)}" y="${H-4}" text-anchor="middle" font-size="8" fill="var(--text2)">${r2kDateLabel(d.date).slice(0,5)}</text>`).join('')}
+    <path d="${area}" fill="url(#r2k-grad)"/>
+    <path d="${path}" fill="none" stroke="#c0392b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${valid.map((d,i)=>{const isPR=r2kToSec(d.time)===prSec;return`<circle cx="${x(i)}" cy="${y(r2kToSec(d.time))}" r="${isPR?5:3}" fill="${isPR?'#c0392b':'var(--card)'}" stroke="#c0392b" stroke-width="${isPR?0:2}"/>`;}).join('')}
+    ${valid.length?`<text x="${x(secs.indexOf(prSec))}" y="${y(prSec)-8}" text-anchor="middle" font-size="9" font-weight="600" fill="#c0392b" font-family="monospace">${r2kFmt(prSec)}</text>`:''}
+  `;
+}
+
+function r2kDelete(idx){
+  const d=r2kLoad();
+  if(!confirm('Test vom '+r2kDateLabel(d[idx].date)+' löschen?')) return;
+  d.splice(idx,1); r2kSaveAll(d); r2kRender();
+}
+
+function r2kOpenModal(){
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('r2k-date').value=today;
+  ['r2k-time','r2k-split','r2k-watt','r2k-spm','r2k-resist','r2k-week','r2k-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('r2k-modal').hidden=false;
+}
+function r2kCloseModal(){ document.getElementById('r2k-modal').hidden=true; }
+
+function r2kSave(){
+  const time=document.getElementById('r2k-time').value.trim();
+  const date=document.getElementById('r2k-date').value;
+  if(!date||!time){ alert('Datum und Zeit sind Pflicht.'); return; }
+  if(!r2kToSec(time)){ alert('Zeit-Format: mm:ss — z.B. 8:24'); return; }
+  const split=document.getElementById('r2k-split').value.trim();
+  if(split&&!r2kToSec(split)){ alert('Split-Format: mm:ss — z.B. 2:06'); return; }
+  const d=r2kLoad();
+  d.push({
+    date, time,
+    split: split||'',
+    watt: parseInt(document.getElementById('r2k-watt').value)||null,
+    spm: parseInt(document.getElementById('r2k-spm').value)||null,
+    resist: parseInt(document.getElementById('r2k-resist').value)||null,
+    week: parseInt(document.getElementById('r2k-week').value)||null,
+    note: document.getElementById('r2k-note').value.trim()
+  });
+  r2kSaveAll(d); r2kCloseModal(); r2kRender();
+}
+
+function r2kExport(){
+  const json=JSON.stringify(r2kLoad(),null,2);
+  navigator.clipboard.writeText(json).then(()=>alert('JSON kopiert — als .json-Datei speichern.')).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=json; ta.style.cssText='position:fixed;bottom:0;left:0;width:100%;height:180px;z-index:999;font-size:11px;font-family:monospace;';
+    document.body.appendChild(ta); ta.select();
+    alert('Bitte Cmd+C kopieren, dann schließen.'); setTimeout(()=>ta.remove(),20000);
+  });
+}
+function r2kImportClick(){ document.getElementById('r2k-file').click(); }
+function r2kLoadFile(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const arr=JSON.parse(ev.target.result);
+      if(!Array.isArray(arr)) throw new Error('Kein Array.');
+      const existing=r2kLoad();
+      let added=0;
+      arr.forEach(entry=>{
+        if(!entry.date||!entry.time) return;
+        if(!existing.find(x=>x.date===entry.date&&x.time===entry.time)){ existing.push(entry); added++; }
+      });
+      r2kSaveAll(existing); r2kRender();
+      alert(added+' neue Einträge importiert.');
+    }catch(ex){ alert('Fehler: '+ex.message); }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
 </script>
 
 
