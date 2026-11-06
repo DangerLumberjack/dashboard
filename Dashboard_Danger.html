@@ -3706,31 +3706,41 @@ async function importCombined(input){
       let wAdded=0,wDupes=0,hAdded=0,hMerged=0;
 
       // ── WORKOUTS ──
+      // Replace-within-range: alle Workouts im Zeitraum der JSON werden ersetzt,
+      // damit gelöschte Trainings aus Apple Health auch im Dashboard verschwinden.
       const rawWorkouts=parsed.data?.workouts||parsed.workouts||[];
-      rawWorkouts.forEach(w=>{
-        const key=w.start+'|'+(w.name||w.activityType||'');
-        const exists=workoutData.some(x=>x.key===key);
-        if(exists){wDupes++;return;}
-        const typeKey=WORKOUT_NAME_MAP[w.name]||w.activityType||w.name||'unknown';
-        const kcalRaw=w.activeEnergyBurned?.qty||w.totalEnergy?.qty||null;
-        // activeEnergyBurned in kJ → kcal (÷4.184), or already kcal
-        const kcal=kcalRaw?(w.activeEnergyBurned?.units==='kJ'?Math.round(kcalRaw/4.184):Math.round(kcalRaw)):null;
-        const hr=w.heartRate||{};
-        const hrAvg=hr.avg?.qty||w.avgHeartRate?.qty||null;
-        const hrMax=hr.max?.qty||w.maxHeartRate?.qty||null;
-        const date=(w.start||'').slice(0,10);
-        const durMin=Math.round((w.duration||0)/60);
-        workoutData.push({
-          key,type:typeKey,name:w.name||typeKey,
-          startDate:w.start,endDate:w.end,date,
-          durationMin:durMin,kcal,
-          hrAvg:hrAvg?Math.round(hrAvg):null,
-          hrMax:hrMax?Math.round(hrMax):null,
-          source:'HealthAutoExport',
+      if(rawWorkouts.length){
+        // Zeitraum der JSON ermitteln
+        const jsonDates=rawWorkouts.map(w=>(w.start||'').slice(0,10)).filter(Boolean).sort();
+        const rangeStart=jsonDates[0];
+        const rangeEnd=jsonDates[jsonDates.length-1];
+        // Bestehende Workouts außerhalb des Zeitraums behalten
+        const outside=workoutData.filter(w=>w.date<rangeStart||w.date>rangeEnd);
+        // Neue Workouts aus JSON aufbauen
+        const incoming=[];
+        rawWorkouts.forEach(w=>{
+          const key=w.start+'|'+(w.name||w.activityType||'');
+          const typeKey=WORKOUT_NAME_MAP[w.name]||w.activityType||w.name||'unknown';
+          const kcalRaw=w.activeEnergyBurned?.qty||w.totalEnergy?.qty||null;
+          const kcal=kcalRaw?(w.activeEnergyBurned?.units==='kJ'?Math.round(kcalRaw/4.184):Math.round(kcalRaw)):null;
+          const hr=w.heartRate||{};
+          const hrAvg=hr.avg?.qty||w.avgHeartRate?.qty||null;
+          const hrMax=hr.max?.qty||w.maxHeartRate?.qty||null;
+          const date=(w.start||'').slice(0,10);
+          const durMin=Math.round((w.duration||0)/60);
+          incoming.push({
+            key,type:typeKey,name:w.name||typeKey,
+            startDate:w.start,endDate:w.end,date,
+            durationMin:durMin,kcal,
+            hrAvg:hrAvg?Math.round(hrAvg):null,
+            hrMax:hrMax?Math.round(hrMax):null,
+            source:'HealthAutoExport',
+          });
+          wAdded++;
         });
-        wAdded++;
-      });
-      workoutData.sort((a,b)=>a.startDate.localeCompare(b.startDate));
+        workoutData=[...outside,...incoming];
+        workoutData.sort((a,b)=>a.startDate.localeCompare(b.startDate));
+      }
       wSave();
 
       // ── HEALTH METRICS ──
