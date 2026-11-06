@@ -3434,30 +3434,39 @@ function dateToWeek(dateStr){
   return Math.max(1,Math.round((d-start)/(7*86400000))+1);
 }
 
+// Glättet tägliche Rohdaten zu Wochendurchschnitten für sinnvollere Regression
+function weeklyAvg(pts){
+  if(!pts.length) return [];
+  const byWeek={};
+  pts.forEach(p=>{ const w=Math.round(p.x); if(!byWeek[w]) byWeek[w]=[]; byWeek[w].push(p.y); });
+  return Object.entries(byWeek).map(([w,ys])=>({x:parseInt(w),y:ys.reduce((a,b)=>a+b,0)/ys.length})).sort((a,b)=>a.x-b.x);
+}
+
 function calcPrognose(){
   const hist=profileData._history||[];
-  const rawHealth_copy=rawHealth||{};
   const today=todayStr();
 
-  // Weight — aus rawHealth (tägliche Apple-Watch-Daten) + manuelles Profil
-  const wRaw=(rawHealth['weight_body_mass']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y);
+  // Rohdaten sammeln
+  const wRaw=(rawHealth['weight_body_mass']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y&&p.x>=1);
   const wManual=hist.filter(h=>h.weight).map(h=>({x:dateToWeek(h._date),y:parseFloat(h.weight)}));
-  const wPts=[...wRaw,...wManual].sort((a,b)=>a.x-b.x);
-  // VO2max aus rawHealth
-  const vo2Pts=(rawHealth['vo2_max']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y);
-  // BF — aus rawHealth + manuell
-  const bfRaw=(rawHealth['body_fat_percentage']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y);
+  const wPts=weeklyAvg([...wRaw,...wManual].sort((a,b)=>a.x-b.x));
+
+  const vo2Raw=(rawHealth['vo2_max']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y&&p.x>=1);
+  const vo2Pts=weeklyAvg(vo2Raw);
+
+  const bfRaw=(rawHealth['body_fat_percentage']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y&&p.x>=1);
   const bfManual=hist.filter(h=>h.bf).map(h=>({x:dateToWeek(h._date),y:parseFloat(h.bf)}));
-  const bfPts=[...bfRaw,...bfManual].sort((a,b)=>a.x-b.x);
-  // 2k from r2kLoad
-  const r2kPts=r2kLoad().map(t=>({x:t.week||dateToWeek(t.date),y:r2kToSec(t.time)})).filter(p=>p.y);
+  const bfPts=weeklyAvg([...bfRaw,...bfManual].sort((a,b)=>a.x-b.x));
+
+  const r2kPts=r2kLoad().map(t=>({x:t.week||dateToWeek(t.date),y:r2kToSec(t.time)})).filter(p=>p.y&&p.x>=1);
 
   const curWeek=dateToWeek(today);
   const snap={date:today,week:curWeek};
 
   function project(pts,targetWeek){
     if(!pts.length) return null;
-    if(pts.length===1) return pts[0].y; // no trend yet, return current
+    if(pts.length===1) return pts[0].y;
+    // Regression über geglättete Wochenpunkte → ehrlicher Gesamttrend
     const reg=linReg(pts);
     if(!reg) return null;
     return reg.slope*targetWeek+reg.intercept;
@@ -3495,32 +3504,39 @@ function renderPrognose(){
     return (higherIsBetter?p52>=goal:p52<=goal)?'var(--good)':'var(--yellow)';
   }
 
-  // Mini-Chart: echte Daten + Prognose-Linie + Ziel
+  // Mini-Chart: Ist-Verlauf (grau) + Trend-Prognose (gestrichelt akzent) + Soll-Pfad (grün) + Ziel-Punkt
   function miniChart(pts, curWeek, p52val, goalVal, higherIsBetter){
     if(!pts||pts.length<1) return '';
-    const W=320,H=60,pad=6;
-    const allY=[...pts.map(p=>p.y),p52val,goalVal].filter(v=>v!=null);
-    const minY=Math.min(...allY)-Math.abs(Math.min(...allY))*0.05;
-    const maxY=Math.max(...allY)+Math.abs(Math.max(...allY))*0.02;
+    const W=320,H=72,pad=8;
+    const startW=pts[0]?pts[0].x:1;
+    const startV=pts[0]?pts[0].y:goalVal;
+    // Soll-Pfad: Startwert → Ziel über alle 52 Wochen
+    const shouldPts=goalVal!=null&&startV!=null?[{x:startW,y:startV},{x:52,y:goalVal}]:[];
+    const allY=[...pts.map(p=>p.y),p52val,goalVal,...shouldPts.map(p=>p.y)].filter(v=>v!=null);
+    if(!allY.length) return '';
+    const pad_pct=0.08;
+    const rangeRaw=Math.max(...allY)-Math.min(...allY)||Math.abs(Math.min(...allY))*0.1||1;
+    const minY=Math.min(...allY)-rangeRaw*pad_pct;
+    const maxY=Math.max(...allY)+rangeRaw*pad_pct;
     const rangeY=maxY-minY||1;
-    const allX=[...pts.map(p=>p.x),52];
-    const minX=Math.min(...allX), maxX=52;
+    const minX=Math.min(startW,...pts.map(p=>p.x)), maxX=52;
     const rangeX=maxX-minX||1;
     const px=(x)=>pad+Math.round((x-minX)/rangeX*(W-pad*2));
     const py=(y)=>H-pad-Math.round((y-minY)/rangeY*(H-pad*2));
-    // Real data line
+    // Ist-Verlauf
     const realPts=pts.map(p=>px(p.x)+','+py(p.y)).join(' ');
-    // Projection line from last real point to W52
+    // Trend-Prognose von letztem Punkt → W52
     const lastPt=pts[pts.length-1];
-    const projLine=p52val!=null?`<line x1="${px(lastPt.x)}" y1="${py(lastPt.y)}" x2="${px(52)}" y2="${py(p52val)}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3,2" opacity=".7"/>`:'' ;
-    // Goal line
-    const goalLine=goalVal!=null?`<line x1="${pad}" y1="${py(goalVal)}" x2="${W-pad}" y2="${py(goalVal)}" stroke="var(--good)" stroke-width="1" stroke-dasharray="2,2" opacity=".5"/>`:'' ;
-    // W52 dot
-    const w52dot=p52val!=null?`<circle cx="${px(52)}" cy="${py(p52val)}" r="2.5" fill="${statusColor(p52val,goalVal,higherIsBetter)}"/>`:'' ;
-    return `<svg width="${W}" height="${H}" style="display:block;margin-top:6px">
-      ${goalLine}
-      <polyline points="${realPts}" fill="none" stroke="var(--text2)" stroke-width="1.5" stroke-linejoin="round" opacity=".8"/>
-      ${projLine}${w52dot}
+    const projLine=p52val!=null?`<line x1="${px(lastPt.x)}" y1="${py(lastPt.y)}" x2="${px(52)}" y2="${py(p52val)}" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,3" opacity=".75"/>`:'' ;
+    // Soll-Pfad W1→W52 Ziel
+    const sollLine=shouldPts.length===2?`<line x1="${px(shouldPts[0].x)}" y1="${py(shouldPts[0].y)}" x2="${px(shouldPts[1].x)}" y2="${py(shouldPts[1].y)}" stroke="var(--good)" stroke-width="1" stroke-dasharray="2,3" opacity=".5"/>`:'' ;
+    // W52 dots
+    const w52dot=p52val!=null?`<circle cx="${px(52)}" cy="${py(p52val)}" r="3" fill="${statusColor(p52val,goalVal,higherIsBetter)}"/>`:'' ;
+    const goalDot=goalVal!=null?`<circle cx="${px(52)}" cy="${py(goalVal)}" r="2" fill="var(--good)" opacity=".6"/>`:'' ;
+    return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;margin-top:8px;width:100%;max-width:${W}px">
+      ${sollLine}
+      <polyline points="${realPts}" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linejoin="round" opacity=".9"/>
+      ${projLine}${goalDot}${w52dot}
     </svg>`;
   }
 
@@ -3550,11 +3566,11 @@ function renderPrognose(){
   const fmtR2k=v=>secToR2k(Math.round(v));
   const curWeek=snap.week||dateToWeek(todayStr());
 
-  // Datenpunkte für Charts aus rawHealth
-  const wPtsChart=(rawHealth['weight_body_mass']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y).slice(-20);
-  const bfPtsChart=(rawHealth['body_fat_percentage']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y).slice(-20);
-  const vo2PtsChart=(rawHealth['vo2_max']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y).slice(-20);
-  const r2kPtsChart=r2kLoad().map(t=>({x:t.week||dateToWeek(t.date),y:r2kToSec(t.time)})).filter(p=>p.y);
+  // Datenpunkte für Charts — Wochendurchschnitte für saubere Linien
+  const wPtsChart=weeklyAvg((rawHealth['weight_body_mass']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y&&p.x>=1));
+  const bfPtsChart=weeklyAvg((rawHealth['body_fat_percentage']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y&&p.x>=1));
+  const vo2PtsChart=weeklyAvg((rawHealth['vo2_max']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y&&p.x>=1));
+  const r2kPtsChart=r2kLoad().map(t=>({x:t.week||dateToWeek(t.date),y:r2kToSec(t.time)})).filter(p=>p.y&&p.x>=1);
 
   cards.innerHTML=
     card('GEWICHT W52',wPtsChart,snap.weightNow,snap.weightP52,goalsData.weight,fmtW,true,curWeek)+
