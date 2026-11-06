@@ -3462,24 +3462,27 @@ function calcPrognose(){
   const curWeek=dateToWeek(today);
   const snap={date:today,week:curWeek};
 
-  // Projiziert basierend auf Tempo seit Woche 1 (nicht Extrapolation ins Unendliche)
-  // Liefert: {now, p52, start, weeksLeft}
-  function project(pts, curWeek){
+  // Projiziert basierend auf Tempo seit Woche 1, mit absolutem Cap pro Metrik
+  function project(pts, curWeek, maxDelta){
     if(!pts.length) return {now:null,p52:null,start:null};
     const now=pts[pts.length-1].y;
-    if(pts.length<2) return {now,p52:now,start:now};
+    if(pts.length<3) return {now,p52:null,start:now};
     const start=pts[0].y;
     const weeksElapsed=Math.max(1,(pts[pts.length-1].x||curWeek)-(pts[0].x||1));
     const changePerWeek=(now-start)/weeksElapsed;
     const weeksLeft=Math.max(0,52-curWeek);
-    const p52=now+changePerWeek*weeksLeft;
+    const p52raw=now+changePerWeek*weeksLeft;
+    const p52=(maxDelta&&Math.abs(p52raw-now)>maxDelta)
+      ? now+Math.sign(p52raw-now)*maxDelta
+      : p52raw;
     return {now,p52,start,changePerWeek,weeksLeft};
   }
 
-  const pw=project(wPts,curWeek);
-  const pbf=project(bfPts,curWeek);
-  const pvo2=project(vo2Pts,curWeek);
-  const pr2k=project(r2kPts,curWeek);
+  // Caps: Gewicht ±6kg, KF ±5%, VO2max ±8, 2k ±60s
+  const pw=project(wPts,curWeek,6);
+  const pbf=project(bfPts,curWeek,5);
+  const pvo2=project(vo2Pts,curWeek,8);
+  const pr2k=project(r2kPts,curWeek,60);
 
   snap.weightNow=pw.now; snap.weightStart=pw.start; snap.weightCPW=pw.changePerWeek;
   snap.bfNow=pbf.now;    snap.bfStart=pbf.start;    snap.bfCPW=pbf.changePerWeek;
@@ -3549,23 +3552,25 @@ function renderPrognose(){
     </svg>`;
   }
 
-  function card(label, pts, now, p52, goal, fmt, higherIsBetter, curWeek){
-    if(p52===null||p52===undefined) return '';
-    const col=statusColor(p52,goal,higherIsBetter);
-    const onTrack=(higherIsBetter?p52>=goal:p52<=goal);
-    const diff=Math.abs(p52-goal);
+  function card(label, pts, now, p52, goal, fmt, higherIsBetter, curWeek, unclear){
+    if(now===null||now===undefined) return '';
+    // Wenn keine sinnvolle Prognose: zeige Ist-Wert vs. Ziel
+    const showVal=p52!=null?p52:now;
+    const col=statusColor(showVal,goal,higherIsBetter);
+    const onTrack=(higherIsBetter?showVal>=goal:showVal<=goal);
+    const diff=Math.abs(showVal-goal);
     const chart=miniChart(pts,curWeek,p52,goal,higherIsBetter);
     const nowStr=now!=null?fmt(now):'–';
     // Äußere Card weiß (wie Alkohol/Schlaf-Analyse), innerer farbiger Block
     const innerBg=onTrack?'var(--goodbg)':'var(--yellowbg)';
     const innerBorder=onTrack?'var(--goodb)':'var(--yellowb)';
-    return `<div style="background:var(--bg);border:1px solid var(--border2);border-radius:12px;padding:12px 14px">
+    return `<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:12px 14px">
       <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">${label}</div>
       <div style="display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center">
         <div style="background:${innerBg};border:1px solid ${innerBorder};border-radius:8px;padding:8px 12px;text-align:center;min-width:100px">
-          <div style="font-family:var(--mono);font-size:8px;color:${col};margin-bottom:2px">${onTrack?'✓ AUF KURS':'▸ ABWEICHUNG'}</div>
-          <div style="font-family:var(--serif);font-size:28px;color:${col};line-height:1;letter-spacing:-.02em">${fmt(p52)}</div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:2px">Jetzt: ${nowStr}</div>
+          <div style="font-family:var(--mono);font-size:8px;color:${col};margin-bottom:2px">${p52!=null?(onTrack?'✓ W52 AUF KURS':'▸ W52 PROGNOSE'):'JETZT'}</div>
+          <div style="font-family:var(--serif);font-size:28px;color:${col};line-height:1;letter-spacing:-.02em">${fmt(showVal)}</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:2px">${p52!=null?'Jetzt: '+nowStr:'Ziel: '+fmt(goal)}</div>
         </div>
         <div style="overflow:hidden">${chart}</div>
       </div>
