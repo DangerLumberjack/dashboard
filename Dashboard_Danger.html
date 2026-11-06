@@ -1127,8 +1127,8 @@ h1 strong{font-weight:500;color:var(--brg2)}
 </style>
 
 <!-- Add Modal -->
-<div id="r2k-modal" hidden>
-  <div class="inner">
+<div id="r2k-modal" hidden onclick="if(event.target===this)r2kCloseModal()">
+  <div class="inner" onclick="event.stopPropagation()">
     <h3>2k Test eintragen</h3>
     <div class="r2k-field-row">
       <div class="r2k-field"><label>Datum</label><input type="date" id="r2k-date"></div>
@@ -4806,7 +4806,8 @@ function r2kOpenModal(){
   ['r2k-time','r2k-split','r2k-watt','r2k-spm','r2k-resist','r2k-week','r2k-note'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('r2k-modal').hidden=false;
 }
-function r2kCloseModal(){ document.getElementById('r2k-modal').hidden=true; }
+function r2kCloseModal(){ const m=document.getElementById('r2k-modal'); if(m) m.hidden=true; }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') r2kCloseModal(); });
 
 function r2kSave(){
   const time=document.getElementById('r2k-time').value.trim();
