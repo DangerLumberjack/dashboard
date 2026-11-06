@@ -3516,7 +3516,7 @@ function renderPrognose(){
   // Mini-Chart: Ist-Verlauf (grau) + Trend-Prognose (gestrichelt akzent) + Soll-Pfad (grün) + Ziel-Punkt
   function miniChart(pts, curWeek, p52val, goalVal, higherIsBetter){
     if(!pts||pts.length<1) return '';
-    const W=320,H=72,pad=8;
+    const W=300,H=52,pad=6;
     const startW=pts[0]?pts[0].x:1;
     const startV=pts[0]?pts[0].y:goalVal;
     // Soll-Pfad: Startwert → Ziel über alle 52 Wochen
@@ -3542,7 +3542,7 @@ function renderPrognose(){
     // W52 dots
     const w52dot=p52val!=null?`<circle cx="${px(52)}" cy="${py(p52val)}" r="3" fill="${statusColor(p52val,goalVal,higherIsBetter)}"/>`:'' ;
     const goalDot=goalVal!=null?`<circle cx="${px(52)}" cy="${py(goalVal)}" r="2" fill="var(--good)" opacity=".6"/>`:'' ;
-    return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;margin-top:8px;width:100%;max-width:${W}px">
+    return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;width:100%;height:auto">
       ${sollLine}
       <polyline points="${realPts}" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linejoin="round" opacity=".9"/>
       ${projLine}${goalDot}${w52dot}
@@ -3556,18 +3556,20 @@ function renderPrognose(){
     const diff=Math.abs(p52-goal);
     const chart=miniChart(pts,curWeek,p52,goal,higherIsBetter);
     const nowStr=now!=null?fmt(now):'–';
-    const borderCol=onTrack?'var(--brgb)':'var(--border2)';
-    const bgCol=onTrack?'var(--brgbg)':'var(--bg)';
-    return `<div style="background:${bgCol};border:1px solid ${borderCol};border-radius:12px;padding:1rem">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">${label}</div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">Jetzt: <strong style="color:var(--text2)">${nowStr}</strong></div>
+    // Äußere Card weiß (wie Alkohol/Schlaf-Analyse), innerer farbiger Block
+    const innerBg=onTrack?'var(--goodbg)':'var(--yellowbg)';
+    const innerBorder=onTrack?'var(--goodb)':'var(--yellowb)';
+    return `<div style="background:var(--bg);border:1px solid var(--border2);border-radius:12px;padding:12px 14px">
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">${label}</div>
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center">
+        <div style="background:${innerBg};border:1px solid ${innerBorder};border-radius:8px;padding:8px 12px;text-align:center;min-width:100px">
+          <div style="font-family:var(--mono);font-size:8px;color:${col};margin-bottom:2px">${onTrack?'✓ AUF KURS':'▸ ABWEICHUNG'}</div>
+          <div style="font-family:var(--serif);font-size:28px;color:${col};line-height:1;letter-spacing:-.02em">${fmt(p52)}</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:2px">Jetzt: ${nowStr}</div>
+        </div>
+        <div style="overflow:hidden">${chart}</div>
       </div>
-      <div style="display:flex;align-items:baseline;gap:10px">
-        <span style="font-family:var(--serif);font-size:36px;font-weight:400;color:${col};line-height:1;letter-spacing:-.02em">${fmt(p52)}</span>
-        <span style="font-family:var(--mono);font-size:10px;color:${col}">${onTrack?'✓ auf Kurs':'▸ Ziel '+fmt(goal)+' · '+fmt(diff)+' ab'}</span>
-      </div>
-      ${chart}
+      ${!onTrack?`<div style="font-family:var(--mono);font-size:9px;color:${col};margin-top:6px">Ziel ${fmt(goal)} · noch ${fmt(diff)} ab</div>`:''}
     </div>`;
   }
 
