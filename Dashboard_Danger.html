@@ -916,6 +916,13 @@ h1 strong{font-weight:500;color:var(--brg2)}
     <div id="vo2-content"></div>
   </div>
 
+  <!-- Prognose W52 — eigenständige Kacheln vor Körperprofil -->
+  <div id="prognose-widget" style="display:none;margin-bottom:10px">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Prognose Woche 52</div>
+    <div id="prognose-cards" style="display:flex;flex-direction:column;gap:8px"></div>
+    <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:6px" id="prognose-updated"></div>
+  </div>
+
   <!-- Körperprofil -->
   <div class="section-title">Körperprofil — Status Quo</div>
   <div class="card" style="padding:0;overflow:hidden;margin-bottom:4px">
@@ -979,14 +986,6 @@ h1 strong{font-weight:500;color:var(--brg2)}
           <button class="hrv-save" style="width:100%;margin-top:8px" onclick="saveGoals()">Ziele speichern</button>
         </div>
       </div>
-    </div>
-
-    <!-- Prognose W52 -->
-    <div id="prognose-widget" style="border-top:1px solid var(--border);padding:14px 16px;display:none">
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.05em;margin-bottom:10px">PROGNOSE WOCHE 52</div>
-      <div id="prognose-cards" style="display:grid;grid-template-columns:1fr;gap:10px"></div>
-      <div id="prognose-trend" style="margin-top:10px"></div>
-      <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:6px" id="prognose-updated"></div>
     </div>
 
     <!-- Apple Health Daten — Dropdowns pro Kategorie -->
@@ -3547,14 +3546,16 @@ function renderPrognose(){
     const diff=Math.abs(p52-goal);
     const chart=miniChart(pts,curWeek,p52,goal,higherIsBetter);
     const nowStr=now!=null?fmt(now):'–';
-    return `<div style="background:var(--bg3);border-radius:8px;padding:12px 14px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+    const borderCol=onTrack?'var(--brgb)':'var(--border2)';
+    const bgCol=onTrack?'var(--brgbg)':'var(--bg2)';
+    return `<div style="background:${bgCol};border:1px solid ${borderCol};border-radius:12px;padding:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
         <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">${label}</div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">Jetzt: ${nowStr}</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">Jetzt: <strong style="color:var(--text2)">${nowStr}</strong></div>
       </div>
-      <div style="display:flex;align-items:baseline;gap:8px">
-        <span style="font-family:var(--mono);font-size:22px;font-weight:700;color:${col}">${fmt(p52)}</span>
-        <span style="font-family:var(--mono);font-size:10px;color:${col};opacity:.8">${onTrack?'✓ auf Kurs':'▸ Ziel '+fmt(goal)+' · '+fmt(diff)+' ab'}</span>
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <span style="font-family:var(--serif);font-size:36px;font-weight:400;color:${col};line-height:1;letter-spacing:-.02em">${fmt(p52)}</span>
+        <span style="font-family:var(--mono);font-size:10px;color:${col}">${onTrack?'✓ auf Kurs':'▸ Ziel '+fmt(goal)+' · '+fmt(diff)+' ab'}</span>
       </div>
       ${chart}
     </div>`;
