@@ -904,15 +904,14 @@ h1 strong{font-weight:500;color:var(--brg2)}
     <div style="font-size:10px;color:var(--text3);line-height:1.5" id="sleep-perf-text"></div>
   </div>
 
-  <!-- Körperkomposition -->
-  <div class="card" style="margin-bottom:10px;padding:12px 14px">
-    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Körperkomposition — Verlauf</div>
-    <canvas id="body-comp-canvas" style="display:none"></canvas>
-    <div id="body-comp-legend" style="display:flex;flex-direction:column;gap:0"></div>
+  <!-- Körperkomposition — jetzt in Prognose-Kacheln integriert -->
+  <div style="display:none">
+    <canvas id="body-comp-canvas"></canvas>
+    <div id="body-comp-legend"></div>
   </div>
 
-  <!-- VO2max Verlauf -->
-  <div class="card" style="margin-bottom:10px;padding:12px 14px">
+  <!-- VO2max Verlauf — jetzt in Prognose-Kacheln integriert -->
+  <div class="card" style="display:none;margin-bottom:10px;padding:12px 14px">
     <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">VO₂max — Verlauf</div>
     <div id="vo2-content"></div>
   </div>
@@ -985,7 +984,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
     <!-- Prognose W52 -->
     <div id="prognose-widget" style="border-top:1px solid var(--border);padding:14px 16px;display:none">
       <div style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.05em;margin-bottom:10px">PROGNOSE WOCHE 52</div>
-      <div id="prognose-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+      <div id="prognose-cards" style="display:grid;grid-template-columns:1fr;gap:10px"></div>
       <div id="prognose-trend" style="margin-top:10px"></div>
       <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:6px" id="prognose-updated"></div>
     </div>
@@ -3499,7 +3498,7 @@ function renderPrognose(){
   // Mini-Chart: echte Daten + Prognose-Linie + Ziel
   function miniChart(pts, curWeek, p52val, goalVal, higherIsBetter){
     if(!pts||pts.length<1) return '';
-    const W=180,H=48,pad=4;
+    const W=320,H=60,pad=6;
     const allY=[...pts.map(p=>p.y),p52val,goalVal].filter(v=>v!=null);
     const minY=Math.min(...allY)-Math.abs(Math.min(...allY))*0.05;
     const maxY=Math.max(...allY)+Math.abs(Math.max(...allY))*0.02;
@@ -3531,13 +3530,16 @@ function renderPrognose(){
     const onTrack=(higherIsBetter?p52>=goal:p52<=goal);
     const diff=Math.abs(p52-goal);
     const chart=miniChart(pts,curWeek,p52,goal,higherIsBetter);
-    return `<div style="background:var(--bg3);border-radius:8px;padding:10px">
-      <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-bottom:3px">${label}</div>
-      <div style="display:flex;align-items:baseline;gap:6px">
-        <span style="font-family:var(--mono);font-size:15px;font-weight:600;color:${col}">${fmt(p52)}</span>
-        <span style="font-family:var(--mono);font-size:8px;color:var(--text3)">${onTrack?'✓ auf Kurs':'noch '+fmt(diff)+' ab'}</span>
+    const nowStr=now!=null?fmt(now):'–';
+    return `<div style="background:var(--bg3);border-radius:8px;padding:12px 14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">${label}</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">Jetzt: ${nowStr}</div>
       </div>
-      <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:1px">Ziel: ${fmt(goal)}</div>
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <span style="font-family:var(--mono);font-size:22px;font-weight:700;color:${col}">${fmt(p52)}</span>
+        <span style="font-family:var(--mono);font-size:10px;color:${col};opacity:.8">${onTrack?'✓ auf Kurs':'▸ Ziel '+fmt(goal)+' · '+fmt(diff)+' ab'}</span>
+      </div>
       ${chart}
     </div>`;
   }
