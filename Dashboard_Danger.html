@@ -3440,12 +3440,16 @@ function calcPrognose(){
   const rawHealth_copy=rawHealth||{};
   const today=todayStr();
 
-  // Weight
-  const wPts=hist.filter(h=>h.weight).map(h=>({x:dateToWeek(h._date),y:parseFloat(h.weight)}));
-  // VO2max from rawHealth entries
-  const vo2Pts=Object.entries(rawHealth_copy).filter(([,e])=>e.vo2max).map(([d,e])=>({x:dateToWeek(d),y:e.vo2max}));
-  // BF
-  const bfPts=hist.filter(h=>h.bf).map(h=>({x:dateToWeek(h._date),y:parseFloat(h.bf)}));
+  // Weight — aus rawHealth (tägliche Apple-Watch-Daten) + manuelles Profil
+  const wRaw=(rawHealth['weight_body_mass']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y);
+  const wManual=hist.filter(h=>h.weight).map(h=>({x:dateToWeek(h._date),y:parseFloat(h.weight)}));
+  const wPts=[...wRaw,...wManual].sort((a,b)=>a.x-b.x);
+  // VO2max aus rawHealth
+  const vo2Pts=(rawHealth['vo2_max']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y);
+  // BF — aus rawHealth + manuell
+  const bfRaw=(rawHealth['body_fat_percentage']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y);
+  const bfManual=hist.filter(h=>h.bf).map(h=>({x:dateToWeek(h._date),y:parseFloat(h.bf)}));
+  const bfPts=[...bfRaw,...bfManual].sort((a,b)=>a.x-b.x);
   // 2k from r2kLoad
   const r2kPts=r2kLoad().map(t=>({x:t.week||dateToWeek(t.date),y:r2kToSec(t.time)})).filter(p=>p.y);
 
