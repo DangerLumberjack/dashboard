@@ -1343,6 +1343,13 @@ async function syncUp(){
     if(wr.length) ok=ok&&await sbUpsert('workouts','workout_id',wr);
   }
 
+  // 2k Tests
+  const r2k=r2kLoad();
+  if(r2k.length){
+    const r2kRows=r2k.map(e=>({test_id:e.date+'|'+e.time,date:e.date,time:e.time,split:e.split||'',watt:e.watt||null,spm:e.spm||null,resist:e.resist||null,week:e.week||null,note:e.note||''}));
+    ok=ok&&await sbUpsert('r2k_tests','test_id',r2kRows);
+  }
+
   sbStatus(ok?'✓ Gespeichert':'⚠ Teilfehler',ok);
 }
 
@@ -1368,9 +1375,9 @@ async function syncDown(){
   sbStatus('⟳ Lade…',true);
   let changed=false;
 
-  const[pr,al,tr,ro,pf,wr]=await Promise.all([
+  const[pr,al,tr,ro,pf,wr,r2kRows]=await Promise.all([
     sbGet('protein'),sbGet('alcohol'),sbGet('training'),
-    sbGet('routine'),sbGet('profile'),sbGet('workouts')
+    sbGet('routine'),sbGet('profile'),sbGet('workouts'),sbGet('r2k_tests')
   ]);
   const rh=await sbGetAll('raw_health');
 
@@ -1413,7 +1420,18 @@ async function syncDown(){
     changed=true;
   }
 
-  if(changed){tPreRegisterAllKeys();tBuildSidebar(tPhase);tSelWeek(tWeek);renderHome();pRenderAll();renderProfSections();renderProfile();renderSparkCards();}
+  if(r2kRows&&r2kRows.length){
+    const existing=r2kLoad();
+    r2kRows.forEach(r=>{
+      if(!existing.find(x=>x.date===r.date&&x.time===r.time)){
+        existing.push({date:r.date,time:r.time,split:r.split||'',watt:r.watt||null,spm:r.spm||null,resist:r.resist||null,week:r.week||null,note:r.note||''});
+      }
+    });
+    try{localStorage.setItem(R2K_KEY,JSON.stringify(existing));}catch(e){}
+    changed=true;
+  }
+
+  if(changed){tPreRegisterAllKeys();tBuildSidebar(tPhase);tSelWeek(tWeek);renderHome();pRenderAll();renderProfSections();renderProfile();renderSparkCards();r2kRender();}
   sbStatus(changed?'✓ Aktuell':'✓ Keine neuen Daten',true);
 }
 
@@ -4665,7 +4683,7 @@ window.addEventListener('load',async function(){
 // ══════════════════════════════════════════ 2k TRACKER ══════════════════════
 const R2K_KEY = 'danger_2k_tests';
 function r2kLoad(){ try{ return JSON.parse(localStorage.getItem(R2K_KEY)||'[]'); }catch{ return []; } }
-function r2kSaveAll(d){ try{ localStorage.setItem(R2K_KEY, JSON.stringify(d)); }catch{} }
+function r2kSaveAll(d){ try{ localStorage.setItem(R2K_KEY, JSON.stringify(d)); }catch{} if(location.protocol==="https:") syncUp(); }
 function r2kToSec(s){ if(!s) return null; const m=s.trim().match(/^(\d+):(\d{2})$/); if(!m) return null; return +m[1]*60+ +m[2]; }
 function r2kFmt(sec){ if(sec==null) return '–'; return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'); }
 function r2kDateLabel(d){ if(!d) return ''; const [y,m,day]=d.split('-'); return `${day}.${m}.${y.slice(2)}`; }
