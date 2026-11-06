@@ -904,23 +904,17 @@ h1 strong{font-weight:500;color:var(--brg2)}
     <div style="font-size:10px;color:var(--text3);line-height:1.5" id="sleep-perf-text"></div>
   </div>
 
-  <!-- Körperkomposition — jetzt in Prognose-Kacheln integriert -->
-  <div style="display:none">
-    <canvas id="body-comp-canvas"></canvas>
-    <div id="body-comp-legend"></div>
+  <!-- Körperkomposition -->
+  <div class="card" style="margin-bottom:10px;padding:12px 14px">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Körperkomposition — Verlauf</div>
+    <canvas id="body-comp-canvas" style="display:none"></canvas>
+    <div id="body-comp-legend" style="display:flex;flex-direction:column;gap:0"></div>
   </div>
 
-  <!-- VO2max Verlauf — jetzt in Prognose-Kacheln integriert -->
-  <div class="card" style="display:none;margin-bottom:10px;padding:12px 14px">
+  <!-- VO2max Verlauf -->
+  <div class="card" style="margin-bottom:10px;padding:12px 14px">
     <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">VO₂max — Verlauf</div>
     <div id="vo2-content"></div>
-  </div>
-
-  <!-- Prognose W52 — eigenständige Kacheln vor Körperprofil -->
-  <div id="prognose-widget" style="display:none;margin-bottom:4px">
-    <div class="section-title" style="margin-top:0">Prognose Woche 52</div>
-    <div id="prognose-cards" style="display:flex;flex-direction:column;gap:8px"></div>
-    <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:6px;margin-bottom:10px" id="prognose-updated"></div>
   </div>
 
   <!-- Körperprofil -->
@@ -973,17 +967,6 @@ h1 strong{font-weight:500;color:var(--brg2)}
           </div>
           <div style="margin-top:8px"><div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:3px">DATUM DER MESSUNG</div><input class="hrv-input" id="pe-date" type="date" style="width:100%"></div>
           <button class="hrv-save" style="width:100%;margin-top:10px" onclick="saveProfile()">Profil speichern</button>
-        </div>
-        <!-- Ziele W52 -->
-        <div style="border-top:1px solid var(--border2);margin-top:10px;padding-top:10px">
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.05em">ZIELE WOCHE 52</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <div><div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:3px">GEWICHT (kg)</div><input class="hrv-input" id="goal-weight" type="number" step="0.1" placeholder="z.B. 76"></div>
-            <div><div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:3px">KÖRPERFETT (%)</div><input class="hrv-input" id="goal-bf" type="number" step="0.1" placeholder="z.B. 17"></div>
-            <div><div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:3px">VO₂MAX</div><input class="hrv-input" id="goal-vo2" type="number" step="0.1" placeholder="z.B. 50"></div>
-            <div><div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:3px">2K-ZEIT (mm:ss)</div><input class="hrv-input" id="goal-r2k" type="text" placeholder="z.B. 6:20" maxlength="6"></div>
-          </div>
-          <button class="hrv-save" style="width:100%;margin-top:8px" onclick="saveGoals()">Ziele speichern</button>
         </div>
       </div>
     </div>
@@ -1489,7 +1472,7 @@ function switchTab(t){
   if(t==='home') renderHome();
   if(t==='training') renderVolumeTrend();
   if(t==='protein') pRenderAll();
-  if(t==='health'){ calcPrognose(); renderPrognose(); renderProfSections(); renderProfile(); renderAnalysen(); }
+  if(t==='health'){ renderProfSections(); renderProfile(); renderAnalysen(); }
   if(t==='rowing') r2kRender();
 }
 
@@ -3370,235 +3353,6 @@ function profileLoad(){
   }
 }
 
-// ── GOALS & PROGNOSE ──────────────────────────────────────────
-const KEY_GOALS='marcus_goals_v1';
-const KEY_PROGNOSE='marcus_prognose_v1';
-let goalsData={weight:76,bf:17,vo2:50,r2k:'6:20'};
-let prognoseHistory=[];
-
-function goalsLoad(){
-  try{const d=localStorage.getItem(KEY_GOALS);if(d) goalsData=JSON.parse(d);}catch(e){}
-  try{const d=localStorage.getItem(KEY_PROGNOSE);if(d) prognoseHistory=JSON.parse(d);}catch(e){}
-}
-function goalsSave(){
-  try{localStorage.setItem(KEY_GOALS,JSON.stringify(goalsData));}catch(e){}
-  try{localStorage.setItem(KEY_PROGNOSE,JSON.stringify(prognoseHistory));}catch(e){}
-}
-function saveGoals(){
-  const w=document.getElementById('goal-weight').value;
-  const b=document.getElementById('goal-bf').value;
-  const v=document.getElementById('goal-vo2').value;
-  const r=document.getElementById('goal-r2k').value;
-  if(w) goalsData.weight=parseFloat(w);
-  if(b) goalsData.bf=parseFloat(b);
-  if(v) goalsData.vo2=parseFloat(v);
-  if(r) goalsData.r2k=r;
-  goalsSave();
-  calcPrognose();
-  renderPrognose();
-  alert('Ziele gespeichert ✓');
-}
-function toggleProfileEdit(){
-  const e=document.getElementById('profile-edit');
-  const b=document.getElementById('profile-edit-btn');
-  if(e.style.display==='none'){
-    e.style.display='block';b.textContent='✕ Schließen';
-    // Fill goal fields
-    document.getElementById('goal-weight').value=goalsData.weight||'';
-    document.getElementById('goal-bf').value=goalsData.bf||'';
-    document.getElementById('goal-vo2').value=goalsData.vo2||'';
-    document.getElementById('goal-r2k').value=goalsData.r2k||'';
-  } else { e.style.display='none';b.textContent='✏️ Bearbeiten'; }
-}
-
-// Convert mm:ss string to seconds
-function r2kToSec(s){ if(!s) return null; const p=s.split(':'); if(p.length<2) return null; return parseInt(p[0])*60+parseInt(p[1]); }
-function secToR2k(s){ if(!s) return null; return Math.floor(s/60)+':'+(s%60<10?'0':'')+Math.round(s%60); }
-
-// Linear regression over [{x,y}] → {slope, intercept}
-function linReg(pts){
-  if(pts.length<2) return null;
-  const n=pts.length;
-  const sx=pts.reduce((a,p)=>a+p.x,0), sy=pts.reduce((a,p)=>a+p.y,0);
-  const sxy=pts.reduce((a,p)=>a+p.x*p.y,0), sx2=pts.reduce((a,p)=>a+p.x*p.x,0);
-  const denom=n*sx2-sx*sx; if(!denom) return null;
-  const slope=(n*sxy-sx*sy)/denom;
-  const intercept=(sy-slope*sx)/n;
-  return {slope,intercept};
-}
-
-// Woche 1 = 2026-08-25 (plan start)
-function dateToWeek(dateStr){
-  const start=new Date('2026-08-25'); const d=new Date(dateStr);
-  return Math.max(1,Math.round((d-start)/(7*86400000))+1);
-}
-
-// Glättet tägliche Rohdaten zu Wochendurchschnitten für sinnvollere Regression
-function weeklyAvg(pts){
-  if(!pts.length) return [];
-  const byWeek={};
-  pts.forEach(p=>{ const w=Math.round(p.x); if(!byWeek[w]) byWeek[w]=[]; byWeek[w].push(p.y); });
-  return Object.entries(byWeek).map(([w,ys])=>({x:parseInt(w),y:ys.reduce((a,b)=>a+b,0)/ys.length})).sort((a,b)=>a.x-b.x);
-}
-
-function calcPrognose(){
-  const hist=profileData._history||[];
-  const today=todayStr();
-
-  // Rohdaten sammeln
-  const wRaw=(rawHealth['weight_body_mass']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y&&p.x>=1);
-  const wManual=hist.filter(h=>h.weight).map(h=>({x:dateToWeek(h._date),y:parseFloat(h.weight)}));
-  const wPts=weeklyAvg([...wRaw,...wManual].sort((a,b)=>a.x-b.x));
-
-  const vo2Raw=(rawHealth['vo2_max']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y&&p.x>=1);
-  const vo2Pts=weeklyAvg(vo2Raw);
-
-  const bfRaw=(rawHealth['body_fat_percentage']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y&&p.x>=1);
-  const bfManual=hist.filter(h=>h.bf).map(h=>({x:dateToWeek(h._date),y:parseFloat(h.bf)}));
-  const bfPts=weeklyAvg([...bfRaw,...bfManual].sort((a,b)=>a.x-b.x));
-
-  const r2kPts=r2kLoad().map(t=>({x:t.week||dateToWeek(t.date),y:r2kToSec(t.time)})).filter(p=>p.y&&p.x>=1);
-
-  const curWeek=dateToWeek(today);
-  const snap={date:today,week:curWeek};
-
-  // Projiziert basierend auf Tempo seit Woche 1, mit absolutem Cap pro Metrik
-  function project(pts, curWeek, maxDelta){
-    if(!pts.length) return {now:null,p52:null,start:null};
-    const now=pts[pts.length-1].y;
-    if(pts.length<3) return {now,p52:null,start:now};
-    const start=pts[0].y;
-    const weeksElapsed=Math.max(1,(pts[pts.length-1].x||curWeek)-(pts[0].x||1));
-    const changePerWeek=(now-start)/weeksElapsed;
-    const weeksLeft=Math.max(0,52-curWeek);
-    const p52raw=now+changePerWeek*weeksLeft;
-    const p52=(maxDelta&&Math.abs(p52raw-now)>maxDelta)
-      ? now+Math.sign(p52raw-now)*maxDelta
-      : p52raw;
-    return {now,p52,start,changePerWeek,weeksLeft};
-  }
-
-  // Caps: Gewicht ±6kg, KF ±5%, VO2max ±8, 2k ±60s
-  const pw=project(wPts,curWeek,6);
-  const pbf=project(bfPts,curWeek,5);
-  const pvo2=project(vo2Pts,curWeek,8);
-  const pr2k=project(r2kPts,curWeek,60);
-
-  snap.weightNow=pw.now; snap.weightStart=pw.start; snap.weightCPW=pw.changePerWeek;
-  snap.bfNow=pbf.now;    snap.bfStart=pbf.start;    snap.bfCPW=pbf.changePerWeek;
-  snap.vo2Now=pvo2.now;  snap.vo2Start=pvo2.start;  snap.vo2CPW=pvo2.changePerWeek;
-  snap.r2kNow=pr2k.now;  snap.r2kStart=pr2k.start;  snap.r2kCPW=pr2k.changePerWeek;
-  snap.weightP52=pw.p52;
-  snap.bfP52=pbf.p52;
-  snap.vo2P52=pvo2.p52;
-  snap.r2kP52=pr2k.p52;
-
-  // Store in history (one per day)
-  prognoseHistory=prognoseHistory.filter(p=>p.date!==today);
-  prognoseHistory.push(snap);
-  prognoseHistory.sort((a,b)=>a.date.localeCompare(b.date));
-  goalsSave();
-  return snap;
-}
-
-function renderPrognose(){
-  const widget=document.getElementById('prognose-widget'); if(!widget) return;
-  const snap=prognoseHistory.length?prognoseHistory[prognoseHistory.length-1]:null;
-  if(!snap||(!snap.weightP52&&!snap.bfP52&&!snap.vo2P52&&!snap.r2kP52)){
-    widget.style.display='none'; return;
-  }
-  widget.style.display='block';
-
-  const cards=document.getElementById('prognose-cards');
-
-  function statusColor(p52,goal,higherIsBetter){
-    if(p52===null||p52===undefined) return 'var(--text3)';
-    return (higherIsBetter?p52>=goal:p52<=goal)?'var(--good)':'var(--yellow)';
-  }
-
-  // Mini-Chart: Ist-Verlauf (grau) + Trend-Prognose (gestrichelt akzent) + Soll-Pfad (grün) + Ziel-Punkt
-  function miniChart(pts, curWeek, p52val, goalVal, higherIsBetter){
-    if(!pts||pts.length<1) return '';
-    const W=300,H=52,pad=6;
-    const startW=pts[0]?pts[0].x:1;
-    const startV=pts[0]?pts[0].y:goalVal;
-    // Soll-Pfad: Startwert → Ziel über alle 52 Wochen
-    const shouldPts=goalVal!=null&&startV!=null?[{x:startW,y:startV},{x:52,y:goalVal}]:[];
-    const allY=[...pts.map(p=>p.y),p52val,goalVal,...shouldPts.map(p=>p.y)].filter(v=>v!=null);
-    if(!allY.length) return '';
-    const pad_pct=0.08;
-    const rangeRaw=Math.max(...allY)-Math.min(...allY)||Math.abs(Math.min(...allY))*0.1||1;
-    const minY=Math.min(...allY)-rangeRaw*pad_pct;
-    const maxY=Math.max(...allY)+rangeRaw*pad_pct;
-    const rangeY=maxY-minY||1;
-    const minX=Math.min(startW,...pts.map(p=>p.x)), maxX=52;
-    const rangeX=maxX-minX||1;
-    const px=(x)=>pad+Math.round((x-minX)/rangeX*(W-pad*2));
-    const py=(y)=>H-pad-Math.round((y-minY)/rangeY*(H-pad*2));
-    // Ist-Verlauf
-    const realPts=pts.map(p=>px(p.x)+','+py(p.y)).join(' ');
-    // Trend-Prognose von letztem Punkt → W52
-    const lastPt=pts[pts.length-1];
-    const projLine=p52val!=null?`<line x1="${px(lastPt.x)}" y1="${py(lastPt.y)}" x2="${px(52)}" y2="${py(p52val)}" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,3" opacity=".75"/>`:'' ;
-    // Soll-Pfad W1→W52 Ziel
-    const sollLine=shouldPts.length===2?`<line x1="${px(shouldPts[0].x)}" y1="${py(shouldPts[0].y)}" x2="${px(shouldPts[1].x)}" y2="${py(shouldPts[1].y)}" stroke="var(--good)" stroke-width="1" stroke-dasharray="2,3" opacity=".5"/>`:'' ;
-    // W52 dots
-    const w52dot=p52val!=null?`<circle cx="${px(52)}" cy="${py(p52val)}" r="3" fill="${statusColor(p52val,goalVal,higherIsBetter)}"/>`:'' ;
-    const goalDot=goalVal!=null?`<circle cx="${px(52)}" cy="${py(goalVal)}" r="2" fill="var(--good)" opacity=".6"/>`:'' ;
-    return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;width:100%;height:auto">
-      ${sollLine}
-      <polyline points="${realPts}" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linejoin="round" opacity=".9"/>
-      ${projLine}${goalDot}${w52dot}
-    </svg>`;
-  }
-
-  function card(label, pts, now, p52, goal, fmt, higherIsBetter, curWeek, unclear){
-    if(now===null||now===undefined) return '';
-    // Wenn keine sinnvolle Prognose: zeige Ist-Wert vs. Ziel
-    const showVal=p52!=null?p52:now;
-    const col=statusColor(showVal,goal,higherIsBetter);
-    const onTrack=(higherIsBetter?showVal>=goal:showVal<=goal);
-    const diff=Math.abs(showVal-goal);
-    const chart=miniChart(pts,curWeek,p52,goal,higherIsBetter);
-    const nowStr=now!=null?fmt(now):'–';
-    // Äußere Card weiß (wie Alkohol/Schlaf-Analyse), innerer farbiger Block
-    const innerBg=onTrack?'var(--goodbg)':'var(--yellowbg)';
-    const innerBorder=onTrack?'var(--goodb)':'var(--yellowb)';
-    return `<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:12px 14px">
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">${label}</div>
-      <div style="display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center">
-        <div style="background:${innerBg};border:1px solid ${innerBorder};border-radius:8px;padding:8px 12px;text-align:center;min-width:100px">
-          <div style="font-family:var(--mono);font-size:8px;color:${col};margin-bottom:2px">${p52!=null?(onTrack?'✓ W52 AUF KURS':'▸ W52 PROGNOSE'):'JETZT'}</div>
-          <div style="font-family:var(--serif);font-size:28px;color:${col};line-height:1;letter-spacing:-.02em">${fmt(showVal)}</div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:2px">${p52!=null?'Jetzt: '+nowStr:'Ziel: '+fmt(goal)}</div>
-        </div>
-        <div style="overflow:hidden">${chart}</div>
-      </div>
-      ${!onTrack?`<div style="font-family:var(--mono);font-size:9px;color:${col};margin-top:6px">Ziel ${fmt(goal)} · noch ${fmt(diff)} ab</div>`:''}
-    </div>`;
-  }
-
-  const fmtW=v=>Math.round(v*10)/10+' kg';
-  const fmtBf=v=>Math.round(v*10)/10+'%';
-  const fmtVo2=v=>Math.round(v*10)/10+'';
-  const fmtR2k=v=>secToR2k(Math.round(v));
-  const curWeek=snap.week||dateToWeek(todayStr());
-
-  // Datenpunkte für Charts — Wochendurchschnitte für saubere Linien
-  const wPtsChart=weeklyAvg((rawHealth['weight_body_mass']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y&&p.x>=1));
-  const bfPtsChart=weeklyAvg((rawHealth['body_fat_percentage']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y&&p.x>=1));
-  const vo2PtsChart=weeklyAvg((rawHealth['vo2_max']||[]).map(e=>({x:dateToWeek(e.date.slice(0,10)),y:parseFloat(e.qty)})).filter(p=>p.y&&p.x>=1));
-  const r2kPtsChart=r2kLoad().map(t=>({x:t.week||dateToWeek(t.date),y:r2kToSec(t.time)})).filter(p=>p.y&&p.x>=1);
-
-  cards.innerHTML=
-    card('GEWICHT W52',wPtsChart,snap.weightNow,snap.weightP52,goalsData.weight,fmtW,true,curWeek)+
-    card('KÖRPERFETT W52',bfPtsChart,snap.bfNow,snap.bfP52,goalsData.bf,fmtBf,false,curWeek)+
-    card('VO₂MAX W52',vo2PtsChart,snap.vo2Now,snap.vo2P52,goalsData.vo2,fmtVo2,true,curWeek)+
-    card('2K-ZEIT W52',r2kPtsChart,snap.r2kNow,snap.r2kP52,r2kToSec(goalsData.r2k),fmtR2k,false,curWeek);
-
-  document.getElementById('prognose-updated').textContent='Letzte Berechnung: '+fmtDisp(snap.date)+' · KW '+snap.week;
-}
-
 const PROFILE_FIELDS=[
   {id:'weight',label:'Gewicht',unit:'kg'},
   {id:'bf',label:'Körperfett',unit:'%',good:[14,18],high:22},
@@ -3797,7 +3551,17 @@ function renderProfSections(){
   }
 }
 
-// toggleProfileEdit defined above in goals section
+function toggleProfileEdit(){
+  const edit=document.getElementById('profile-edit');
+  const btn=document.getElementById('profile-edit-btn');
+  const isOpen=edit.style.display!=='none';
+  if(isOpen){ edit.style.display='none'; btn.textContent='✏️ Bearbeiten'; }
+  else {
+    PROFILE_FIELDS.forEach(f=>{ const el=document.getElementById('pe-'+f.id); if(el&&profileData[f.id]) el.value=profileData[f.id].val||''; });
+    const dateEl=document.getElementById('pe-date'); if(dateEl&&profileData._date) dateEl.value=profileData._date;
+    edit.style.display='block'; btn.textContent='✕ Schließen';
+  }
+}
 
 function saveProfile(){
   const date=document.getElementById('pe-date').value||todayStr();
@@ -4091,7 +3855,6 @@ async function importCombined(input){
       });
       aData.hrv.sort((a,b)=>a.date<b.date?1:-1);
       aSave(); syncProfileFromVitals();
-      calcPrognose(); renderPrognose();
       renderHome(); renderProfSections();
       if(location.protocol==="https:"){ await syncUp(); await syncRawUp(); }
       if(location.protocol==="https:") _syncInterval=setInterval(async()=>{ await syncDown(); renderSparkCards(); renderBioAge(); renderActivityPath(); }, 30000);
@@ -4914,7 +4677,7 @@ function importAll(input){
 // ── INIT
 // ══════════════════════════════════════════════════════════════
 window.addEventListener('load',async function(){
-  pLoad(); aLoad(); tLoad(); routineLoad(); profileLoad(); wLoad(); goalsLoad();
+  pLoad(); aLoad(); tLoad(); routineLoad(); profileLoad(); wLoad();
   pRenderQuickButtons();
   document.getElementById('p-custom-g').addEventListener('keydown',function(e){ if(e.key==='Enter')pAddCustom(); });
   document.getElementById('p-custom-kcal').addEventListener('keydown',function(e){ if(e.key==='Enter')pAddCustom(); });
