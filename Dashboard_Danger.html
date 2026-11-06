@@ -917,10 +917,10 @@ h1 strong{font-weight:500;color:var(--brg2)}
   </div>
 
   <!-- Prognose W52 — eigenständige Kacheln vor Körperprofil -->
-  <div id="prognose-widget" style="display:none;margin-bottom:10px">
-    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Prognose Woche 52</div>
+  <div id="prognose-widget" style="display:none;margin-bottom:4px">
+    <div class="section-title" style="margin-top:0">Prognose Woche 52</div>
     <div id="prognose-cards" style="display:flex;flex-direction:column;gap:8px"></div>
-    <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:6px" id="prognose-updated"></div>
+    <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:6px;margin-bottom:10px" id="prognose-updated"></div>
   </div>
 
   <!-- Körperprofil -->
@@ -3462,23 +3462,33 @@ function calcPrognose(){
   const curWeek=dateToWeek(today);
   const snap={date:today,week:curWeek};
 
-  function project(pts,targetWeek){
-    if(!pts.length) return null;
-    if(pts.length===1) return pts[0].y;
-    // Regression über geglättete Wochenpunkte → ehrlicher Gesamttrend
-    const reg=linReg(pts);
-    if(!reg) return null;
-    return reg.slope*targetWeek+reg.intercept;
+  // Projiziert basierend auf Tempo seit Woche 1 (nicht Extrapolation ins Unendliche)
+  // Liefert: {now, p52, start, weeksLeft}
+  function project(pts, curWeek){
+    if(!pts.length) return {now:null,p52:null,start:null};
+    const now=pts[pts.length-1].y;
+    if(pts.length<2) return {now,p52:now,start:now};
+    const start=pts[0].y;
+    const weeksElapsed=Math.max(1,(pts[pts.length-1].x||curWeek)-(pts[0].x||1));
+    const changePerWeek=(now-start)/weeksElapsed;
+    const weeksLeft=Math.max(0,52-curWeek);
+    const p52=now+changePerWeek*weeksLeft;
+    return {now,p52,start,changePerWeek,weeksLeft};
   }
 
-  snap.weightNow=wPts.length?wPts[wPts.length-1].y:null;
-  snap.bfNow=bfPts.length?bfPts[bfPts.length-1].y:null;
-  snap.vo2Now=vo2Pts.length?vo2Pts[vo2Pts.length-1].y:null;
-  snap.r2kNow=r2kPts.length?r2kPts[r2kPts.length-1].y:null;
-  snap.weightP52=project(wPts,52);
-  snap.bfP52=project(bfPts,52);
-  snap.vo2P52=project(vo2Pts,52);
-  snap.r2kP52=project(r2kPts,52);
+  const pw=project(wPts,curWeek);
+  const pbf=project(bfPts,curWeek);
+  const pvo2=project(vo2Pts,curWeek);
+  const pr2k=project(r2kPts,curWeek);
+
+  snap.weightNow=pw.now; snap.weightStart=pw.start; snap.weightCPW=pw.changePerWeek;
+  snap.bfNow=pbf.now;    snap.bfStart=pbf.start;    snap.bfCPW=pbf.changePerWeek;
+  snap.vo2Now=pvo2.now;  snap.vo2Start=pvo2.start;  snap.vo2CPW=pvo2.changePerWeek;
+  snap.r2kNow=pr2k.now;  snap.r2kStart=pr2k.start;  snap.r2kCPW=pr2k.changePerWeek;
+  snap.weightP52=pw.p52;
+  snap.bfP52=pbf.p52;
+  snap.vo2P52=pvo2.p52;
+  snap.r2kP52=pr2k.p52;
 
   // Store in history (one per day)
   prognoseHistory=prognoseHistory.filter(p=>p.date!==today);
@@ -3547,7 +3557,7 @@ function renderPrognose(){
     const chart=miniChart(pts,curWeek,p52,goal,higherIsBetter);
     const nowStr=now!=null?fmt(now):'–';
     const borderCol=onTrack?'var(--brgb)':'var(--border2)';
-    const bgCol=onTrack?'var(--brgbg)':'var(--bg2)';
+    const bgCol=onTrack?'var(--brgbg)':'var(--bg)';
     return `<div style="background:${bgCol};border:1px solid ${borderCol};border-radius:12px;padding:1rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
         <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">${label}</div>
