@@ -1112,7 +1112,8 @@ h1 strong{font-weight:500;color:var(--brg2)}
 .r2k-btn.primary{background:#c0392b;color:#fff;border-color:#c0392b}
 .r2k-btn.primary:hover{opacity:.88}
 /* Modal */
-#r2k-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
+#r2k-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:200;padding:16px}
+#r2k-modal.open{display:flex}
 #r2k-modal .inner{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;width:100%;max-width:380px;max-height:90vh;overflow-y:auto}
 #r2k-modal h3{font-size:14px;font-weight:600;margin-bottom:14px}
 .r2k-field{margin-bottom:11px}
@@ -1127,7 +1128,7 @@ h1 strong{font-weight:500;color:var(--brg2)}
 </style>
 
 <!-- Add Modal -->
-<div id="r2k-modal" hidden onclick="if(event.target===this)r2kCloseModal()">
+<div id="r2k-modal" onclick="if(event.target===this)r2kCloseModal()">
   <div class="inner" onclick="event.stopPropagation()">
     <h3>2k Test eintragen</h3>
     <div class="r2k-field-row">
@@ -4804,9 +4805,9 @@ function r2kOpenModal(){
   const today=new Date().toISOString().slice(0,10);
   document.getElementById('r2k-date').value=today;
   ['r2k-time','r2k-split','r2k-watt','r2k-spm','r2k-resist','r2k-week','r2k-note'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('r2k-modal').hidden=false;
+  document.getElementById('r2k-modal').classList.add('open');
 }
-function r2kCloseModal(){ const m=document.getElementById('r2k-modal'); if(m) m.hidden=true; }
+function r2kCloseModal(){ document.getElementById('r2k-modal').classList.remove('open'); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') r2kCloseModal(); });
 
 function r2kSave(){
