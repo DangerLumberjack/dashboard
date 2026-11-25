@@ -1431,7 +1431,13 @@ async function syncDown(){
     changed=true;
   }
 
-  if(changed){tPreRegisterAllKeys();tBuildSidebar(tPhase);tSelWeek(tWeek);renderHome();pRenderAll();renderProfSections();renderProfile();renderSparkCards();r2kRender();}
+  if(changed){
+    // Remember which day-blocks are currently open before re-render
+    const openBlocks=new Set([...document.querySelectorAll('.day-block.open')].map(b=>b.id));
+    tPreRegisterAllKeys();tBuildSidebar(tPhase);tSelWeek(tWeek);renderHome();pRenderAll();renderProfSections();renderProfile();renderSparkCards();r2kRender();
+    // Restore open state after re-render
+    openBlocks.forEach(id=>{const b=document.getElementById(id);if(b)b.classList.add('open');});
+  }
   sbStatus(changed?'✓ Aktuell':'✓ Keine neuen Daten',true);
 }
 
