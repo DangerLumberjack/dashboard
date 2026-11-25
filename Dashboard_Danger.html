@@ -2209,7 +2209,12 @@ function toggleSick(week,dayIdx){
 
 function toggleDay(blockId,event){
   if(event&&event.target.closest('.spl-cb,.opt-cb,.sick-btn'))return;
-  const block=document.getElementById(blockId); if(block)block.classList.toggle('open');
+  const block=document.getElementById(blockId); if(!block)return;
+  // Prevent double-fire from touch+click synthetic events
+  const now=Date.now();
+  if(block._lastToggle&&now-block._lastToggle<400)return;
+  block._lastToggle=now;
+  block.classList.toggle('open');
 }
 
 function tFmtDate(w,d){ const dt=new Date(PLAN_START); dt.setDate(dt.getDate()+(w-1)*7+d); return dt.getDate()+'.'+(dt.getMonth()+1)+'.'; }
@@ -2288,7 +2293,7 @@ function renderUrlaubWeek(w){
   dayB(w,0,'Mo','30–35 min · Kraft Oberkörper Bodyweight + Core',
     spl('s-k','Block A · 20 min','Kraft Oberkörper — kein Equipment','Push-Ups 4×12–15, Pike Push-Up 3×10, Dips an Stuhl/Bank 3×12, Decline Push-Up 3×10',[fp('→ No Equipment Upper Body')],null,null,K(w,0,1))+
     orD()+
-    spl('s-c','Block B · 15 min','Core — Stabilität','Plank 3×45s, Dead Bug 3×8/Seite, Side Plank 3×30s',[fp('→ Core Training')],null,'In Folge: 35 min · Getrennt: morgens/abends',K(w,0,2)))+
+    spl('s-c','Block B · 10 min','Core — Stabilität','Plank 3×45s, Dead Bug 3×8/Seite, Side Plank 3×30s',[fp('→ Core Training')],null,'In Folge: 30 min · Getrennt: morgens/abends',K(w,0,2)))+
   dayB(w,1,'Di','30 min · Joggen im Wald',
     spl('s-h','Einzel · 30 min','Joggen — Waldpfad locker','5–7 km/h · HR 130–150 · Z2 · Geländeläufe aktivieren Stabilisatoren zusätzlich',[fp('→ Running Outdoor')],null,null,K(w,1,1))+
     '<div class="note note-g" style="margin-top:4px">Wald-Terrain ist uneben → gut für Stabilität & Knöchel. Tempo anpassen, nicht Pace.</div>')+
@@ -2296,7 +2301,7 @@ function renderUrlaubWeek(w){
   dayB(w,3,'Do','35 min · Kraft Unterkörper Bodyweight + Core',
     spl('s-k','Block A · 20 min','Kraft Unterkörper — kein Equipment','Squats 4×15, Bulgarian Split Squat 3×10/Seite, Glute Bridge 3×15, Reverse Lunge 3×12/Seite',[fp('→ No Equipment Lower Body')],null,null,K(w,3,1))+
     orD()+
-    spl('s-c','Block B · 15 min','Core — Rotation & Anti-Rotation','Bird Dog 3×8/Seite, Hollow Body Hold 3×30s, Pallof Press simuliert 3×10',[fp('→ Core Training')],null,'In Folge: 35 min',K(w,3,2)))+
+    spl('s-c','Block B · 10 min','Core — Rotation & Anti-Rotation','Bird Dog 3×8/Seite, Hollow Body Hold 3×30s, Pallof Press simuliert 3×10',[fp('→ Core Training')],null,'In Folge: 30 min',K(w,3,2)))+
   dayB(w,4,'Fr',isLast?'25 min · Korrekturroutine + Mobility':'30–45 min · HIIT Vollkörper oder Joggen',
     isLast?
       spl('s-m','Einzel · 25 min','Korrekturroutine + Mobility','Alle 5 Übungen · Lieg. Quad-Stretch 60s/Seite, Glute Bridge 3×15, Dead Bug 3×8, Pallof Press 3×10, Vacuum 3×15s',[fp('→ Mobility & Flexibility')],null,null,K(w,4,1))
@@ -2309,7 +2314,7 @@ function renderUrlaubWeek(w){
     dayB(w,6,'So','35–40 min · Oberkörper + Core — Wiedereinstieg zuhause',
       spl('s-k','Block A · 20 min','Kraft Oberkörper — Wiedereinstieg','Fitness+ Upper Body · erstes Training nach Urlaub · locker starten, Technik fokussieren',[fp('→ Functional Strength Upper Body')],null,null,K(w,6,1))+
       orD()+
-      spl('s-c','Block B · 15 min','Core','Dead Bug, Pallof Press, Plank',[fp('→ Core Training')],null,'In Folge: 35 min',K(w,6,2)))
+      spl('s-c','Block B · 10 min','Core','Dead Bug, Pallof Press, Plank',[fp('→ Core Training')],null,'In Folge: 30 min',K(w,6,2)))
     :
     dayB(w,5,'Sa','30 min · Joggen oder Familien-Aktivität',
       spl('s-c','Einzel · 30 min','Joggen locker oder Wandern','Locker · HR unter 145 · auch als Wanderung mit Familie zählt',[fp('→ Outdoor Running')],null,null,K(w,5,1)))+
@@ -2330,10 +2335,10 @@ function renderP1(w){
 
   const isD=w%4===0,vol=tVolPct(w,1),cy=Math.floor((w-1)/4);
   if(w===3)return `<div class="note note-a" style="margin-bottom:10px">✈ Reisewoche 15.–19.06. · Mo–Fr kein Equipment · Fitness+ only · Sa+So normal</div>`+
-    dayB(w,0,'Mo','30–35 min · Oberkörper + Core — kein Equipment',spl('s-k','Block A · 20 min','Kraft Oberkörper — kein Equipment','Push-Up Variationen, Pike Push-Up, Dips · 4×12–15 WH',[fp('→ No Equipment Upper Body')],null,null,K(w,0,1))+orD()+spl('s-c','Block B · 15 min','Core','Planks, Dead Bug, Hollow Body',[fp('→ Core Training')],null,'In Folge: 35 min · Getrennt: A morgens, B abends',K(w,0,2)))+
+    dayB(w,0,'Mo','30–35 min · Oberkörper + Core — kein Equipment',spl('s-k','Block A · 20 min','Kraft Oberkörper — kein Equipment','Push-Up Variationen, Pike Push-Up, Dips · 4×12–15 WH',[fp('→ No Equipment Upper Body')],null,null,K(w,0,1))+orD()+spl('s-c','Block B · 10 min','Core','Planks, Dead Bug, Hollow Body',[fp('→ Core Training')],null,'In Folge: 30 min · Getrennt: A morgens, B abends',K(w,0,2)))+
     dayB(w,1,'Di','25 min · Laufband-Intervall — Hotel-Gym',spl('s-h','Einzel · 25 min','Laufband — 4×4 Intervall','3 min Aufwärmen (6 km/h) · 4× (4 min schnell 10–12 km/h / 2 min locker 6 km/h) · 3 min Cool-down · HR-Ziel 155–165',[fp('→ Fitness+ Lauf-Klasse')],null,null,K(w,1,1))+'<div class="note note-g" style="margin-top:4px">Direkter Ersatz für HIIT-Rudern — gleiche Intervallstruktur</div>')+
     restB(w,2,'Mi','Pause · Spaziergang oder Hotel-Schwimmbad')+
-    dayB(w,3,'Do','30–35 min · Unterkörper + Core — kein Equipment',spl('s-k','Block A · 20 min','Kraft Unterkörper — kein Equipment','Squats, Lunges, Glute Bridge, Step-Ups · 4×15–20 WH',[fp('→ No Equipment Lower Body')],null,null,K(w,3,1))+orD()+spl('s-c','Block B · 15 min','Core — Rotation & Stabilität','Obliques, Rotation, Side Plank',[fp('→ Core Training')],null,'In Folge: 35 min',K(w,3,2)))+
+    dayB(w,3,'Do','30–35 min · Unterkörper + Core — kein Equipment',spl('s-k','Block A · 20 min','Kraft Unterkörper — kein Equipment','Squats, Lunges, Glute Bridge, Step-Ups · 4×15–20 WH',[fp('→ No Equipment Lower Body')],null,null,K(w,3,1))+orD()+spl('s-c','Block B · 10 min','Core — Rotation & Stabilität','Obliques, Rotation, Side Plank',[fp('→ Core Training')],null,'In Folge: 30 min',K(w,3,2)))+
     dayB(w,4,'Fr','25 min · Mobility + Core — Matte',spl('s-m','Block A · 15 min','Mobility — Hüfte, Brust, Schulter','90/90 Hip Stretch, Lieg. Quad-Stretch, Thoracic Rotation · je 60 sek',[fp('→ Flexibility · Yoga for Athletes')],null,null,K(w,4,1))+orD()+spl('s-c','Block B · 10 min','Core — ruhig & kontrolliert','Dead Bug, Bird Dog, Pallof Press',[fp('→ Core Training')],null,'Ruhiger Abschluss vor Heimreise',K(w,4,2)))+
     dayB(w,5,'Sa','35–40 min · Vollkörper + Rudern Finish — Wiedereinstieg',spl('s-k','Block A · 20 min','Kraft Vollkörper','Compound-Kombis: Squat+Press, Hinge+Row · zurück am Torin',[fp('→ Functional Strength Full Body')],null,null,K(w,5,1))+orD()+spl('s-r','Block B · 15 min','Rudern — lockeres Technik-Finish','20 spm · HR 120–130 · locker · Wiedereinstieg nach Reise',[km('→ Landschaftsstrecke')],sk('→ freies Rudern'),'In Folge: 35 min',K(w,5,2)))+
     restB(w,6,'So','Pause')+`<div class="note note-g" style="margin-top:4px">Wiedereinstieg: direkt weitermachen — unter 5 Tage Pause, kein Rückschritt nötig.</div>`+gbNote();
@@ -2346,7 +2351,7 @@ function renderP1(w){
     dayB(w,5,'Sa','~10 min · 2k-Test',spl('s-r','Einzel · ~10 min','2000m Torin-Test','3 min Aufwärmen locker · dann 2000m Vollgas · gleicher Widerstand immer · Zeit notieren!',[sk('→ freies Rudern')],null,null,K(w,5,1))+'<div class="note note-b" style="margin-top:4px">2k-Test auf Torin — Bestzeit notieren! Widerstand konstant halten, Ergebnis als Referenz festhalten.</div>')+
     restB(w,6,'So','Pause · optional Fitness+ Cooldown');
   return vb(vol,'#c96c2a')+
-    dayB(w,0,'Mo','35–40 min · Oberkörper + Bauch',spl('s-k','Block A · 20 min','Kraft Oberkörper — Push & Brust','Fitness+ Functional Strength Upper Body (Fokus: Brust & Schulter)',[fp('→ Functional Strength Upper Body')],null,null,K(w,0,1))+orD()+spl('s-c','Block B · 15 min','Bauch — Grundlage','Crunch 3×20 · Leg Raise 3×15 · Plank 3×45 sek',[],null,'In Folge: 35 min · Getrennt: A morgens, B mittags',K(w,0,2)))+
+    dayB(w,0,'Mo','35–40 min · Oberkörper + Bauch',spl('s-k','Block A · 20 min','Kraft Oberkörper — Push & Brust','Fitness+ Functional Strength Upper Body (Fokus: Brust & Schulter)',[fp('→ Functional Strength Upper Body')],null,null,K(w,0,1))+orD()+spl('s-c','Block B · 20 min','Bauch — Grundlage','Fitness+ Core Training · 20 min',[fp('→ Core Training')],null,'In Folge: 40 min · Getrennt: A morgens, B mittags',K(w,0,2)))+
     dayB(w,1,'Di','30 min · Rudern Technik + Pull-Isolation',spl('s-r','Block A · 20 min','Rudern — Steady State & Technik','18–20 spm · HR 120–140 · Z2 locker',[sk('→ Anfänger-Programm / Technik')],null,null,K(w,1,1))+orD()+spl('s-k','Block B · 10 min','Pull-Isolation — Rücken & Bizeps','Bent-over Row 3×10 (7,5 kg) · Bizeps-Curl 3×12 (5–7,5 kg) · Hammer Curl 3×10 (5 kg)',[],null,'In Folge: 30 min · Getrennt: Rudern morgens, Pull abends',K(w,1,2))+'<div class="note note-a" style="margin-top:4px">Pull-Isolation: Bent-over Row 3×10, Bizeps-Curl 3×12, Hammer Curl 3×10 — alles mit Hanteln</div>')+
     restB(w,2,'Mi','Pause · optional Cooldown 10 min')+
     dayB(w,3,'Do','30–35 min · Schulter & Arme + Bauch',spl('s-k','Block A · 20 min','Schulter & Arme — Isolation mit Hanteln','Schulterpress 3×12 (7,5 kg) · Lateral Raise 3×15 (5 kg) · Trizeps Kickback 3×12 (5 kg) · Hammer Curl 3×12 (5 kg)',[],null,null,K(w,3,1))+orD()+spl('s-c','Block B · 10 min','Bauch — Rotation & Stabilität','Russian Twist 3×20 · Bicycle Crunch 3×20 · Dead Bug 3×10',[],null,'In Folge: 30 min · Getrennt: A morgens, B abends',K(w,3,2)))+
@@ -2446,12 +2451,12 @@ function renderP2(w){
     dayB(w,2,'Mi',eD[1],spl('s-r','Einzel · '+eD[1],'Rudern locker — EXR: '+eD[0],eD[2],[EX(eD[0])],null,null,K(w,2,1)))+restB(w,3,'Do','Pause')+
     dayB(w,4,'Fr','20 min',spl('s-k','Einzel · 20 min','Oberkörper leicht','Fitness+ Upper Body · 60% · locker',[fp('→ Functional Strength Upper')],null,null,K(w,4,1)))+dayB(w,5,'Sa','~10 min · 2k-Test',spl('s-r','Einzel · ~10 min','2000m Torin-Test','3 min Aufwärmen locker · dann 2000m Vollgas · gleicher Widerstand immer · Zeit notieren!',[sk('→ freies Rudern')],null,null,K(w,5,1))+'<div class="note note-b" style="margin-top:4px">2k-Test auf Torin — Bestzeit notieren! Widerstand konstant halten, Ergebnis als Referenz festhalten.</div>')+restB(w,6,'So','Pause · optional Yoga');
   return vb(vol,'#3a7a5a')+
-    dayB(w,0,'Mo','35–40 min · Push + Bauch',spl('s-k','Block A · 20 min','Push — Brust & Schulter','Fitness+ Functional Strength Upper Body (Fokus: Brust & Schulter)',[fp('→ Functional Strength Upper Body')],null,null,K(w,0,1))+orD()+spl('s-c','Block B · 15 min','Bauch — Anterior Chain','Hollow Body Hold 3×30 sek · Ab Wheel 3×10 · Leg Raise 3×15',[],null,'In Folge: 35 min',K(w,0,2)))+
+    dayB(w,0,'Mo','35–40 min · Push + Bauch',spl('s-k','Block A · 20 min','Push — Brust & Schulter','Fitness+ Functional Strength Upper Body (Fokus: Brust & Schulter)',[fp('→ Functional Strength Upper Body')],null,null,K(w,0,1))+orD()+spl('s-c','Block B · 20 min','Bauch — Anterior Chain','Fitness+ Core Training · 20 min',[fp('→ Core Training')],null,'In Folge: 40 min',K(w,0,2)))+
     dayB(w,1,'Di',addMin(eD[1],15)+' · EXR Rudern + Pull-Isolation',spl('s-r','Block A · '+eD[1],'EXR: '+eD[0],eD[2]+' · Pull-Hypertrophie',[EX(eD[0])],fp('→ Rowing Endurance'),null,K(w,1,1))+orD()+spl('s-k','Block B · 12 min','Pull-Isolation — Rücken & Bizeps','Bent-over Row 3×10 (7,5–10 kg) · Bizeps-Curl 3×12 (5–7,5 kg) · Hammer Curl 3×10 (7,5 kg)',[],null,'In Folge: 45 min · Getrennt: Rudern morgens, Pull abends',K(w,1,2))+'<div class="note note-a" style="margin-top:4px">Pull-Isolation: Bent-over Row 3×10, Bizeps-Curl 3×12, Hammer Curl 3×10 — alles mit Hanteln</div>')+
     dayB(w,2,'Mi','30 min · Schulter & Arme — Hantel-Isolation',spl('s-k','Einzel · 30 min','Schulter & Arme — dedizierte Isolation','Schulterpress 3×12 (7,5 kg) · Lateral Raise 3×15 (5 kg) · Arnold Press 3×10 (5 kg) · Trizeps Kickback 3×12 (5–7,5 kg) · Bizeps-Curl 4×10 (7,5 kg) · Hammer Curl 3×12 (5–7,5 kg)',[],null,'In Folge: 30 min',K(w,2,1)))+
     restB(w,3,'Do','Pause · optional Gravelbike 30–60 min oder EXR: Tactical Maneuver (30 min, Recovery)')+
     dayB(w,4,'Fr',addMin(eH[1],15)+' · Pull-Kraft + EXR HIIT',spl('s-k','Block A · 15 min','Pull-Kraft — Rücken & Bizeps','Bent-over Row schwer 4×8 (10 kg) · Rear Delt Raise 3×15 (3–5 kg) · Hammer Curl 3×10 (7,5 kg)',[],null,null,K(w,4,1))+orD()+spl('s-h','Block B · '+eH[1],'EXR: '+eH[0],eH[2],[EX(eH[0])],sk('→ Intervall-Programm'),'In Folge: 40 min · Getrennt: Pull morgens, HIIT-Rudern abends',K(w,4,2)))+
-    dayB(w,5,'Sa',addMin(eS[1],15)+' · EXR Rudern + Bauch',spl('s-r','Block A · '+eS[1],'EXR: '+eS[0],eS[2],[EX(eS[0])],sk('→ Ausdauer-Plan'),null,K(w,5,1))+orD()+spl('s-c','Block B · 15 min','Bauch — Stabilität & Rotation','Plank 3×60 sek · Russian Twist 3×20 · Bicycle Crunch 3×20',[],null,null,K(w,5,2)))+
+    dayB(w,5,'Sa',addMin(eS[1],15)+' · EXR Rudern + Bauch',spl('s-r','Block A · '+eS[1],'EXR: '+eS[0],eS[2],[EX(eS[0])],sk('→ Ausdauer-Plan'),null,K(w,5,1))+orD()+spl('s-c','Block B · 10 min','Bauch — Stabilität & Rotation','Plank 3×60 sek · Russian Twist 3×20 · Bicycle Crunch 3×20',[],null,null,K(w,5,2)))+
     restB(w,6,'So','Pause')+gbNote();
 }
 
@@ -2475,10 +2480,10 @@ function renderP3(w){
     : dayB(w,5,'Sa',(is2kBlock?e3S[1]+' · 2k Breakthrough':e3S[1]+' · EXR Rudern Ausdauer'),spl('s-r','Einzel · '+e3S[1],(is2kBlock?'2k Breakthrough · EXR: ':'EXR: ')+e3S[0],e3S[2],[EX(e3S[0])],sk('→ Ausdauer-Plan'),null,K(w,5,1))+(is2kBlock?'':'<div class="note note-g" style="margin-top:4px">Alt. Sa: Gravelbike 60–90 min gleichwertig.</div>'));
   return vb(vol,'#5a6a9a')+
     (is2kBlock?`<div style="background:#1a3a5c;border-left:4px solid #4a9eda;color:#7ec8f7;padding:8px 12px;border-radius:0 6px 6px 0;font-size:12px;font-weight:600;margin:6px 0 10px 0;letter-spacing:.03em">🏁 2k Breakthrough · Woche ${wi} von 9 — EXR-Plan aktiv</div>`:'')+
-    dayB(w,0,'Mo','40 min · Upper A + Bauch (schwer)',spl('s-k','Block A · 25 min','Upper A — schwer, Brust & Schulter','Fitness+ Functional Strength Upper Body (Fokus: Brust & Schulter) · 4 Sätze à 6–8 WH',[fp('→ Functional Strength Upper')],null,null,K(w,0,1))+orD()+spl('s-c','Block B · 15 min','Bauch — belastet','Weighted Crunch 3×15 · Hanging Knee Raise 3×15 · Farmer Carry 3×20 m',[],null,'In Folge: 40 min',K(w,0,2)))+
+    dayB(w,0,'Mo','40 min · Upper A + Bauch (schwer)',spl('s-k','Block A · 25 min','Upper A — schwer, Brust & Schulter','Fitness+ Functional Strength Upper Body (Fokus: Brust & Schulter) · 4 Sätze à 6–8 WH',[fp('→ Functional Strength Upper')],null,null,K(w,0,1))+orD()+spl('s-c','Block B · 20 min','Bauch — belastet','Fitness+ Core Training · 20 min · schwere Varianten',[fp('→ Core Training')],null,'In Folge: 45 min',K(w,0,2)))+
     dayB(w,1,'Di',addMin(e3D[1],15)+' · EXR Rudern + Pull-Isolation',spl('s-r','Block A · '+e3D[1],(is2kBlock?'2k Breakthrough · EXR: ':'EXR: ')+e3D[0],e3D[2],[EX(e3D[0])],fp('→ Rowing Intervall'),null,K(w,1,1))+orD()+spl('s-k','Block B · 12 min','Pull-Isolation — Rücken & Bizeps','Bent-over Row 4×8 (10 kg) · Bizeps-Curl 4×10 (7,5–10 kg) · Hammer Curl 3×10 (10 kg)',[],null,'In Folge: 45 min · Getrennt: Rudern morgens, Pull abends',K(w,1,2))+'<div class="note note-a" style="margin-top:4px">Pull-Isolation: Bent-over Row 4×8, Bizeps-Curl 4×10, Hammer Curl 3×10 — alles mit Hanteln</div>')+
     dayB(w,2,'Mi','30 min · Schulter & Arme schwer (Hantel-Isolation)',spl('s-k','Einzel · 30 min','Schulter & Arme — Hantel-Isolation, progressiv','Schulterpress 4×10 (10 kg) · Lateral Raise 4×12 (5–7,5 kg) · Arnold Press 3×10 (7,5 kg) · Trizeps Kickback 4×10 (7,5 kg) · Bizeps-Curl 4×10 (10 kg)',[],null,'In Folge: 30 min',K(w,2,1)))+
-    dayB(w,3,'Do',addMin(e3Do[1],15)+' · EXR '+(is2kBlock?'2k Breakthrough':'HIIT')+' + Core',spl('s-h','Block A · '+e3Do[1],(is2kBlock?'2k Breakthrough · EXR: ':'EXR: ')+e3Do[0],e3Do[2],[EX(e3Do[0])],km('→ Power-Session'),null,K(w,3,1))+orD()+spl('s-c','Block B · 15 min','Core — Anti-Flexion','Fitness+ Core Training',[fp('→ Core Training')],null,null,K(w,3,2)))+
+    dayB(w,3,'Do',addMin(e3Do[1],15)+' · EXR '+(is2kBlock?'2k Breakthrough':'HIIT')+' + Core',spl('s-h','Block A · '+e3Do[1],(is2kBlock?'2k Breakthrough · EXR: ':'EXR: ')+e3Do[0],e3Do[2],[EX(e3Do[0])],km('→ Power-Session'),null,K(w,3,1))+orD()+spl('s-c','Block B · 10 min','Core — Anti-Flexion','Fitness+ Core Training · 10 min',[fp('→ Core Training')],null,null,K(w,3,2)))+
     dayB(w,4,'Fr','35 min · Upper B + Bauch (Volumen)',spl('s-k','Block A · 25 min','Upper B — Volumen & Arm-Isolation','Fitness+ Functional Strength Upper Body · 3–4 Sätze à 10–15 WH + Trizeps Kickback 3×15 (5–7,5 kg) · Rear Delt Raise 3×15 (3–5 kg)',[fp('→ Functional Strength Upper')],null,null,K(w,4,1))+orD()+spl('s-c','Block B · 10 min','Bauch — kurzes Finish','Plank 2×60 sek · Crunch 2×25 · Leg Raise 2×15',[],null,'In Folge: 35 min',K(w,4,2)))+
     saSportBlock+
     restB(w,6,'So','Pause')+gbNote();
